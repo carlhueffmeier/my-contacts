@@ -15,7 +15,6 @@ module.exports = {
     path: path.resolve('dist')
   },
   devServer: {
-    hot: true,
     open: true
   },
   plugins: [
