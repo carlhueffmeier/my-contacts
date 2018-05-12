@@ -1,3 +1,90 @@
+html,
 body {
-  background-color: rgb(251, 255, 230);
+  margin: 0;
+  height: 100%;
+}
+
+/***************************************
+** Buttons
+****************************************/
+.btn {
+  background: none;
+  border: none;
+  padding: 1rem 1rem;
+}
+
+/***************************************
+****************************************
+**  Contact Button **
+****************************************/
+
+.add-contact-button {
+  width: 5rem;
+  height: 5rem;
+  display: block;
+  position: fixed;
+  bottom: 3rem;
+  right: 3rem;
+  border: none;
+  border-radius: 50%;
+  background-color: darkorange;
+  font-size: 4rem;
+  color: white;
+}
+
+/***************************************
+****************************************
+**  Header **
+****************************************/
+
+.header {
+  display: flex;
+  align-items: stretch;
+  color: #333;
+  padding: 1rem 0 1rem;
+}
+
+.header__menu {
+  display: flex;
+}
+.header__menu-button {
+}
+.header__title {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header__title-text {
+  font-size: 2rem;
+  font-family: sans-serif;
+}
+.header__title-text {
+}
+.header__search {
+  display: flex;
+}
+
+/***************************************
+****************************************
+**  Search **
+****************************************/
+
+.search {
+  display: flex;
+}
+
+/***************************************
+****************************************
+**  Search **
+****************************************/
+
+.contact-list {
+  border: 1px solid black;
+  margin: 0;
+  min-height: 80%;
+}
+
+.contact-list__group {
+  list-style: none;
 }

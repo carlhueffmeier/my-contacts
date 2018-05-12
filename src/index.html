@@ -3,18 +3,62 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
   <title>My Contacts</title>
 </head>
 
 <body>
-  <h1>My Contacts</h1>
-  <ul>
-    <li>Anna</li>
-    <li>John</li>
-    <li>Ken</li>
-    <li>Saori</li>
+
+  <button class="add-contact-button">
+    +
+  </button>
+
+  <div class="header">
+    <div class="header__menu">
+      <button class="header__menu-button btn">
+        Menu
+      </button>
+    </div>
+    <div class="header__title">
+      <span class="header__title-text">My Contacts</span>
+    </div>
+    <div class="header__search">
+      <button class="header__search-button btn">Search</button>
+    </div>
+  </div>
+
+  <ul class="contact-list">
+    <li class="contact-list__group">
+
+      <span class="contact-list__group-index">A</span>
+
+      <ul class="contact-list__group-list">
+        <li class="contact-list__group-list-element">
+          <span class="contact-list__name">Anna</span>
+        </li>
+        <li class="contact-list__group-list-element">
+          <span class="contact-list__name">Alfonso</span>
+        </li>
+      </ul>
+
+    </li>
+
+    <li class="contact-list__group">
+
+      <span class="contact-list__group-index">B</span>
+
+      <ul class="contact-list__group-list">
+        <li class="contact-list__group-list-element">
+          <span class="contact-list__name">Balu</span>
+        </li>
+        <li class="contact-list__group-list-element">
+          <span class="contact-list__name">Bono</span>
+        </li>
+      </ul>
+
+    </li>
   </ul>
-  <button class='add-contact-btn'>new</button>
+
 </body>
 
 </html>
