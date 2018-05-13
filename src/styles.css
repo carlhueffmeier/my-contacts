@@ -2,33 +2,65 @@ html,
 body {
   margin: 0;
   height: 100%;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+/***************************************
+** Icons
+****************************************/
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
 }
 
 /***************************************
 ** Buttons
 ****************************************/
-.btn {
+.button {
   background: none;
   border: none;
-  padding: 1rem 1rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
 }
 
 /***************************************
 ****************************************
-**  Contact Button **
+**  Add Contact Button
 ****************************************/
-
 .add-contact-button {
-  width: 5rem;
-  height: 5rem;
-  display: block;
+  background-color: #e91e63;
+  bottom: 0;
+  margin-bottom: 1.5rem;
+  margin-right: 1.5rem;
   position: fixed;
-  bottom: 3rem;
-  right: 3rem;
+  right: 0;
   border: none;
   border-radius: 50%;
-  background-color: darkorange;
-  font-size: 4rem;
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12),
+    0 3px 5px -1px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 3rem;
+  outline: none;
+  overflow: hidden;
+  text-align: center;
+  width: 3rem;
+  font-size: 1.5rem;
   color: white;
 }
 
@@ -41,28 +73,41 @@ body {
   display: flex;
   align-items: stretch;
   color: #333;
-  padding: 1rem 0 1rem;
+  padding: 0.3rem;
+  background-color: #2a56c6;
+  color: white;
+}
+
+.header__left {
+  flex: auto;
+  display: flex;
+  align-items: center;
 }
 
 .header__menu {
   display: flex;
 }
+
 .header__menu-button {
-}
-.header__title {
-  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.header__title-text {
   font-size: 2rem;
-  font-family: sans-serif;
+  color: white;
 }
-.header__title-text {
+
+.header__title {
+  display: inline-block;
+  font-size: 1.5rem;
+  padding-left: 1rem;
+  font-weight: 300;
 }
+
 .header__search {
   display: flex;
+}
+
+.header__search-button {
+  font-size: 1.5rem;
+  color: white;
 }
 
 /***************************************
@@ -80,11 +125,43 @@ body {
 ****************************************/
 
 .contact-list {
-  border: 1px solid black;
   margin: 0;
   min-height: 80%;
+  padding: 1.5rem 0.5rem;
 }
 
 .contact-list__group {
   list-style: none;
+  display: flex;
+}
+
+.contact-list__group-index {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #2a56c6;
+  padding-left: 1rem;
+  height: 3rem;
+  width: 4rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.contact-list__group-list {
+  padding: 0;
+  flex: 1;
+}
+
+.contact-list__contact-element {
+  padding: 0 1rem;
+  width: 100%;
+  list-style: none;
+  display: flex;
+  height: 3rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.contact-list__contact-element:focus,
+.contact-list__contact-element:hover {
+  background-color: #e3e3e3;
 }
