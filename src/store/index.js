@@ -1,8 +1,9 @@
-import uuidv1 from 'uuid/v1';
+import uuidv4 from 'uuid/v4';
 
 export default class Store {
   constructor() {
     this.storage = {
+      searchQuery: '',
       allIds: [],
       byId: {}
     };
@@ -13,6 +14,11 @@ export default class Store {
       var { allIds, byId } = this.storage;
       resolve(allIds.map(id => byId[id]));
     });
+  }
+
+  getSearchResults() {
+    var re = new RegExp(this.searchQuery, 'i');
+    return this.findAll({ name: re });
   }
 
   findAll(query) {
@@ -31,8 +37,12 @@ export default class Store {
     });
   }
 
+  setSearchQuery(value) {
+    this.searchQuery = value;
+  }
+
   addContact(details) {
-    var id = uuidv1();
+    var id = uuidv4();
     this.storage.byId[id] = {
       id,
       ...details

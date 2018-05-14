@@ -122,52 +122,70 @@
     </defs>
   </svg>
 
-  <button class="add-contact-button">
-    <svg class="icon">
-      <use xlink:href="#icon-add"></use>
-    </svg>
-  </button>
 
-  <div class="header">
-    <div class="header__left">
-      <div class="header__menu">
-        <button class="header__menu-button button">
+  <div class="app">
+
+    <button class="add-contact-button">
+      <svg class="icon">
+        <use xlink:href="#icon-add"></use>
+      </svg>
+    </button>
+
+    <header class="header">
+      <div class="header__left">
+        <div class="header__menu">
+          <button class="header__menu-button button">
+            <svg class="icon">
+              <use xlink:href="#icon-menu"></use>
+            </svg>
+          </button>
+        </div>
+        <span class="header__title">
+          Contacts
+        </span>
+      </div>
+      <div class="header__search">
+        <form class="search">
+          <button type="button" class="search__close-button">
+            <svg class="icon">
+              <use xlink:href="#icon-arrow_back"></use>
+            </svg>
+          </button>
+          <input class="search__text-input" placeholder="Search contacts" />
+          <button type="reset" class="search__clear-button">
+            <svg class="icon">
+              <use xlink:href="#icon-close"></use>
+            </svg>
+          </button>
+        </form>
+        <button class="header__open-search-button button">
           <svg class="icon">
-            <use xlink:href="#icon-menu"></use>
+            <use xlink:href="#icon-search"></use>
           </svg>
         </button>
       </div>
-      <span class="header__title">
-        Contacts
-      </span>
-    </div>
-    <div class="header__search">
-      <button class="header__search-button button">
-        <svg class="icon">
-          <use xlink:href="#icon-search"></use>
-        </svg>
-      </button>
-    </div>
+    </header>
+
+    <ul class="contact-list">
+      <li class="contact-list__group">
+
+        <div class="contact-list__group-index-wrapper">
+          <span class="contact-list__group-index">A</span>
+        </div>
+
+        <ul class="contact-list__group-list">
+          <li class="contact-list__contact-element">
+            <span class="contact-list__name">Anna</span>
+          </li>
+          <li class="contact-list__contact-element">
+            <span class="contact-list__name">Alfonso</span>
+          </li>
+        </ul>
+
+      </li>
+    </ul>
+
   </div>
-
-  <ul class="contact-list">
-    <li class="contact-list__group">
-
-      <div class="contact-list__group-index-wrapper">
-        <span class="contact-list__group-index">A</span>
-      </div>
-
-      <ul class="contact-list__group-list">
-        <li class="contact-list__contact-element">
-          <span class="contact-list__name">Anna</span>
-        </li>
-        <li class="contact-list__contact-element">
-          <span class="contact-list__name">Alfonso</span>
-        </li>
-      </ul>
-
-    </li>
-  </ul>
 
 </body>
 
