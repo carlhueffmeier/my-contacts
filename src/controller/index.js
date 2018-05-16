@@ -9,12 +9,14 @@ export default class Controller {
     this.contactShowAll();
 
     /* Wire things up */
-    view.bindContactAdd(this.contactAdd.bind(this));
-    view.bindContactOpen(this.contactOpen.bind(this));
     view.bindSearchOpen(this.searchOpen.bind(this));
     view.bindSearchClose(this.searchClose.bind(this));
     view.bindSearchClear(this.searchClear.bind(this));
     view.bindSearchQueryChange(this.queryChange.bind(this));
+    view.bindContactAdd(this.contactAdd.bind(this));
+    view.bindContactOpen(this.contactOpen.bind(this));
+    view.bindContactDetailsClose(this.contactDetailsClose.bind(this));
+    view.bindContactDetailsFavorite(this.contactDetailsFavorite.bind(this));
   }
 
   contactShowAll() {
@@ -22,10 +24,45 @@ export default class Controller {
     store.getAll().then(contacts => view.renderContacts(contacts));
   }
 
-  contactOpen(id) {
+  searchOpen() {
+    var { view } = this;
+    view.toggleSearchVisible(true);
+    view.toggleSearchFocus(true);
+  }
+
+  searchClose() {
+    var { view } = this;
+    view.toggleSearchVisible(false);
+  }
+
+  searchClear() {
     var { store, view } = this;
-    store.find({ id }).then(contact => {
-      console.log('open contact ', contact);
+    view.toggleSearchFocus(true);
+    store.setSearchQuery('');
+    this.contactShowAll();
+  }
+
+  queryChange(query) {
+    var { store, view } = this;
+    store.setSearchQuery(query);
+    if (query.length > 0) {
+      store.getSearchResults().then(results => view.renderContacts(results));
+    } else {
+      this.contactShowAll();
+    }
+  }
+
+  contactOpen(id) {
+    var { store } = this;
+    store.setSelectedContact(id);
+    this.showContactDetails();
+  }
+
+  showContactDetails() {
+    var { store, view } = this;
+    store.getSelectedContact().then(contact => {
+      view.renderContactDetails(contact);
+      view.toggleContactDetailsVisible(true);
     });
   }
 
@@ -33,28 +70,23 @@ export default class Controller {
     console.log('add contact');
   }
 
-  searchOpen() {
-    this.view.toggleSearchVisible(true);
+  contactDetailsClose() {
+    var { store, view } = this;
+    store.setSelectedContact(null);
+    view.toggleContactDetailsVisible(false);
   }
 
-  searchClose() {
-    this.view.toggleSearchVisible(false);
+  contactDetailsFavorite() {
+    var { store, view } = this;
+    store
+      .modifyContacts({ id: store.selected() }, contact => ({
+        ...contact,
+        favorite: !contact.favorite
+      }))
+      .then(this.showContactDetails.bind(this));
   }
+}
 
-  searchClear() {
-    this.view.toggleSearchFocus(true);
-    this.store.setSearchQuery('');
-    this.contactShowAll();
-  }
-
-  queryChange(query) {
-    this.store.setSearchQuery(query);
-    if (query.length > 0) {
-      this.store
-        .getSearchResults()
-        .then(results => this.view.renderContacts(results));
-    } else {
-      this.contactShowAll();
-    }
-  }
+function without(array, itemToOmit) {
+  return array.filter(item => item !== itemToOmit);
 }

@@ -25,8 +25,17 @@ var controller = new Controller(store, view);
 ].forEach(name => {
   store.addContact({
     name,
-    email: `${name.toLowerCase()}@gmail.com`,
-    website: `www.${name.toLowerCase()}.com`
+    email: [{ type: 'Private', value: `${name.toLowerCase()}@gmail.com` }],
+    phone: [
+      { type: 'Mobile', value: '555 - 23 45 678' },
+      { type: 'Home', value: '555 - 874 09 633' }
+    ],
+    notes: 'a really cool guy / girl / person',
+    twitter: `@${name.toLowerCase()}`,
+    github: `github.com/${name.toLowerCase()}`,
+    linkedin: `linkedin.com/${name.toLowerCase()}`,
+    website: `www.${name.toLowerCase()}.com`,
+    tags: ['friend']
   });
 });
 

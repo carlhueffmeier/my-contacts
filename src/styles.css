@@ -49,6 +49,13 @@ body {
   cursor: pointer;
 }
 
+button:focus,
+button:hover,
+button:active {
+  outline: transparent;
+  color: #222;
+}
+
 /***************************************
 ****************************************
 **  Add Contact Button
@@ -77,6 +84,29 @@ body {
   color: white;
 }
 
+.add-contact-button:focus,
+.add-contact-button:active,
+.add-contact-button:hover {
+  color: white;
+}
+
+.add-contact-button:hover {
+  background-color: #ec5280;
+  box-shadow: 0 6px 10px 3px rgba(0, 0, 0, 0.14),
+    1px 3px 18px 4px rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
+}
+
+.add-contact-button:focus {
+  box-shadow: 0 6px 10px 3px rgba(0, 0, 0, 0.14),
+    1px 3px 18px 4px rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
+}
+
+.add-contact-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12),
+    0 3px 5px -1px rgba(0, 0, 0, 0.2);
+}
+
 /***************************************
 ****************************************
 **  Header
@@ -99,6 +129,13 @@ body {
   align-items: center;
 }
 
+.header__title {
+  display: inline-block;
+  font-size: 1.5rem;
+  padding-left: 1rem;
+  font-weight: 300;
+}
+
 .header__menu {
   display: flex;
 }
@@ -109,15 +146,19 @@ body {
   color: white;
 }
 
-.header__title {
-  display: inline-block;
-  font-size: 1.5rem;
-  padding-left: 1rem;
-  font-weight: 300;
-}
-
 .header__open-search-button {
   font-size: 1.5rem;
+  color: white;
+}
+
+.header__menu-button:hover,
+.header__menu-button:active,
+.header__menu-button:focus,
+.header__open-search-button:hover,
+.header__open-search-button:active,
+.header__open-search-button:focus {
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
   color: white;
 }
 
@@ -206,4 +247,133 @@ body {
 .contact-list__contact-element:focus,
 .contact-list__contact-element:hover {
   background-color: #e3e3e3;
+}
+
+/***************************************
+****************************************
+**  Contact Details
+****************************************/
+
+.contact-details {
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-details__topbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px #e3e3e3 solid;
+  flex: 0 0 4rem;
+  background-color: #f7f7f7;
+  padding: 0 1rem;
+}
+
+.contact-details__close-button {
+  margin-right: auto;
+}
+
+.contact-details__close-button,
+.contact-details__favorite-button,
+.contact-details__edit-button,
+.contact-details__delete-button {
+  font-size: 1.5rem;
+  color: #6e6e6e;
+  padding: 0.5rem;
+  display: flex;
+}
+
+.contact-details__name {
+  font-size: 3rem;
+  margin: 1.8rem 0 0;
+  font-weight: 300;
+}
+
+.contact-details__info {
+  color: #3b3b3b;
+  padding: 0 1rem 2rem;
+  overflow: auto;
+}
+
+.contact-details__tag-container {
+  line-height: 1.5;
+  margin-bottom: 2rem;
+}
+
+.contact-details__tag {
+  background-color: #eceff1;
+  color: black;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 300;
+  margin: 0.3rem 0;
+}
+
+.contact-details__main {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  flex: 1;
+}
+
+.contact-details__detail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.8rem;
+}
+
+.contact-details__type-icon {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  font-size: 1.4rem;
+  width: 3rem;
+  color: #707070;
+}
+
+.contact-details__detail-content {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  padding-left: 1rem;
+  font-size: 0.8rem;
+  color: #3b3b3b;
+}
+
+.contact-details__detail-value {
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+.contact-details__detail-type {
+  font-size: 0.8rem;
+  font-weight: 300;
+  margin-left: 1rem;
+  color: #a0a0a0;
+}
+
+.contact-details__notes {
+  margin-top: 2.5rem;
+}
+
+.contact-details__notes-heading {
+  margin: 0 0 0.5rem;
+  font-weight: 300;
+}
+
+.contact-details__notes-content {
+  margin: 0;
+  font-weight: 300;
+}
+
+.contact-details__delete-button:hover svg {
+  fill: #e91e63;
 }

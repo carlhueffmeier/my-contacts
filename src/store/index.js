@@ -37,8 +37,34 @@ export default class Store {
     });
   }
 
+  modifyContacts(query, modifier) {
+    return new Promise(resolve => {
+      this.getAll().then(allContacts => {
+        var matches = allContacts.filter(match(query));
+        matches.forEach(contact => {
+          this.storage.byId[contact.id] = modifier(
+            this.storage.byId[contact.id]
+          );
+        });
+        resolve(matches.length);
+      });
+    });
+  }
+
   setSearchQuery(value) {
     this.searchQuery = value;
+  }
+
+  setSelectedContact(id) {
+    this.selectedContactId = id;
+  }
+
+  selected() {
+    return this.selectedContactId;
+  }
+
+  getSelectedContact() {
+    return this.find({ id: this.selectedContactId });
   }
 
   addContact(details) {
@@ -47,6 +73,9 @@ export default class Store {
       id,
       ...details
     };
+    this.storage.byId[id].tags = [...(details.tags || [])];
+
+    console.log(this.storage.byId[id]);
     this.storage.allIds.push(id);
   }
 
