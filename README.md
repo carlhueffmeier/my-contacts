@@ -8,4 +8,4 @@ Simple contact manager using HTML, CSS & vanilla JavaScript.
 2.  `cd my-contacts`
 3.  `npm install`
 4.  `npm start`
-5.  Open `http://localhost:8080/`(http://localhost:8080/)
+5.  Open [`http://localhost:8080/`](http://localhost:8080/)
