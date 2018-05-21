@@ -1,5 +1,9 @@
 export default class Controller {
   constructor(store, view) {
+    this.state = {
+      searchQuery: '',
+      selectedContact: undefined
+    };
     this.store = store;
     this.view = view;
   }
@@ -17,6 +21,9 @@ export default class Controller {
     view.bindContactOpen(this.contactOpen.bind(this));
     view.bindContactDetailsClose(this.contactDetailsClose.bind(this));
     view.bindContactDetailsFavorite(this.contactDetailsFavorite.bind(this));
+    view.bindContactDetailsEdit(this.contactEdit.bind(this));
+    view.bindContactEditSave(this.contactEditSave.bind(this));
+    view.bindContactEditCancel(this.contactEditCancel.bind(this));
   }
 
   contactShowAll() {
@@ -38,29 +45,28 @@ export default class Controller {
   searchClear() {
     var { store, view } = this;
     view.toggleSearchFocus(true);
-    store.setSearchQuery('');
+    this.state.searchQuery = '';
     this.contactShowAll();
   }
 
   queryChange(query) {
     var { store, view } = this;
-    store.setSearchQuery(query);
+    this.state.query = query;
     if (query.length > 0) {
-      store.getSearchResults().then(results => view.renderContacts(results));
+      store.findByName(query).then(results => view.renderContacts(results));
     } else {
       this.contactShowAll();
     }
   }
 
   contactOpen(id) {
-    var { store } = this;
-    store.setSelectedContact(id);
-    this.showContactDetails();
+    this.state.selectedContact = id;
+    this.contactDetailsShow();
   }
 
-  showContactDetails() {
+  contactDetailsShow() {
     var { store, view } = this;
-    store.getSelectedContact().then(contact => {
+    store.getById(this.state.selectedContact).then(contact => {
       view.renderContactDetails(contact);
       view.toggleContactDetailsVisible(true);
     });
@@ -72,21 +78,44 @@ export default class Controller {
 
   contactDetailsClose() {
     var { store, view } = this;
-    store.setSelectedContact(null);
+    this.state.selectedContact = undefined;
     view.toggleContactDetailsVisible(false);
   }
 
   contactDetailsFavorite() {
     var { store, view } = this;
     store
-      .modifyContacts({ id: store.selected() }, contact => ({
+      .modifyContacts({ id: this.state.selectedContact }, contact => ({
         ...contact,
         favorite: !contact.favorite
       }))
-      .then(this.showContactDetails.bind(this));
+      .then(this.contactDetailsShow.bind(this))
+      .then(this.contactShowAll.bind(this));
   }
-}
 
-function without(array, itemToOmit) {
-  return array.filter(item => item !== itemToOmit);
+  contactEdit() {
+    var { store, view } = this;
+    store.getById(this.state.selectedContact).then(contact => {
+      view.renderContactEdit(contact);
+      view.toggleContactEditVisible(true);
+    });
+  }
+
+  contactEditSave() {
+    var { store, view } = this;
+    var data = view.getFormData();
+    store
+      .modifyContacts(
+        { id: this.state.selectedContact },
+        ({ id, favorite }) => ({ id, favorite, ...data })
+      )
+      .then(this.contactDetailsShow.bind(this))
+      .then(this.contactShowAll.bind(this))
+      .then(() => view.toggleContactEditVisible(false));
+  }
+
+  contactEditCancel() {
+    var { view } = this;
+    view.toggleContactEditVisible(false);
+  }
 }

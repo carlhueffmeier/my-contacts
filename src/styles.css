@@ -1,7 +1,30 @@
+/***************************************
+Colors
+******
+
+Blue              #2a56c6
+Red               #e91e63
+Dark Grey 1       #222222
+Dark Grey 2       #3b3b3b
+Dark Grey 2       #6e6e6e
+Light Grey 1      #707070
+Light Grey 2      #a0a0a0
+Light Grey 3      #e3e3e3
+
+****************************************/
+
 html,
 body {
   margin: 0;
   height: 100%;
+}
+
+html,
+body,
+input,
+textarea,
+select,
+button {
   font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -53,7 +76,7 @@ button:focus,
 button:hover,
 button:active {
   outline: transparent;
-  color: #222;
+  color: #222222;
 }
 
 /***************************************
@@ -185,6 +208,10 @@ button:active {
   font-size: 1rem;
 }
 
+.search__text-input:focus {
+  outline: none;
+}
+
 .search__clear-button,
 .search__close-button {
   position: relative;
@@ -290,6 +317,10 @@ button:active {
   display: flex;
 }
 
+.contact-details__delete-button:hover svg {
+  fill: #e91e63;
+}
+
 .contact-details__name {
   font-size: 3rem;
   margin: 1.8rem 0 0;
@@ -308,7 +339,7 @@ button:active {
 }
 
 .contact-details__tag {
-  background-color: #eceff1;
+  background-color: #e3e3e3;
   color: black;
   padding: 0.2rem 0.4rem;
   border-radius: 0.2rem;
@@ -317,35 +348,50 @@ button:active {
   margin: 0.3rem 0;
 }
 
-.contact-details__main {
+.contact-details__list {
   list-style: none;
   padding: 0;
   margin: 1rem 0 0;
   flex: 1;
 }
 
-.contact-details__detail {
+.contact-details__row {
   display: flex;
-  align-items: center;
-  margin-bottom: 1.8rem;
 }
 
-.contact-details__type-icon {
+.contact-details__row-icon {
   display: flex;
   justify-content: center;
-  align-items: baseline;
+  align-items: center;
   font-size: 1.4rem;
   width: 3rem;
+  height: 3rem;
   color: #707070;
 }
 
-.contact-details__detail-content {
+.contact-details__row-content {
   display: flex;
-  justify-content: center;
-  align-items: baseline;
   padding-left: 1rem;
-  font-size: 0.8rem;
+  align-items: center;
+}
+
+.contact-details__row-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.contact-details__row-item,
+.contact-details__detail-value {
   color: #3b3b3b;
+}
+
+.contact-details__row-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  color: #3b3b3b;
+  height: 3rem;
 }
 
 .contact-details__detail-value {
@@ -353,7 +399,7 @@ button:active {
   font-weight: 300;
 }
 
-.contact-details__detail-type {
+.contact-details__detail-label {
   font-size: 0.8rem;
   font-weight: 300;
   margin-left: 1rem;
@@ -374,6 +420,121 @@ button:active {
   font-weight: 300;
 }
 
-.contact-details__delete-button:hover svg {
-  fill: #e91e63;
+/***************************************
+****************************************
+**  Contact Edit Dialog
+****************************************/
+
+.contact-edit {
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-edit__header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px #e3e3e3 solid;
+  flex: 0 0 4rem;
+  background-color: #f7f7f7;
+  padding: 0 1rem;
+}
+
+.contact-edit__heading {
+  font-weight: 300;
+}
+
+.contact-edit__form {
+  flex: 1;
+  display: flex;
+  color: #3b3b3b;
+  padding: 0;
+}
+
+.contact-edit__list {
+  list-style: none;
+  padding: 1rem;
+  margin: 0;
+  flex: 1;
+  overflow: auto;
+}
+
+.contact-edit__row {
+  display: flex;
+}
+
+.contact-edit__row-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  width: 3rem;
+  height: 3rem;
+  color: #707070;
+  flex: 0;
+}
+
+.contact-edit__row-content {
+  flex: 1;
+  display: flex;
+  padding: 0 2rem;
+  max-width: 30rem;
+  min-height: 3rem;
+  align-items: center;
+}
+
+.contact-edit__input-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+}
+
+.contact-edit__input-item {
+  display: flex;
+  align-items: center;
+  flex: 1 1 3rem;
+}
+
+.contact-edit__input {
+  flex: 1;
+  font-size: 0.8rem;
+  padding-bottom: 0.2rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+.contact-edit__input:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.contact-edit__input:focus {
+  outline: none;
+  border-bottom: 1px solid #2a56c6;
+}
+
+.contact-edit__controlbar {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 1rem;
+}
+
+.contact-edit__save-button,
+.contact-edit__cancel-button {
+  background: none;
+  padding: 1rem 1rem 1.5rem;
+  color: #2a56c6;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  text-transform: uppercase;
 }

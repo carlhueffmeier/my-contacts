@@ -1,3 +1,5 @@
+import { toggleClass, bindToParent, serializeInputs } from '../utils/helper';
+
 export default class View {
   constructor(template) {
     this.template = template;
@@ -23,6 +25,7 @@ export default class View {
     this.$contactDetailsDelete = document.querySelector(
       '.contact-details__delete_button'
     );
+    this.$contactEditDialog = document.querySelector('.contact-edit');
   }
 
   bindContactOpen(callback) {
@@ -90,13 +93,32 @@ export default class View {
     });
   }
 
+  bindContactEditSave(callback) {
+    bindToParent({
+      parent: this.$contactEditDialog,
+      selector: '.contact-edit__save-button',
+      callback
+    });
+  }
+
+  bindContactEditCancel(callback) {
+    bindToParent({
+      parent: this.$contactEditDialog,
+      selector: '.contact-edit__cancel-button',
+      callback
+    });
+  }
+
   renderContacts(contacts) {
     this.$contactList.innerHTML = this.template.contactList(contacts);
   }
 
   renderContactDetails(contact) {
-    console.log('rendering contact details', contact);
     this.$contactDetails.innerHTML = this.template.contactDetails(contact);
+  }
+
+  renderContactEdit(contact) {
+    this.$contactEditDialog.innerHTML = this.template.contactEdit(contact);
   }
 
   toggleSearchVisible(visible) {
@@ -107,6 +129,10 @@ export default class View {
     toggleClass(this.$contactDetails, 'visible', visible);
   }
 
+  toggleContactEditVisible(visible) {
+    toggleClass(this.$contactEditDialog, 'visible', visible);
+  }
+
   toggleSearchFocus(on) {
     if (on) {
       this.$searchInput.focus();
@@ -114,24 +140,12 @@ export default class View {
       this.$searchInput.blur();
     }
   }
-}
 
-function toggleClass(element, className, on) {
-  if (typeof on !== 'boolean') {
-    element.classList.toggle(className);
-  } else if (on) {
-    element.classList.add(className);
-  } else {
-    element.classList.remove(className);
+  getFormData() {
+    var allInputs = this.$contactEditDialog.querySelectorAll(
+      '.contact-edit__input'
+    );
+    var data = serializeInputs(allInputs);
+    return data;
   }
-}
-
-function bindToParent({ parent, callback, selector, type = 'click' }) {
-  parent.addEventListener(type, event => {
-    var searchResult = event.target.closest(selector);
-    console.log(event.target);
-    if (searchResult) {
-      callback(event);
-    }
-  });
 }

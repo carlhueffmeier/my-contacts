@@ -1,9 +1,9 @@
+import { match, omit, isRegexp } from '../utils/helper';
 import uuidv4 from 'uuid/v4';
 
 export default class Store {
   constructor() {
     this.storage = {
-      searchQuery: '',
       allIds: [],
       byId: {}
     };
@@ -12,19 +12,33 @@ export default class Store {
   getAll() {
     return new Promise(resolve => {
       var { allIds, byId } = this.storage;
-      resolve(allIds.map(id => byId[id]));
+      return resolve(allIds.map(id => byId[id]));
     });
   }
 
-  getSearchResults() {
-    var re = new RegExp(this.searchQuery, 'i');
-    return this.findAll({ name: re });
+  getById(id) {
+    return new Promise(resolve => {
+      return resolve(this.storage.byId[id]);
+    });
+  }
+
+  findByName(query) {
+    var re = new RegExp(query, 'i');
+    return new Promise(resolve => {
+      this.getAll().then(allContacts => {
+        return resolve(
+          allContacts.filter(({ name }) =>
+            re.test(name.firstName + name.lastName)
+          )
+        );
+      });
+    });
   }
 
   findAll(query) {
     return new Promise(resolve => {
       this.getAll().then(allContacts => {
-        resolve(allContacts.filter(match(query)));
+        return resolve(allContacts.filter(match(query)));
       });
     });
   }
@@ -32,7 +46,7 @@ export default class Store {
   find(query) {
     return new Promise(resolve => {
       this.getAll().then(allContacts => {
-        resolve(allContacts.find(match(query)));
+        return resolve(allContacts.find(match(query)));
       });
     });
   }
@@ -46,25 +60,9 @@ export default class Store {
             this.storage.byId[contact.id]
           );
         });
-        resolve(matches.length);
+        return resolve(matches.length);
       });
     });
-  }
-
-  setSearchQuery(value) {
-    this.searchQuery = value;
-  }
-
-  setSelectedContact(id) {
-    this.selectedContactId = id;
-  }
-
-  selected() {
-    return this.selectedContactId;
-  }
-
-  getSelectedContact() {
-    return this.find({ id: this.selectedContactId });
   }
 
   addContact(details) {
@@ -74,8 +72,6 @@ export default class Store {
       ...details
     };
     this.storage.byId[id].tags = [...(details.tags || [])];
-
-    console.log(this.storage.byId[id]);
     this.storage.allIds.push(id);
   }
 
@@ -84,30 +80,4 @@ export default class Store {
     this.storage.allIds = allIds.filter(currentId !== id);
     this.storage.byId = omit(byId, [id]);
   }
-}
-
-function omit(obj, idsToObmit) {
-  return Object.keys(obj)
-    .filter(key => !idsToObmit.includes(key))
-    .reduce(
-      (result, key) => ({
-        ...result,
-        [key]: obj[key]
-      }),
-      {}
-    );
-}
-
-function match(query) {
-  return obj =>
-    Object.keys(query).every(
-      key =>
-        isRegexp(query[key])
-          ? query[key].test(obj[key])
-          : query[key] === obj[key]
-    );
-}
-
-function isRegexp(object) {
-  return Object.prototype.toString.call(object) === '[object RegExp]';
 }
