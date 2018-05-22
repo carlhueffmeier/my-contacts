@@ -1,3 +1,5 @@
+import { parseInputName, createInputName } from '../utils/helper';
+
 export default class Controller {
   constructor(store, view) {
     this.state = {
@@ -24,6 +26,8 @@ export default class Controller {
     view.bindContactDetailsEdit(this.contactEdit.bind(this));
     view.bindContactEditSave(this.contactEditSave.bind(this));
     view.bindContactEditCancel(this.contactEditCancel.bind(this));
+    view.bindContactEditAddRow(this.contactEditAddRow.bind(this));
+    view.bindContactEditDeleteRow(this.contactEditDeleteRow.bind(this));
   }
 
   contactShowAll() {
@@ -117,5 +121,17 @@ export default class Controller {
   contactEditCancel() {
     var { view } = this;
     view.toggleContactEditVisible(false);
+  }
+
+  contactEditAddRow(event) {
+    var { view } = this;
+    var row = view.getClosestRow(event.target);
+    view.appendNewInputField(row);
+  }
+
+  contactEditDeleteRow(event) {
+    var { view } = this;
+    var field = view.getClosestField(event.target);
+    view.removeInputField(field);
   }
 }

@@ -68,13 +68,12 @@ button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  padding: 0.8rem;
   cursor: pointer;
 }
 
-button:focus,
-button:hover,
-button:active {
+.button:focus,
+.button:hover,
+.button:active {
   outline: transparent;
   color: #222222;
 }
@@ -167,11 +166,13 @@ button:active {
   display: flex;
   font-size: 1.5rem;
   color: white;
+  padding: 0.8rem;
 }
 
 .header__open-search-button {
   font-size: 1.5rem;
   color: white;
+  padding: 0.8rem;
 }
 
 .header__menu-button:hover,
@@ -459,7 +460,7 @@ button:active {
 
 .contact-edit__list {
   list-style: none;
-  padding: 1rem;
+  padding: 1rem 4rem 1rem 1rem;
   margin: 0;
   flex: 1;
   overflow: auto;
@@ -483,7 +484,7 @@ button:active {
 .contact-edit__row-content {
   flex: 1;
   display: flex;
-  padding: 0 2rem;
+  padding-left: 2rem;
   max-width: 30rem;
   min-height: 3rem;
   align-items: center;
@@ -498,9 +499,65 @@ button:active {
 }
 
 .contact-edit__input-item {
+  position: relative;
   display: flex;
   align-items: center;
-  flex: 1 1 3rem;
+  flex-flow: row wrap;
+}
+
+.contact-edit__delete-entry-button,
+.contact-edit__add-entry-button {
+  position: absolute;
+  bottom: 0.5rem;
+  opacity: 0.6;
+  font-size: 1.3rem;
+  padding: 0.3rem;
+  cursor: pointer;
+}
+
+.contact-edit__delete-entry-button {
+  right: -1.2rem;
+  color: #3b3b3b;
+}
+
+.contact-edit__add-entry-button {
+  display: none;
+  right: -3rem;
+  color: #2a56c6;
+}
+
+.contact-edit__input-item:last-of-type > .contact-edit__add-entry-button {
+  display: block;
+}
+
+.contact-edit__input-item:hover > .contact-edit__delete-entry-button,
+.contact-edit__input-item:hover > .contact-edit__add-entry-button {
+  opacity: 1;
+}
+
+.contact-edit__delete-entry-button,
+.contact-edit__add-entry-button {
+  background: transparent;
+  border: none;
+  transition: opacity 0.1s ease-out;
+}
+
+.contact-edit__delete-entry-button:hover,
+.contact-edit__delete-entry-button:focus,
+.contact-edit__delete-entry-button:active,
+.contact-edit__add-entry-button:hover,
+.contact-edit__add-entry-button:focus,
+.contact-edit__add-entry-button:active {
+  outline: none;
+}
+
+.contact-edit__delete-entry-button:focus,
+.contact-edit__add-entry-button:focus {
+  opacity: 1;
+}
+
+.contact-edit__delete-entry-button:hover + .contact-edit__add-entry-button {
+  opacity: 0.4;
 }
 
 .contact-edit__input {
@@ -510,6 +567,7 @@ button:active {
   background: transparent;
   border: none;
   border-bottom: 1px solid #e3e3e3;
+  margin: 1rem;
 }
 
 .contact-edit__input:not(:last-child) {
@@ -537,4 +595,14 @@ button:active {
   font-weight: 500;
   border: none;
   text-transform: uppercase;
+  cursor: pointer;
+}
+
+.contact-edit__save-button:hover,
+.contact-edit__save-button:focus,
+.contact-edit__save-button:active,
+.contact-edit__cancel-button:hover,
+.contact-edit__cancel-button:focus,
+.contact-edit__cancel-button:active {
+  outline: none;
 }

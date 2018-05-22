@@ -1,4 +1,4 @@
-import { renderIcon } from './helper';
+import { renderIcon, isDefined } from './helper';
 
 var allKeys = [
   'name',
@@ -62,4 +62,26 @@ export function getName({ name: { firstName, lastName } }) {
     return `${firstName} ${lastName}`;
   }
   return firstName;
+}
+
+export function normalizeData(source) {
+  return allKeys.reduce((result, key) => {
+    if (!isDefined(source[key]) || source[key] === '') {
+      return result;
+    }
+    if (Array.isArray(source[key])) {
+      return {
+        ...result,
+        [key]: removeEmptySlots(source[key])
+      };
+    }
+    return {
+      ...result,
+      [key]: source[key]
+    };
+  }, {});
+}
+
+function removeEmptySlots(array) {
+  return array.filter(() => true);
 }

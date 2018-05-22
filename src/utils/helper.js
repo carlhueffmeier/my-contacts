@@ -1,3 +1,5 @@
+import { normalizeData } from './contacts';
+
 export function trim(strings, ...values) {
   var result = '';
   strings.forEach((string, i) => {
@@ -58,7 +60,7 @@ export function bindToParent({ parent, callback, selector, type = 'click' }) {
 }
 
 export function serializeInputs(nodeList) {
-  return Array.from(nodeList).reduce((result, { name, value }) => {
+  var contact = Array.from(nodeList).reduce((result, { name, value }) => {
     if (value.length === 0) {
       return result;
     }
@@ -87,6 +89,8 @@ export function serializeInputs(nodeList) {
     }
     return result;
   }, {});
+
+  return normalizeData(contact);
 }
 
 export function isDefined(...refs) {

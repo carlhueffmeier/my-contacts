@@ -1,4 +1,10 @@
-import { toggleClass, bindToParent, serializeInputs } from '../utils/helper';
+import {
+  toggleClass,
+  bindToParent,
+  serializeInputs,
+  createInputName,
+  parseInputName
+} from '../utils/helper';
 
 export default class View {
   constructor(template) {
@@ -109,6 +115,22 @@ export default class View {
     });
   }
 
+  bindContactEditAddRow(callback) {
+    bindToParent({
+      parent: this.$contactEditDialog,
+      selector: '.contact-edit__add-entry-button',
+      callback
+    });
+  }
+
+  bindContactEditDeleteRow(callback) {
+    bindToParent({
+      parent: this.$contactEditDialog,
+      selector: '.contact-edit__delete-entry-button',
+      callback
+    });
+  }
+
   renderContacts(contacts) {
     this.$contactList.innerHTML = this.template.contactList(contacts);
   }
@@ -147,5 +169,46 @@ export default class View {
     );
     var data = serializeInputs(allInputs);
     return data;
+  }
+
+  getClosestRow(element) {
+    return event.target.closest('.contact-edit__row');
+  }
+
+  getClosestField(element) {
+    return event.target.closest('.contact-edit__input-item');
+  }
+
+  appendNewInputField(row) {
+    var lastInputField = row.querySelector(
+      '.contact-edit__input-item:last-of-type'
+    );
+    var newInputField = lastInputField.cloneNode(true);
+
+    // Sanitize the cloned input field
+    var inputElements = newInputField.querySelectorAll('.contact-edit__input');
+    inputElements.forEach(input => {
+      var { index, ...name } = parseInputName(input.name);
+      input.name = createInputName({ index: index + 1, ...name });
+      input.value = '';
+    });
+
+    var list = lastInputField.closest('.contact-edit__input-list');
+    list.insertBefore(newInputField, null);
+  }
+
+  removeInputField(field) {
+    var list = field.closest('.contact-edit__input-list');
+    var allFields = list.querySelectorAll('.contact-edit__input-item');
+
+    // What to do about the button on the last element?
+    if (allFields.length > 1) {
+      list.removeChild(field);
+    } else {
+      let inputElements = field.querySelectorAll('.contact-edit__input');
+      inputElements.forEach(input => {
+        input.value = '';
+      });
+    }
   }
 }

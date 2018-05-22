@@ -1,4 +1,4 @@
-import { trim, renderIcon, createInputName } from '../utils/helper';
+import { trim, renderIcon, createInputName, isDefined } from '../utils/helper';
 import {
   getAllKeys,
   getFieldIcon,
@@ -17,8 +17,8 @@ export default function renderContactEdit(contact) {
                 </ul>
               </form>
               <div class="contact-edit__controlbar">
-                <button type="reset" class="contact-edit__cancel-button">Cancel</button>
-                <button type="button" class="contact-edit__save-button">Save</button>
+                <button class="contact-edit__cancel-button">Cancel</button>
+                <button class="contact-edit__save-button">Save</button>
               </div>`;
 }
 
@@ -61,8 +61,9 @@ function renderFieldRow({ contact, key, render }) {
 }
 
 function renderInputList({ key, value }) {
+  var listItems = isDefined(value) && value.length > 0 ? value : [{}];
   return trim`<ul class="contact-edit__input-list">
-                ${value
+                ${listItems
                   .map(
                     (item, index) =>
                       `<li class="contact-edit__input-item">
@@ -70,17 +71,25 @@ function renderInputList({ key, value }) {
                           .map(
                             subkey =>
                               `<input
-                            class="contact-edit__input"
-                            name="${createInputName({
-                              key,
-                              subkey,
-                              index
-                            })}"
-                            placeholder="${getFieldDescription(key)[subkey]}"
-                            value="${item[subkey]}"
-                          >`
+                                  class="contact-edit__input"
+                                  name="${createInputName({
+                                    key,
+                                    subkey,
+                                    index
+                                  })}"
+                                  placeholder="${
+                                    getFieldDescription(key)[subkey]
+                                  }"
+                                  value="${item[subkey] || ''}"
+                                >`
                           )
                           .join('')}
+                          <button type="button" class="contact-edit__delete-entry-button">
+                            ${renderIcon('icon-cancel')}
+                          </button>
+                          <button type="button" class="contact-edit__add-entry-button">
+                            ${renderIcon('icon-add_circle')}
+                          </button>                 
                       </li>`
                   )
                   .join('')}
