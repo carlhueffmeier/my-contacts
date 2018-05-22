@@ -1,4 +1,4 @@
-import { match, omit, isRegexp } from '../utils/helper';
+import { createQueryMatcher, omit, isRegexp } from '../utils/helper';
 import uuidv4 from 'uuid/v4';
 
 export default class Store {
@@ -38,7 +38,7 @@ export default class Store {
   findAll(query) {
     return new Promise(resolve => {
       this.getAll().then(allContacts => {
-        return resolve(allContacts.filter(match(query)));
+        return resolve(allContacts.filter(createQueryMatcher(query)));
       });
     });
   }
@@ -46,7 +46,7 @@ export default class Store {
   find(query) {
     return new Promise(resolve => {
       this.getAll().then(allContacts => {
-        return resolve(allContacts.find(match(query)));
+        return resolve(allContacts.find(createQueryMatcher(query)));
       });
     });
   }
@@ -54,7 +54,7 @@ export default class Store {
   modifyContacts(query, modifier) {
     return new Promise(resolve => {
       this.getAll().then(allContacts => {
-        var matches = allContacts.filter(match(query));
+        var matches = allContacts.filter(createQueryMatcher(query));
         matches.forEach(contact => {
           this.storage.byId[contact.id] = modifier(
             this.storage.byId[contact.id]

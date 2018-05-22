@@ -1,17 +1,11 @@
 import { normalizeData } from './contacts';
 
-export function trim(strings, ...values) {
-  var result = '';
-  strings.forEach((string, i) => {
-    result += string.replace(/\s+/g, ' ') + (values[i] || '');
-  });
-  return result;
+export function isRegexp(object) {
+  return Object.prototype.toString.call(object) === '[object RegExp]';
 }
 
-export function renderIcon(type) {
-  return trim`<svg class="icon">
-            <use xlink:href="#${type}"></use>
-          </svg>`;
+export function isDefined(...refs) {
+  return refs.every(ref => typeof ref !== 'undefined');
 }
 
 export function omit(obj, idsToObmit) {
@@ -26,18 +20,18 @@ export function omit(obj, idsToObmit) {
     );
 }
 
-export function match(query) {
-  return obj =>
-    Object.keys(query).every(
-      key =>
-        isRegexp(query[key])
-          ? query[key].test(obj[key])
-          : query[key] === obj[key]
-    );
+export function trim(strings, ...values) {
+  var result = '';
+  strings.forEach((string, i) => {
+    result += string.replace(/\s+/g, ' ') + (values[i] || '');
+  });
+  return result;
 }
 
-export function isRegexp(object) {
-  return Object.prototype.toString.call(object) === '[object RegExp]';
+export function renderIcon(type) {
+  return trim`<svg class="icon">
+                <use xlink:href="#${type}"></use>
+              </svg>`;
 }
 
 export function toggleClass(element, className, on) {
@@ -57,6 +51,16 @@ export function bindToParent({ parent, callback, selector, type = 'click' }) {
       callback(event);
     }
   });
+}
+
+export function createQueryMatcher(query) {
+  return obj =>
+    Object.keys(query).every(
+      key =>
+        isRegexp(query[key])
+          ? query[key].test(obj[key])
+          : query[key] === obj[key]
+    );
 }
 
 export function serializeInputs(nodeList) {
@@ -91,10 +95,6 @@ export function serializeInputs(nodeList) {
   }, {});
 
   return normalizeData(contact);
-}
-
-export function isDefined(...refs) {
-  return refs.every(ref => typeof ref !== 'undefined');
 }
 
 export function parseInputName(name) {

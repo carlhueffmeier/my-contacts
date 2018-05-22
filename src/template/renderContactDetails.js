@@ -58,7 +58,7 @@ function renderTags(tags) {
 function renderField(contact, key) {
   return renderMethod.hasOwnProperty(key)
     ? renderMethod[key](contact)
-    : `<li>${JSON.stringify(contact[key])}</li>`;
+    : `<li><em>No method to render ${key}</em></li>`;
 }
 
 var renderMethod = {
