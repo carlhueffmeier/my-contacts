@@ -25,7 +25,7 @@ export default function renderContactEdit(contact) {
 function renderField(contact, key) {
   return renderMethod.hasOwnProperty(key)
     ? renderMethod[key](contact)
-    : `<li>${JSON.stringify(contact[key])}</li>`;
+    : `<li><em>No method to render ${key}</em></li>`;
 }
 
 var renderMethod = {
@@ -33,11 +33,11 @@ var renderMethod = {
   tags: createFieldRenderer('tags', renderCommaSeparated),
   email: createFieldRenderer('email', renderInputList),
   phone: createFieldRenderer('phone', renderInputList),
-  web: createFieldRenderer('web', renderInput),
-  github: createFieldRenderer('github', renderInput),
-  twitter: createFieldRenderer('twitter', renderInput),
-  linkedin: createFieldRenderer('linkedin', renderInput),
-  notes: createFieldRenderer('notes', renderInput)
+  web: createFieldRenderer('web', renderSimpleInput),
+  github: createFieldRenderer('github', renderSimpleInput),
+  twitter: createFieldRenderer('twitter', renderSimpleInput),
+  linkedin: createFieldRenderer('linkedin', renderSimpleInput),
+  notes: createFieldRenderer('notes', renderSimpleInput)
 };
 
 function createFieldRenderer(key, render) {
@@ -60,49 +60,20 @@ function renderFieldRow({ contact, key, render }) {
               </li>`;
 }
 
-function renderInputList({ key, value }) {
-  var listItems = isDefined(value) && value.length > 0 ? value : [{}];
-  return trim`<ul class="contact-edit__input-list">
-                ${listItems
-                  .map(
-                    (item, index) =>
-                      `<li class="contact-edit__input-item">
-                        ${['value', 'label']
-                          .map(
-                            subkey =>
-                              `<input
-                                  class="contact-edit__input"
-                                  name="${createInputName({
-                                    key,
-                                    subkey,
-                                    index
-                                  })}"
-                                  placeholder="${
-                                    getFieldDescription(key)[subkey]
-                                  }"
-                                  value="${item[subkey] || ''}"
-                                >`
-                          )
-                          .join('')}
-                          <button type="button" class="contact-edit__delete-entry-button">
-                            ${renderIcon('icon-cancel')}
-                          </button>
-                          <button type="button" class="contact-edit__add-entry-button">
-                            ${renderIcon('icon-add_circle')}
-                          </button>                 
-                      </li>`
-                  )
-                  .join('')}
-              </ul>`;
+function renderSimpleInput({ key, value }) {
+  return renderInput({
+    name: createInputName({ key }),
+    placeholder: getFieldDescription(key),
+    value: value
+  });
 }
 
-function renderInput({ key, value }) {
-  return trim`<input
-                class="contact-edit__input"
-                name="${createInputName({ key })}"
-                placeholder="${getFieldDescription(key)}"
-                value="${value}"
-              >`;
+function renderCommaSeparated({ key, value }) {
+  return renderInput({
+    name: createInputName({ key, commaSeparated: true }),
+    placeholder: getFieldDescription(key),
+    value: value.join()
+  });
 }
 
 function renderInputPerProperty({ key, value }) {
@@ -112,23 +83,53 @@ function renderInputPerProperty({ key, value }) {
                   .map(
                     subkey =>
                       `<li class="contact-edit__input-item">
-                        <input
-                          class="contact-edit__input"
-                          name="${createInputName({ key, subkey })}"
-                          placeholder="${fieldDescription[subkey]}"
-                          value="${value[subkey] || ''}"
-                        >
+                        ${renderInput({
+                          name: createInputName({ key, subkey }),
+                          placeholder: getFieldDescription(key)[subkey],
+                          value: value[subkey] || ''
+                        })}
                       </li>`
                   )
                   .join('')}
               </ul>`;
 }
 
-function renderCommaSeparated({ key, value }) {
+function renderInputList({ key, value }) {
+  var listItems = isDefined(value) && value.length > 0 ? value : [{}];
+  return trim`<ul class="contact-edit__input-list">
+                ${listItems
+                  .map((item, index) =>
+                    renderInputListItem({ item, index, key })
+                  )
+                  .join('')}
+              </ul>`;
+}
+
+function renderInputListItem({ item, index, key }) {
+  return trim`<li class="contact-edit__input-item">
+                ${['value', 'label']
+                  .map(subkey =>
+                    renderInput({
+                      name: createInputName({ key, index, subkey }),
+                      placeholder: getFieldDescription(key)[subkey],
+                      value: item[subkey] || ''
+                    })
+                  )
+                  .join('')}
+                <button type="button" class="contact-edit__delete-entry-button">
+                  ${renderIcon('icon-cancel')}
+                </button>
+                <button type="button" class="contact-edit__add-entry-button">
+                  ${renderIcon('icon-add_circle')}
+                </button>                 
+              </li>`;
+}
+
+function renderInput({ name, placeholder, value }) {
   return trim`<input
                 class="contact-edit__input"
-                name="${createInputName({ key, commaSeparated: true })}"
-                placeholder="${getFieldDescription(key)}"
-                value="${value.join()}"
+                name="${name}"
+                placeholder="${placeholder}"
+                value="${value}"
               >`;
 }
