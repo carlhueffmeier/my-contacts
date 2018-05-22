@@ -17,6 +17,7 @@ module.exports = {
   devServer: {
     open: true
   },
+  devtool: 'eval-source-map',
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name].css',
