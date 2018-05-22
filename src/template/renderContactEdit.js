@@ -72,7 +72,7 @@ function renderCommaSeparated({ key, value }) {
   return renderInput({
     name: createInputName({ key, commaSeparated: true }),
     placeholder: getFieldDescription(key),
-    value: value.join()
+    value: value.join(', ')
   });
 }
 

@@ -12,6 +12,8 @@ var allKeys = [
   'notes'
 ];
 
+var fieldsProhibitingDuplication = ['tags'];
+
 var icons = {
   name: 'icon-account_circle',
   tags: 'icon-label_outline',
@@ -69,16 +71,14 @@ export function normalizeData(source) {
     if (!isDefined(source[key]) || source[key] === '') {
       return result;
     }
-    if (Array.isArray(source[key])) {
-      return {
-        ...result,
-        [key]: removeEmptySlots(source[key])
-      };
+    result[key] = source[key];
+    if (Array.isArray(result[key])) {
+      result[key] = removeEmptySlots(result[key]);
     }
-    return {
-      ...result,
-      [key]: source[key]
-    };
+    if (fieldsProhibitingDuplication.includes(key)) {
+      result[key] = [...new Set(result[key])];
+    }
+    return result;
   }, {});
 }
 
