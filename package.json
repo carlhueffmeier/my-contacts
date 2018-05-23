@@ -36,6 +36,7 @@
     "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
+    "dompurify": "^1.0.4",
     "node-uuid": "^1.4.8"
   }
 }

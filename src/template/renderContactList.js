@@ -71,7 +71,8 @@ function groupByInitial(contacts) {
     }
     //// 🙈 ignore me
 
-    let index = getName(contact)[0].toUpperCase();
+    let name = getName(contact);
+    let index = getInitial(name);
     if (index === (prev || {}).index) {
       prev.contacts.push(contact);
     } else {
@@ -82,6 +83,13 @@ function groupByInitial(contacts) {
     }
   }
   return groups;
+}
+
+function getInitial(name) {
+  if (/^\w/.test(name) === false) {
+    return '#';
+  }
+  return name[0].toUpperCase();
 }
 
 function groupFavorites(favorites) {
