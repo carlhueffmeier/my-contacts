@@ -57,22 +57,7 @@ function groupByInitial(contacts) {
 
   for (let contact of sortByName(contacts)) {
     let prev = groups[groups.length - 1];
-
-    //// 👇 Trying to learn about an elusive bug
-    try {
-      getName(contact)[0].toUpperCase();
-    } catch (e) {
-      console.warn(
-        `Couldn't get the name of this dude: `,
-        contact,
-        `getName(contact) = ${getName(contact)}, error: `,
-        e
-      );
-    }
-    //// 🙈 ignore me
-
-    let name = getName(contact);
-    let index = getInitial(name);
+    let index = getInitial(getName(contact));
     if (index === (prev || {}).index) {
       prev.contacts.push(contact);
     } else {

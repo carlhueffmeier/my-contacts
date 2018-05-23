@@ -50,7 +50,7 @@ var description = {
 
 var inputProps = {
   name: {
-    firstName: { required: true }
+    firstName: { required: true, pattern: '[a-zA-Z0-9_-]+' }
   },
   email: {
     value: { type: 'email' }
@@ -85,6 +85,7 @@ export function getAdditionalProps(key) {
   return inputProps.hasOwnProperty(key) ? inputProps[key] : {};
 }
 
+// Corrects easily fixable problems given serialized form data
 export function normalizeData(source) {
   return allKeys.reduce((result, key) => {
     if (!isDefined(source[key]) || source[key] === '') {
@@ -101,6 +102,7 @@ export function normalizeData(source) {
   }, {});
 }
 
+// Returns `true` if serialized form data is valid
 export function validateFormData(data) {
   return (
     isDefined((data.name || {}).firstName) && data.name.firstName.length > 0

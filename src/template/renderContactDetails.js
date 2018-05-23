@@ -7,7 +7,7 @@ export default function contactDetails({ contact }) {
               ${renderContactDetailsInfo(contact)}`;
 }
 
-function renderContactDetailsTopbar({ favorite }) {
+function renderContactDetailsTopbar({ favorite } = {}) {
   return trim`<div class="contact-details__topbar">
                 <button class="contact-details__close-button button">
                   ${renderIcon('icon-close')}   

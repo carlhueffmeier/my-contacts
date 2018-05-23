@@ -5,8 +5,8 @@ import {
   getAdditionalProps
 } from '../helper/contacts';
 import { trim, isBoolean, isDefined } from '../helper/utils';
-import { renderIcon, convertPropsToHtml } from '../helper/dom';
-import { createInputName } from '../helper/inputNames';
+import { renderIcon, objectToHtmlAttributes } from '../helper/dom';
+import { encodeInputName } from '../helper/inputNames';
 
 export default function renderContactEdit({
   contact = {},
@@ -68,7 +68,7 @@ function renderFieldRow({ contact, key, render }) {
 
 function renderSimpleInput({ key, value = '' }) {
   return renderInput({
-    name: createInputName({ key }),
+    name: encodeInputName({ key }),
     placeholder: getFieldDescription(key),
     props: getAdditionalProps(key),
     value: value
@@ -78,7 +78,7 @@ function renderSimpleInput({ key, value = '' }) {
 function renderTextarea({ key, value = '' }) {
   return trim`<textarea
                 class="contact-edit__input textarea--auto-resize"
-                name="${createInputName({ key })}"
+                name="${encodeInputName({ key })}"
                 placeholder="${getFieldDescription(key)}"
                 rows="1"
               >${value}</textarea>`;
@@ -86,7 +86,7 @@ function renderTextarea({ key, value = '' }) {
 
 function renderCommaSeparated({ key, value = [] }) {
   return renderInput({
-    name: createInputName({ key, commaSeparated: true }),
+    name: encodeInputName({ key, commaSeparated: true }),
     placeholder: getFieldDescription(key),
     props: getAdditionalProps(key),
     value: value.join(', ')
@@ -101,7 +101,7 @@ function renderInputPerProperty({ key, value = {} }) {
                     subkey =>
                       `<li class="contact-edit__input-item">
                         ${renderInput({
-                          name: createInputName({ key, subkey }),
+                          name: encodeInputName({ key, subkey }),
                           placeholder: getFieldDescription(key)[subkey],
                           props: getAdditionalProps(key)[subkey],
                           value: value[subkey] || ''
@@ -127,7 +127,7 @@ function renderInputListItem({ item = {}, index, key }) {
                 ${['value', 'label']
                   .map(subkey =>
                     renderInput({
-                      name: createInputName({ key, index, subkey }),
+                      name: encodeInputName({ key, index, subkey }),
                       placeholder: getFieldDescription(key)[subkey],
                       props: getAdditionalProps(key)[subkey],
                       value: item[subkey] || ''
@@ -149,6 +149,6 @@ function renderInput({ name, placeholder, value, props = {} }) {
                 name="${name}"
                 placeholder="${placeholder}"
                 ${value ? `value="${value}"` : ''}
-                ${convertPropsToHtml(props)}
+                ${objectToHtmlAttributes(props)}
               >`;
 }

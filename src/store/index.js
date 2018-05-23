@@ -74,7 +74,7 @@ export default class Store {
       };
       this.storage.byId[id].tags = [...(details.tags || [])];
       this.storage.allIds.push(id);
-      resolve(id);
+      resolve(this.storage.byId[id]);
     });
   }
 

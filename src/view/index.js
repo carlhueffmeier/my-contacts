@@ -1,7 +1,7 @@
 import {
   serializeInputs,
-  createInputName,
-  parseInputName
+  encodeInputName,
+  decodeInputName
 } from '../helper/inputNames';
 import { toggleClass, bindToParent } from '../helper/dom';
 import textareaAutoResize from '../helper/textareaAutoResize';
@@ -21,18 +21,6 @@ export default class View {
     this.$searchInput = document.querySelector('.search__text-input');
     this.$modalBox = document.querySelector('.app__modal');
     this.$contactDetails = document.querySelector('.contact-details');
-    this.$contactDetailsClose = document.querySelector(
-      '.contact-details__close_button'
-    );
-    this.$contactDetailsFavorite = document.querySelector(
-      '.contact-details__favorite_button'
-    );
-    this.$contactDetailsEdit = document.querySelector(
-      '.contact-details__edit_button'
-    );
-    this.$contactDetailsDelete = document.querySelector(
-      '.contact-details__delete_button'
-    );
     this.$contactEditDialog = document.querySelector('.contact-edit');
   }
 
@@ -60,7 +48,7 @@ export default class View {
 
   /////////////////////////////
   // Primary Actions
-  bindContactOpen(callback) {
+  bindContactShowDetails(callback) {
     this.$contactList.addEventListener('click', event => {
       var closestContact = event.target.closest(
         '.contact-list__contact-element'
@@ -231,28 +219,29 @@ export default class View {
   }
 
   appendNewInputField(row) {
+    // We are going to clone a whole field, which may contain multiple inputs
     var lastInputField = row.querySelector(
       '.contact-edit__input-item:last-of-type'
     );
     var newInputField = lastInputField.cloneNode(true);
 
-    // Sanitize the cloned input field
+    // After cloning, modify name and reset value of all containing inputs
     var inputElements = newInputField.querySelectorAll('.contact-edit__input');
     inputElements.forEach(input => {
-      var { index, ...name } = parseInputName(input.name);
-      input.name = createInputName({ index: index + 1, ...name });
+      var { index, ...rest } = decodeInputName(input.name);
+      input.name = encodeInputName({ index: index + 1, ...rest });
       input.value = '';
     });
 
+    // Append the new element to the end of the list
     var list = lastInputField.closest('.contact-edit__input-list');
-    list.insertBefore(newInputField, null);
+    list.appendChild(newInputField);
   }
 
   removeInputField(field) {
     var list = field.closest('.contact-edit__input-list');
     var allFields = list.querySelectorAll('.contact-edit__input-item');
 
-    // What to do about the button on the last element?
     if (allFields.length > 1) {
       list.removeChild(field);
     } else {

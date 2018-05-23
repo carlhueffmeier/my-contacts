@@ -1,5 +1,6 @@
-import { parseInputName, createInputName } from '../helper/inputNames';
+import { encodeInputName, decodeInputName } from '../helper/inputNames';
 import { validateFormData } from '../helper/contacts';
+import { isDefined } from '../helper/utils';
 
 export default class Controller {
   constructor(store, view) {
@@ -14,178 +15,221 @@ export default class Controller {
   }
 
   init() {
-    var { store, view } = this;
-    this.contactShowAll();
+    var { view } = this;
+    this.showAllContacts();
 
     // Search
-    view.bindSearchOpen(this.searchOpen.bind(this));
-    view.bindSearchClose(this.searchClose.bind(this));
-    view.bindSearchClear(this.searchClear.bind(this));
-    view.bindSearchQueryChange(this.queryChange.bind(this));
+    view.bindSearchOpen(this.handleSearchOpen.bind(this));
+    view.bindSearchClose(this.handleSearchClose.bind(this));
+    view.bindSearchClear(this.handleSearchClear.bind(this));
+    view.bindSearchQueryChange(this.handleQueryChange.bind(this));
 
     // Primary Actions
-    view.bindContactAdd(this.contactAdd.bind(this));
-    view.bindContactOpen(this.contactOpen.bind(this));
+    view.bindContactAdd(this.handleContactAdd.bind(this));
+    view.bindContactShowDetails(this.handleContactShowDetails.bind(this));
 
     // Modal
-    view.bindModalClick(this.modalClick.bind(this));
+    view.bindModalClick(this.handleModalClick.bind(this));
 
     // Contact Details Window
-    view.bindContactDetailsClose(this.contactDetailsClose.bind(this));
-    view.bindContactDetailsFavorite(this.contactDetailsFavorite.bind(this));
-    view.bindContactDetailsEdit(this.contactEdit.bind(this));
-    view.bindContactDetailsDelete(this.contactDetailsDelete.bind(this));
+    view.bindContactDetailsClose(this.handleContactDetailsClose.bind(this));
+    view.bindContactDetailsFavorite(
+      this.handleContactDetailsFavorite.bind(this)
+    );
+    view.bindContactDetailsEdit(this.handleContactDetailsEdit.bind(this));
+    view.bindContactDetailsDelete(this.handleContactDetailsDelete.bind(this));
 
     // Contact Edit Window
-    view.bindContactEditSave(this.contactEditSave.bind(this));
-    view.bindContactEditCancel(this.contactEditCancel.bind(this));
-    view.bindContactEditAddRow(this.contactEditAddRow.bind(this));
-    view.bindContactEditDeleteRow(this.contactEditDeleteRow.bind(this));
+    view.bindContactEditSave(this.handleContactEditSave.bind(this));
+    view.bindContactEditCancel(this.handleContactEditCancel.bind(this));
+    view.bindContactEditAddRow(this.handleContactEditAddRow.bind(this));
+    view.bindContactEditDeleteRow(this.handleContactEditDeleteRow.bind(this));
   }
 
-  contactShowAll() {
+  /////////////////////////////
+  // Contact List
+  /////////////////////////////
+  showAllContacts() {
     var { store, view } = this;
     store.getAll().then(contacts => view.renderContacts({ contacts }));
   }
 
-  modalClick() {
-    var { view } = this;
-    this.contactDetailsClose();
-    this.contactEditCancel();
-    view.toggleModalVisible(false);
+  showContactsBy(query) {
+    var { store, view } = this;
+    store
+      .findByName(query)
+      .then(results => view.renderContacts({ contacts: results }));
   }
 
-  searchOpen() {
+  /////////////////////////////
+  // Primary Actions
+  /////////////////////////////
+  handleContactShowDetails(id) {
+    this.state.selectedContact = id;
+    this.showContactDetails();
+  }
+
+  handleContactAdd() {
+    this.showContactEditDialog({ title: 'Add Contact' });
+  }
+
+  /////////////////////////////
+  // Search
+  /////////////////////////////
+  handleSearchOpen() {
     var { view } = this;
     view.toggleSearchVisible(true);
     view.toggleSearchFocus(true);
   }
 
-  searchClose() {
-    var { view } = this;
-    view.toggleSearchVisible(false);
+  handleSearchClose() {
+    this.view.toggleSearchVisible(false);
   }
 
-  searchClear() {
-    var { store, view } = this;
-    view.toggleSearchFocus(true);
+  handleSearchClear() {
+    this.view.toggleSearchFocus(true);
     this.state.searchQuery = '';
-    this.contactShowAll();
+    this.showAllContacts();
   }
 
-  queryChange(query) {
-    var { store, view } = this;
+  handleQueryChange(query) {
     this.state.query = query;
     if (query.length > 0) {
-      store
-        .findByName(query)
-        .then(results => view.renderContacts({ contacts: results }));
+      this.showContactsBy(query);
     } else {
-      this.contactShowAll();
+      this.showAllContacts();
     }
   }
 
-  contactOpen(id) {
-    this.state.selectedContact = id;
-    this.contactDetailsShow();
+  /////////////////////////////
+  // Modal Windows
+  /////////////////////////////
+  handleModalClick() {
+    var { view } = this;
+    this.closeContactDetails();
+    this.closeContactEditDialog();
+    view.toggleModalVisible(false);
   }
 
-  contactAdd() {
-    var { store, view } = this;
-    store.addContact().then(id => {
-      this.state.selectedContact = id;
-      this.contactEdit({ title: 'Add Contact' });
+  /////////////////////////////
+  // Contact Details Window
+  handleContactDetailsClose() {
+    this.closeContactDetails();
+  }
+
+  handleContactDetailsFavorite() {
+    var { state, store } = this;
+    store
+      .modifyContacts({ id: state.selectedContact }, contact => ({
+        ...contact,
+        favorite: !contact.favorite
+      }))
+      .then(this.updateAllViews.bind(this));
+  }
+
+  handleContactDetailsEdit() {
+    var { state, store } = this;
+    store
+      .getById(state.selectedContact)
+      .then(contact => this.showContactEditDialog({ contact }));
+  }
+
+  handleContactDetailsDelete() {
+    var { state, store } = this;
+    store.removeContact(state.selectedContact).then(() => {
+      this.closeContactDetails();
+      this.showAllContacts();
     });
   }
 
-  contactDetailsShow() {
-    var { store, view } = this;
-    store.getById(this.state.selectedContact).then(contact => {
+  showContactDetails() {
+    var { state, store, view } = this;
+    store.getById(state.selectedContact).then(contact => {
       view.renderContactDetails({ contact });
       view.toggleContactDetailsVisible(true);
       view.toggleModalVisible(true);
-      this.state.contactDetailsOpen = true;
+      state.contactDetailsOpen = true;
     });
   }
 
-  contactDetailsDelete() {
-    var { selectedContact } = this.state;
-    this.store.removeContact(selectedContact).then(() => {
-      this.contactDetailsClose();
-      this.contactShowAll();
-    });
-  }
-
-  contactDetailsClose() {
-    var { store, view } = this;
-    this.state.selectedContact = undefined;
-    this.state.contactDetailsOpen = false;
+  closeContactDetails() {
+    var { state, view } = this;
+    state.selectedContact = undefined;
+    state.contactDetailsOpen = false;
     view.toggleContactDetailsVisible(false);
     view.toggleModalVisible(false);
   }
 
-  contactDetailsFavorite() {
-    var { store, view } = this;
-    store
-      .modifyContacts({ id: this.state.selectedContact }, contact => ({
-        ...contact,
-        favorite: !contact.favorite
-      }))
-      .then(this.contactDetailsShow.bind(this))
-      .then(this.contactShowAll.bind(this));
+  updateAllViews() {
+    this.showAllContacts();
+    this.showContactDetails();
   }
 
-  contactEdit(props) {
-    var { store, view } = this;
-    this.state.contactEditOpen = true;
-    store.getById(this.state.selectedContact).then(contact => {
-      view.renderContactEdit({ contact, ...props });
-      view.toggleContactEditVisible(true);
-      view.toggleModalVisible(true);
-    });
-  }
-
-  contactEditSave() {
-    var { store, view } = this;
+  /////////////////////////////
+  // Contact Edit Window
+  handleContactEditSave() {
+    var { state, view } = this;
     var data = view.getFormData();
 
     if (!validateFormData(data)) {
       view.toggleContactEditValidation(true);
-      return;
-    }
-
-    store
-      .modifyContacts(
-        { id: this.state.selectedContact },
-        ({ id, favorite }) => ({ id, favorite, ...data })
-      )
-      .then(this.contactDetailsShow.bind(this))
-      .then(this.contactShowAll.bind(this))
-      .then(this.contactEditClose.bind(this));
-  }
-
-  contactEditCancel() {
-    this.contactEditClose();
-  }
-
-  contactEditClose() {
-    var { view, state } = this;
-    view.toggleContactEditVisible(false);
-    state.contactEditOpen = false;
-    if (!state.contactDetailsOpen) {
-      view.toggleModalVisible(false);
+    } else if (isDefined(state.selectedContact)) {
+      this.modifySelectedContact(data);
+    } else {
+      this.createNewContact(data);
     }
   }
 
-  contactEditAddRow(event) {
+  handleContactEditCancel() {
+    this.closeContactEditDialog();
+  }
+
+  handleContactEditAddRow(event) {
     var { view } = this;
     var row = view.getClosestRow(event.target);
     view.appendNewInputField(row);
   }
 
-  contactEditDeleteRow(event) {
+  handleContactEditDeleteRow(event) {
     var { view } = this;
     var field = view.getClosestField(event.target);
     view.removeInputField(field);
+  }
+
+  modifySelectedContact(data) {
+    this.store
+      .modifyContacts(
+        { id: this.state.selectedContact },
+        ({ id, favorite }) => ({ id, favorite, ...data })
+      )
+      .then(this.updateAllViews.bind(this))
+      .then(this.closeContactEditDialog.bind(this));
+  }
+
+  createNewContact(data) {
+    this.store
+      .addContact(data)
+      .then(({ id }) => {
+        this.state.selectedContact = id;
+      })
+      .then(this.updateAllViews.bind(this))
+      .then(this.closeContactEditDialog.bind(this));
+  }
+
+  showContactEditDialog(props) {
+    var { state, view } = this;
+    state.contactEditOpen = true;
+    view.renderContactEdit(props);
+    view.toggleContactEditVisible(true);
+    view.toggleModalVisible(true);
+  }
+
+  closeContactEditDialog() {
+    var { state, view } = this;
+    state.contactEditOpen = false;
+    view.toggleContactEditVisible(false);
+    if (!state.contactDetailsOpen) {
+      view.toggleModalVisible(false);
+    }
   }
 }

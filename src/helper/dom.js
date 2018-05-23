@@ -5,6 +5,7 @@ export function bindToParent({ parent, callback, selector, type = 'click' }) {
     var searchResult = event.target.closest(selector);
     if (searchResult) {
       callback(event);
+      console.log(`[${type}] ${selector}`);
     }
   });
 }
@@ -25,7 +26,7 @@ export function toggleClass(element, className, on) {
   }
 }
 
-export function convertPropsToHtml(props) {
+export function objectToHtmlAttributes(props) {
   return Object.entries(props)
     .map(([key, value]) => {
       if (isBoolean(value)) {
