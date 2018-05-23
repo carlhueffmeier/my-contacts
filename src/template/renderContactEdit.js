@@ -1,13 +1,19 @@
-import { trim, renderIcon, createInputName, isDefined } from '../utils/helper';
 import {
   getAllKeys,
   getFieldIcon,
-  getFieldDescription
-} from '../utils/contacts';
+  getFieldDescription,
+  getAdditionalProps
+} from '../helper/contacts';
+import { trim, isBoolean, isDefined } from '../helper/utils';
+import { renderIcon, convertPropsToHtml } from '../helper/dom';
+import { createInputName } from '../helper/inputNames';
 
-export default function renderContactEdit(contact) {
+export default function renderContactEdit({
+  contact = {},
+  title = 'Edit Contact'
+}) {
   return trim`<div class="contact-edit__header">
-                <h1 class="contact-edit__heading">Edit Contact</h1>
+                <h1 class="contact-edit__heading">${title}</h1>
               </div>
               <form class="contact-edit__form">
                 <ul class="contact-edit__list">
@@ -37,7 +43,7 @@ var renderMethod = {
   github: createFieldRenderer('github', renderSimpleInput),
   twitter: createFieldRenderer('twitter', renderSimpleInput),
   linkedin: createFieldRenderer('linkedin', renderSimpleInput),
-  notes: createFieldRenderer('notes', renderSimpleInput)
+  notes: createFieldRenderer('notes', renderTextarea)
 };
 
 function createFieldRenderer(key, render) {
@@ -60,23 +66,34 @@ function renderFieldRow({ contact, key, render }) {
               </li>`;
 }
 
-function renderSimpleInput({ key, value }) {
+function renderSimpleInput({ key, value = '' }) {
   return renderInput({
     name: createInputName({ key }),
     placeholder: getFieldDescription(key),
+    props: getAdditionalProps(key),
     value: value
   });
 }
 
-function renderCommaSeparated({ key, value }) {
+function renderTextarea({ key, value = '' }) {
+  return trim`<textarea
+                class="contact-edit__input textarea--auto-resize"
+                name="${createInputName({ key })}"
+                placeholder="${getFieldDescription(key)}"
+                rows="1"
+              >${value}</textarea>`;
+}
+
+function renderCommaSeparated({ key, value = [] }) {
   return renderInput({
     name: createInputName({ key, commaSeparated: true }),
     placeholder: getFieldDescription(key),
+    props: getAdditionalProps(key),
     value: value.join(', ')
   });
 }
 
-function renderInputPerProperty({ key, value }) {
+function renderInputPerProperty({ key, value = {} }) {
   var fieldDescription = getFieldDescription(key);
   return trim`<ul class="contact-edit__input-list">
                 ${Object.keys(fieldDescription)
@@ -86,6 +103,7 @@ function renderInputPerProperty({ key, value }) {
                         ${renderInput({
                           name: createInputName({ key, subkey }),
                           placeholder: getFieldDescription(key)[subkey],
+                          props: getAdditionalProps(key)[subkey],
                           value: value[subkey] || ''
                         })}
                       </li>`
@@ -94,10 +112,9 @@ function renderInputPerProperty({ key, value }) {
               </ul>`;
 }
 
-function renderInputList({ key, value }) {
-  var listItems = isDefined(value) && value.length > 0 ? value : [{}];
+function renderInputList({ key, value = [{}] }) {
   return trim`<ul class="contact-edit__input-list">
-                ${listItems
+                ${value
                   .map((item, index) =>
                     renderInputListItem({ item, index, key })
                   )
@@ -105,13 +122,14 @@ function renderInputList({ key, value }) {
               </ul>`;
 }
 
-function renderInputListItem({ item, index, key }) {
+function renderInputListItem({ item = {}, index, key }) {
   return trim`<li class="contact-edit__input-item">
                 ${['value', 'label']
                   .map(subkey =>
                     renderInput({
                       name: createInputName({ key, index, subkey }),
                       placeholder: getFieldDescription(key)[subkey],
+                      props: getAdditionalProps(key)[subkey],
                       value: item[subkey] || ''
                     })
                   )
@@ -125,11 +143,12 @@ function renderInputListItem({ item, index, key }) {
               </li>`;
 }
 
-function renderInput({ name, placeholder, value }) {
+function renderInput({ name, placeholder, value, props = {} }) {
   return trim`<input
                 class="contact-edit__input"
                 name="${name}"
                 placeholder="${placeholder}"
-                value="${value}"
+                ${value ? `value="${value}"` : ''}
+                ${convertPropsToHtml(props)}
               >`;
 }

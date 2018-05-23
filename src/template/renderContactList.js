@@ -1,7 +1,8 @@
-import { trim, renderIcon } from '../utils/helper';
-import { getName } from '../utils/contacts';
+import { trim } from '../helper/utils';
+import { renderIcon } from '../helper/dom';
+import { getName } from '../helper/contacts';
 
-export default function renderContactList(contacts) {
+export default function renderContactList({ contacts }) {
   var [favorites, rest] = splitBy(contacts, ({ favorite }) => favorite);
   var groups = [...groupFavorites(favorites), ...groupByInitial(rest)];
 
@@ -56,6 +57,20 @@ function groupByInitial(contacts) {
 
   for (let contact of sortByName(contacts)) {
     let prev = groups[groups.length - 1];
+
+    //// 👇 Trying to learn about an elusive bug
+    try {
+      getName(contact)[0].toUpperCase();
+    } catch (e) {
+      console.warn(
+        `Couldn't get the name of this dude: `,
+        contact,
+        `getName(contact) = ${getName(contact)}, error: `,
+        e
+      );
+    }
+    //// 🙈 ignore me
+
     let index = getName(contact)[0].toUpperCase();
     if (index === (prev || {}).index) {
       prev.contacts.push(contact);

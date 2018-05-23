@@ -1,14 +1,15 @@
 import {
-  toggleClass,
-  bindToParent,
   serializeInputs,
   createInputName,
   parseInputName
-} from '../utils/helper';
+} from '../helper/inputNames';
+import { toggleClass, bindToParent } from '../helper/dom';
+import textareaAutoResize from '../helper/textareaAutoResize';
 
 export default class View {
   constructor(template) {
     this.template = template;
+
     this.$contactList = document.querySelector('.contact-list');
     this.$contactAdd = document.querySelector('.add-contact-button');
     this.$searchBox = document.querySelector('.search');
@@ -18,6 +19,7 @@ export default class View {
     this.$searchClose = document.querySelector('.search__close-button');
     this.$searchClear = document.querySelector('.search__clear-button');
     this.$searchInput = document.querySelector('.search__text-input');
+    this.$modalBox = document.querySelector('.app__modal');
     this.$contactDetails = document.querySelector('.contact-details');
     this.$contactDetailsClose = document.querySelector(
       '.contact-details__close_button'
@@ -34,6 +36,30 @@ export default class View {
     this.$contactEditDialog = document.querySelector('.contact-edit');
   }
 
+  /////////////////////////////
+  // Private methods
+  /////////////////////////////
+  _activateTextareaAutoResize() {
+    var textareas = document.querySelectorAll('.textarea--auto-resize');
+    textareaAutoResize(textareas);
+  }
+
+  /////////////////////////////
+  // Event Handling
+  /////////////////////////////
+
+  /////////////////////////////
+  // Modal
+  bindModalClick(callback) {
+    this.$modalBox.addEventListener('click', event => {
+      if (event.target === this.$modalBox) {
+        callback();
+      }
+    });
+  }
+
+  /////////////////////////////
+  // Primary Actions
   bindContactOpen(callback) {
     this.$contactList.addEventListener('click', event => {
       var closestContact = event.target.closest(
@@ -49,6 +75,8 @@ export default class View {
     this.$contactAdd.addEventListener('click', () => callback());
   }
 
+  /////////////////////////////
+  // Search
   bindSearchOpen(callback) {
     this.$searchOpenButton.addEventListener('click', () => callback());
   }
@@ -67,6 +95,8 @@ export default class View {
     );
   }
 
+  /////////////////////////////
+  // Contact Details
   bindContactDetailsClose(callback) {
     bindToParent({
       parent: this.$contactDetails,
@@ -99,6 +129,8 @@ export default class View {
     });
   }
 
+  /////////////////////////////
+  // Contact Edit
   bindContactEditSave(callback) {
     bindToParent({
       parent: this.$contactEditDialog,
@@ -131,38 +163,9 @@ export default class View {
     });
   }
 
-  renderContacts(contacts) {
-    this.$contactList.innerHTML = this.template.contactList(contacts);
-  }
-
-  renderContactDetails(contact) {
-    this.$contactDetails.innerHTML = this.template.contactDetails(contact);
-  }
-
-  renderContactEdit(contact) {
-    this.$contactEditDialog.innerHTML = this.template.contactEdit(contact);
-  }
-
-  toggleSearchVisible(visible) {
-    toggleClass(this.$searchBox, 'visible', visible);
-  }
-
-  toggleContactDetailsVisible(visible) {
-    toggleClass(this.$contactDetails, 'visible', visible);
-  }
-
-  toggleContactEditVisible(visible) {
-    toggleClass(this.$contactEditDialog, 'visible', visible);
-  }
-
-  toggleSearchFocus(on) {
-    if (on) {
-      this.$searchInput.focus();
-    } else {
-      this.$searchInput.blur();
-    }
-  }
-
+  /////////////////////////////
+  // Retrieve DOM information
+  /////////////////////////////
   getFormData() {
     var allInputs = this.$contactEditDialog.querySelectorAll(
       '.contact-edit__input'
@@ -177,6 +180,54 @@ export default class View {
 
   getClosestField(element) {
     return event.target.closest('.contact-edit__input-item');
+  }
+
+  /////////////////////////////
+  // Render methods
+  /////////////////////////////
+  renderContacts(props) {
+    this.$contactList.innerHTML = this.template.contactList(props);
+  }
+
+  renderContactDetails(props) {
+    this.$contactDetails.innerHTML = this.template.contactDetails(props);
+  }
+
+  renderContactEdit(props) {
+    this.$contactEditDialog.innerHTML = this.template.contactEdit(props);
+    this._activateTextareaAutoResize();
+  }
+
+  /////////////////////////////
+  // DOM modification
+  /////////////////////////////
+  toggleSearchVisible(on) {
+    toggleClass(this.$searchBox, 'visible', on);
+  }
+
+  toggleSearchFocus(on) {
+    if (on) {
+      this.$searchInput.focus();
+    } else {
+      this.$searchInput.blur();
+    }
+  }
+
+  toggleContactDetailsVisible(on) {
+    toggleClass(this.$contactDetails, 'visible', on);
+  }
+
+  toggleContactEditVisible(on) {
+    toggleClass(this.$contactEditDialog, 'visible', on);
+  }
+
+  toggleModalVisible(on) {
+    toggleClass(this.$modalBox, 'visible', on);
+  }
+
+  toggleContactEditValidation(on) {
+    var form = document.querySelector('.contact-edit__form');
+    toggleClass(form, 'form--show-validation-results', on);
   }
 
   appendNewInputField(row) {

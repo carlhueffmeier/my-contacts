@@ -40,11 +40,32 @@ button {
   height: 100%;
 }
 
+.app__main {
+  display: flex;
+  flex: 1;
+}
+
+.app__modal {
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
 /***************************************
 ** Utility Classes
 ****************************************/
 .visible.visible {
   visibility: visible;
+}
+
+.textarea--auto-resize {
+  resize: none;
+  overflow: hidden;
 }
 
 /***************************************
@@ -60,7 +81,7 @@ button {
 }
 
 /***************************************
-** Buttons
+** Common Elements
 ****************************************/
 .button {
   background: none;
@@ -239,6 +260,7 @@ button {
   min-height: 80%;
   padding: 1.5rem 0.5rem;
   overflow: auto;
+  flex: 1;
 }
 
 .contact-list__group {
@@ -292,6 +314,18 @@ button {
   background-color: white;
   display: flex;
   flex-direction: column;
+  z-index: 100;
+}
+
+@media only screen and (min-width: 786px) {
+  .contact-details {
+    width: 30rem;
+    height: 30rem;
+    box-shadow: 0 0 10px #9e9e9e;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .contact-details__topbar {
@@ -331,7 +365,8 @@ button {
 .contact-details__info {
   color: #3b3b3b;
   padding: 0 1rem 2rem;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .contact-details__tag-container {
@@ -419,6 +454,7 @@ button {
 .contact-details__notes-content {
   margin: 0;
   font-weight: 300;
+  word-wrap: break-word;
 }
 
 /***************************************
@@ -436,6 +472,18 @@ button {
   background-color: white;
   display: flex;
   flex-direction: column;
+  z-index: 100;
+}
+
+@media only screen and (min-width: 786px) {
+  .contact-edit {
+    width: 30rem;
+    height: 30rem;
+    box-shadow: 0 0 10px #9e9e9e;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .contact-edit__header {
@@ -577,6 +625,10 @@ button {
 .contact-edit__input:focus {
   outline: none;
   border-bottom: 1px solid #2a56c6;
+}
+
+.form--show-validation-results .contact-edit__input:invalid {
+  border-color: #e91e63;
 }
 
 .contact-edit__controlbar {

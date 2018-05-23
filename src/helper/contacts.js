@@ -1,4 +1,5 @@
-import { renderIcon, isDefined } from './helper';
+import { isDefined, removeEmptySlots } from '../helper/utils';
+import { renderIcon } from '../helper/dom';
 
 var allKeys = [
   'name',
@@ -43,8 +44,23 @@ var description = {
   web: 'Website',
   github: 'Github',
   twitter: 'Twitter',
-  linkedin: 'Linked In',
+  linkedin: 'LinkedIn',
   notes: 'Notes'
+};
+
+var inputProps = {
+  name: {
+    firstName: { required: true }
+  },
+  email: {
+    value: { type: 'email' }
+  },
+  phone: {
+    value: { type: 'tel' }
+  },
+  web: { type: 'url' },
+  github: { type: 'url' },
+  linkedin: { type: 'url' }
 };
 
 export function getAllKeys() {
@@ -59,11 +75,14 @@ export function getFieldDescription(key) {
   return description.hasOwnProperty(key) ? description[key] : undefined;
 }
 
-export function getName({ name: { firstName, lastName } }) {
-  if (lastName && lastName.length > 0) {
-    return `${firstName} ${lastName}`;
-  }
-  return firstName;
+export function getName({ name: { firstName, lastName } = {} }) {
+  return [firstName, lastName]
+    .filter(partial => partial && partial.length > 0)
+    .join(' ');
+}
+
+export function getAdditionalProps(key) {
+  return inputProps.hasOwnProperty(key) ? inputProps[key] : {};
 }
 
 export function normalizeData(source) {
@@ -82,6 +101,8 @@ export function normalizeData(source) {
   }, {});
 }
 
-function removeEmptySlots(array) {
-  return array.filter(() => true);
+export function validateFormData(data) {
+  return (
+    isDefined((data.name || {}).firstName) && data.name.firstName.length > 0
+  );
 }

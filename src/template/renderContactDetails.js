@@ -1,7 +1,8 @@
-import { trim, renderIcon } from '../utils/helper';
-import { getAllKeys, getFieldIcon, getName } from '../utils/contacts';
+import { getAllKeys, getFieldIcon, getName } from '../helper/contacts';
+import { trim } from '../helper/utils';
+import { renderIcon } from '../helper/dom';
 
-export default function contactDetails(contact) {
+export default function contactDetails({ contact }) {
   return trim`${renderContactDetailsTopbar(contact)}
               ${renderContactDetailsInfo(contact)}`;
 }

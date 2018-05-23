@@ -1,4 +1,4 @@
-import { createQueryMatcher, omit, isRegexp } from '../utils/helper';
+import { createQueryMatcher, omit, isRegexp } from '../helper/utils';
 import uuidv4 from 'uuid/v4';
 
 export default class Store {
@@ -65,19 +65,25 @@ export default class Store {
     });
   }
 
-  addContact(details) {
-    var id = uuidv4();
-    this.storage.byId[id] = {
-      id,
-      ...details
-    };
-    this.storage.byId[id].tags = [...(details.tags || [])];
-    this.storage.allIds.push(id);
+  addContact(details = {}) {
+    return new Promise(resolve => {
+      var id = uuidv4();
+      this.storage.byId[id] = {
+        id,
+        ...details
+      };
+      this.storage.byId[id].tags = [...(details.tags || [])];
+      this.storage.allIds.push(id);
+      resolve(id);
+    });
   }
 
   removeContact(id) {
-    var { allIds, byId } = this.storage;
-    this.storage.allIds = allIds.filter(currentId !== id);
-    this.storage.byId = omit(byId, [id]);
+    return new Promise(resolve => {
+      var { allIds, byId } = this.storage;
+      this.storage.allIds = allIds.filter(currentId => currentId !== id);
+      this.storage.byId = omit(byId, [id]);
+      resolve();
+    });
   }
 }
