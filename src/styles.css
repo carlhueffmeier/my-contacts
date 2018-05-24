@@ -34,6 +34,10 @@ button {
   box-sizing: border-box;
 }
 
+a {
+  text-decoration: none;
+}
+
 .app {
   display: flex;
   flex-direction: column;
@@ -55,6 +59,17 @@ button {
   left: 0;
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 10;
+}
+
+@media only screen and (min-width: 768px) {
+  .app__modal {
+    opacity: 0;
+    transition: opacity 0.1s ease-out;
+  }
+
+  .app__modal.visible {
+    opacity: 1;
+  }
 }
 
 /***************************************

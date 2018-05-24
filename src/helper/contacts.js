@@ -1,5 +1,5 @@
 import { isDefined, removeEmptySlots } from '../helper/utils';
-import { renderIcon } from '../helper/dom';
+import { renderIcon, renderLink } from '../helper/dom';
 
 var allKeys = [
   'name',
@@ -27,6 +27,7 @@ var icons = {
   notes: 'icon-library_books'
 };
 
+// The description is used as <input> placeholder text
 var description = {
   name: {
     firstName: 'First name',
@@ -48,6 +49,7 @@ var description = {
   notes: 'Notes'
 };
 
+// Additional props passed to <input> elements
 var inputProps = {
   name: {
     firstName: { required: true, pattern: '[a-zA-Z0-9_-]+' }
@@ -63,6 +65,18 @@ var inputProps = {
   linkedin: { type: 'url' }
 };
 
+// Describes how the fields are displayed
+var fieldFormat = {
+  email: ({ value: email, ...rest }) => ({
+    value: renderLink(`mailto:${email}`, email),
+    ...rest
+  }),
+  web: url => renderLink(url, url),
+  github: username => renderLink(`github.com/${username}`, username),
+  twitter: username => renderLink(`twitter.com/${username}`, username),
+  linkedin: url => renderLink(url, url)
+};
+
 export function getAllKeys() {
   return allKeys;
 }
@@ -73,6 +87,10 @@ export function getFieldIcon(key) {
 
 export function getFieldDescription(key) {
   return description.hasOwnProperty(key) ? description[key] : undefined;
+}
+
+export function getFieldFormat(key) {
+  return fieldFormat.hasOwnProperty(key) ? fieldFormat[key] : f => f;
 }
 
 export function getName({ name: { firstName, lastName } = {} }) {

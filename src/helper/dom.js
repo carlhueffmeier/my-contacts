@@ -1,5 +1,19 @@
 import { trim, isBoolean } from '../helper/utils';
 
+export function sanitizeUrl(url) {
+  return /:\/\//g.test(url) === false ? `https://${url}` : url;
+}
+
+export function renderLink(url, text) {
+  return `<a href="${sanitizeUrl(url)}">${text}</a>`;
+}
+
+export function renderIcon(type) {
+  return trim`<svg class="icon">
+                <use xlink:href="#${type}"></use>
+              </svg>`;
+}
+
 export function bindToParent({ parent, callback, selector, type = 'click' }) {
   parent.addEventListener(type, event => {
     var searchResult = event.target.closest(selector);
@@ -8,12 +22,6 @@ export function bindToParent({ parent, callback, selector, type = 'click' }) {
       console.log(`[${type}] ${selector}`);
     }
   });
-}
-
-export function renderIcon(type) {
-  return trim`<svg class="icon">
-                <use xlink:href="#${type}"></use>
-              </svg>`;
 }
 
 export function toggleClass(element, className, on) {

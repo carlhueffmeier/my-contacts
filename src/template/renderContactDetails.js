@@ -1,6 +1,11 @@
-import { getAllKeys, getFieldIcon, getName } from '../helper/contacts';
+import {
+  getAllKeys,
+  getFieldIcon,
+  getName,
+  getFieldFormat
+} from '../helper/contacts';
 import { trim } from '../helper/utils';
-import { renderIcon } from '../helper/dom';
+import { renderIcon, renderLink } from '../helper/dom';
 
 export default function contactDetails({ contact }) {
   return trim`${renderContactDetailsTopbar(contact)}
@@ -73,11 +78,12 @@ var renderMethod = {
 };
 
 function createFieldRenderer(key, render) {
+  var format = getFieldFormat(key);
   return contact =>
     renderFieldRow({
       field: contact[key],
       fieldIcon: getFieldIcon(key),
-      render
+      render: fieldData => render(format(fieldData))
     });
 }
 
