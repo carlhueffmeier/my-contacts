@@ -1,6 +1,7 @@
 # my-contacts
 
 Simple contact manager using HTML, CSS & vanilla JavaScript.
+Take a look at the [live demo](https://carlh.de/contacts/).
 
 ## Getting Started
 
