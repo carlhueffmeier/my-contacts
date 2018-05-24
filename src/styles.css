@@ -184,14 +184,15 @@ button {
   display: flex;
 }
 
-.header__menu-button {
+.header__search {
   display: flex;
-  font-size: 1.5rem;
-  color: white;
-  padding: 0.8rem;
+  flex: 0 1 30rem;
+  justify-content: flex-end;
 }
 
+.header__menu-button,
 .header__open-search-button {
+  display: flex;
   font-size: 1.5rem;
   color: white;
   padding: 0.8rem;
@@ -206,6 +207,12 @@ button {
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.1);
   color: white;
+}
+
+@media only screen and (min-width: 768px) {
+  .header__open-search-button {
+    display: none;
+  }
 }
 
 /***************************************
@@ -223,12 +230,30 @@ button {
   display: flex;
 }
 
+@media only screen and (min-width: 768px) {
+  .search {
+    position: unset;
+    flex: 1;
+    display: flex;
+    border-radius: 0.3rem;
+    overflow: hidden;
+    margin: 0.3rem;
+    visibility: visible;
+  }
+}
+
 .search__text-input {
   flex: 1;
   margin-left: -3rem;
   margin-right: -3rem;
   padding-left: 4rem;
   font-size: 1rem;
+}
+
+@media only screen and (min-width: 768px) {
+  .search__text-input {
+    padding-left: 1rem;
+  }
 }
 
 .search__text-input:focus {
@@ -249,6 +274,12 @@ button {
 
 .search__close-button {
   padding-left: 1rem;
+}
+
+@media only screen and (min-width: 768px) {
+  .search__close-button {
+    visibility: hidden;
+  }
 }
 
 /***************************************
