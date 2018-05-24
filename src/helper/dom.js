@@ -1,7 +1,7 @@
 import { trim, isBoolean } from '../helper/utils';
 
 export function sanitizeUrl(url) {
-  return /:\/\//g.test(url) === false ? `https://${url}` : url;
+  return /:/g.test(url) === false ? `https://${url}` : url;
 }
 
 export function renderLink(url, text) {

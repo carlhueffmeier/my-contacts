@@ -83,34 +83,35 @@ function createFieldRenderer(key, render) {
     renderFieldRow({
       field: contact[key],
       fieldIcon: getFieldIcon(key),
-      render: fieldData => render(format(fieldData))
+      render,
+      format
     });
 }
 
-function renderFieldRow({ field, fieldIcon, render }) {
+function renderFieldRow({ field, fieldIcon, render, format }) {
   return trim`<li class="contact-details__row">
                 <div class="contact-details__row-icon">
                   ${fieldIcon}
                 </div>
                 <div class="contact-details__row-content">
-                  ${render(field)}
+                  ${render(field, format)}
                 </div>
               </li>`;
 }
 
-function renderItem(item) {
+function renderItem(item, format) {
   return trim`<span class="contact-details__detail-value">
-                ${item}
+                ${format(item)}
               </span>`;
 }
 
-function renderItemList(list) {
+function renderItemList(list, format) {
   return trim`<ul class="contact-details__row-list">
                 ${list
                   .map(
                     item =>
                       `<li class="contact-details__row-item">
-                        ${renderItemWithLabel(item)}
+                        ${renderItemWithLabel(format(item))}
                       </li>`
                   )
                   .join('')}
