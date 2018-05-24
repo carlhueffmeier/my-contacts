@@ -61,6 +61,15 @@ export default class Controller {
       .then(results => view.renderContacts({ contacts: results }));
   }
 
+  updateContactList() {
+    var { searchQuery } = this.state;
+    if (searchQuery.length > 0) {
+      this.showContactsBy(searchQuery);
+    } else {
+      this.showAllContacts();
+    }
+  }
+
   /////////////////////////////
   // Primary Actions
   /////////////////////////////
@@ -93,12 +102,8 @@ export default class Controller {
   }
 
   handleQueryChange(query) {
-    this.state.query = query;
-    if (query.length > 0) {
-      this.showContactsBy(query);
-    } else {
-      this.showAllContacts();
-    }
+    this.state.searchQuery = query;
+    this.updateContactList();
   }
 
   /////////////////////////////
@@ -161,7 +166,7 @@ export default class Controller {
   }
 
   updateAllViews() {
-    this.showAllContacts();
+    this.updateContactList();
     this.showContactDetails();
   }
 
