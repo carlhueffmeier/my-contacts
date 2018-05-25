@@ -11,7 +11,7 @@ export default class View {
     this.template = template;
 
     this.$contactList = document.querySelector('.contact-list');
-    this.$contactAdd = document.querySelector('.add-contact-button');
+    this.$contactAdd = document.querySelector('.add-contact__button');
     this.$searchBox = document.querySelector('.search');
     this.$searchOpenButton = document.querySelector(
       '.header__open-search-button'

@@ -87,6 +87,10 @@ a {
 /***************************************
 ** Icons
 ****************************************/
+.icon-container {
+  display: flex;
+}
+
 .icon {
   display: inline-block;
   width: 1em;
@@ -119,48 +123,46 @@ a {
 ****************************************
 **  Add Contact Button
 ****************************************/
-.add-contact-button {
-  background-color: #e91e63;
+.add-contact__button {
+  position: fixed;
   bottom: 0;
+  right: 0;
   margin-bottom: 1.5rem;
   margin-right: 1.5rem;
-  position: fixed;
-  right: 0;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12),
-    0 3px 5px -1px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  height: 3rem;
+  width: 3rem;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  height: 3rem;
-  outline: none;
+  background-color: #e91e63;
+  color: white;
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12),
+    0 3px 5px -1px rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 50%;
   overflow: hidden;
-  text-align: center;
-  width: 3rem;
   font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.add-contact__button:focus,
+.add-contact__button:active,
+.add-contact__button:hover {
   color: white;
 }
 
-.add-contact-button:focus,
-.add-contact-button:active,
-.add-contact-button:hover {
-  color: white;
-}
-
-.add-contact-button:hover {
+.add-contact__button:hover {
   background-color: #ec5280;
   box-shadow: 0 6px 10px 3px rgba(0, 0, 0, 0.14),
     1px 3px 18px 4px rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
 }
 
-.add-contact-button:focus {
+.add-contact__button:focus {
   box-shadow: 0 6px 10px 3px rgba(0, 0, 0, 0.14),
     1px 3px 18px 4px rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
 }
 
-.add-contact-button:active {
+.add-contact__button:active {
   transform: translateY(3px);
   box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12),
     0 3px 5px -1px rgba(0, 0, 0, 0.2);
@@ -261,7 +263,8 @@ a {
   flex: 1;
   margin-left: -3rem;
   margin-right: -3rem;
-  padding-left: 4rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
   font-size: 1rem;
 }
 
@@ -287,8 +290,12 @@ a {
   cursor: pointer;
 }
 
-.search__close-button {
+.search__close-icon {
   padding-left: 1rem;
+}
+
+.search__clear-icon {
+  padding-right: 1rem;
 }
 
 @media only screen and (min-width: 768px) {
@@ -308,6 +315,7 @@ a {
   padding: 1.5rem 0.5rem;
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   flex: 1;
 }
 
@@ -415,6 +423,7 @@ a {
   padding: 0 1rem 2rem;
   overflow-x: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .contact-details__tag-container {
@@ -555,6 +564,7 @@ a {
   /* I need this for Mozilla */
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .contact-edit__list {
@@ -565,6 +575,7 @@ a {
   /* I need this for Chrome */
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .contact-edit__row {
