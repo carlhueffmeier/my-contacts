@@ -8,18 +8,18 @@ export default function renderContactList({ contacts }) {
 
   return groups
     .map(
-      group =>
-        trim`<li class="contact-list__group">
-              <div class="contact-list__group-index-wrapper">
-                <span class="contact-list__group-index">${group.index}</span>
-              </div>
-              <ul class="contact-list__group-list">
-                ${renderList({
-                  contacts: group.contacts,
-                  className: 'contact-list__contact-element'
-                })}
-              </ul>
-            </li>`
+      group => trim`
+        <li class="contact-list__group">
+          <div class="contact-list__group-index-wrapper">
+            <span class="contact-list__group-index">${group.index}</span>
+          </div>
+          <ul class="contact-list__group-list">
+            ${renderList({
+              contacts: group.contacts,
+              className: 'contact-list__contact-element'
+            })}
+          </ul>
+        </li>`
     )
     .join('');
 }
@@ -27,13 +27,13 @@ export default function renderContactList({ contacts }) {
 function renderList({ contacts, className }) {
   return contacts
     .map(
-      item =>
-        trim`<li
-                ${className ? `class=${className}` : ''}
-                data-contact-id="${item.id}"
-              >
-                <span class="contact-list__name">${getName(item)}</span>
-              </li>`
+      item => trim`
+        <li
+          ${className ? `class=${className}` : ''}
+          data-contact-id="${item.id}"
+        >
+          <span class="contact-list__name">${getName(item)}</span>
+        </li>`
     )
     .join('');
 }

@@ -1,6 +1,7 @@
 import renderContactList from './renderContactList';
 import renderContactDetails from './renderContactDetails';
 import renderContactEdit from './renderContactEdit';
+import renderTagList from './renderTagList';
 
 export default class Template {
   contactList({ contacts }) {
@@ -16,5 +17,9 @@ export default class Template {
       title,
       contact
     });
+  }
+
+  tagList({ tags, activeTag }) {
+    return renderTagList({ tags, activeTag });
   }
 }

@@ -10,8 +10,11 @@ export default class View {
   constructor(template) {
     this.template = template;
 
+    this.$app = document.querySelector('.app');
     this.$contactList = document.querySelector('.contact-list');
     this.$contactAdd = document.querySelector('.add-contact__button');
+    this.$menuToggle = document.querySelector('.header__menu-button');
+    this.$menuList = document.querySelector('.menu__list');
     this.$searchBox = document.querySelector('.search');
     this.$searchOpenButton = document.querySelector(
       '.header__open-search-button'
@@ -48,6 +51,10 @@ export default class View {
 
   /////////////////////////////
   // Primary Actions
+  bindMenuToggle(callback) {
+    this.$menuToggle.addEventListener('click', () => callback());
+  }
+
   bindContactShowDetails(callback) {
     this.$contactList.addEventListener('click', event => {
       var closestContact = event.target.closest(
@@ -186,9 +193,17 @@ export default class View {
     this._activateTextareaAutoResize();
   }
 
+  renderTagList(props) {
+    this.$menuList.innerHTML = this.template.tagList(props);
+  }
+
   /////////////////////////////
   // DOM modification
   /////////////////////////////
+  toggleMenuVisible(on) {
+    toggleClass(this.$app, 'app--menu-visible', on);
+  }
+
   toggleSearchVisible(on) {
     toggleClass(this.$searchBox, 'visible', on);
   }

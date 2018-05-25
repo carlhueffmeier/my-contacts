@@ -9,9 +9,10 @@ export function renderLink(url, text) {
 }
 
 export function renderIcon(type) {
-  return trim`<svg class="icon">
-                <use xlink:href="#${type}"></use>
-              </svg>`;
+  return trim`
+    <svg class="icon">
+      <use xlink:href="#${type}"></use>
+    </svg>`;
 }
 
 export function bindToParent({ parent, callback, selector, type = 'click' }) {

@@ -17,6 +17,7 @@ html,
 body {
   margin: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 html,
@@ -42,12 +43,22 @@ a {
   display: flex;
   flex-direction: column;
   height: 100%;
+  transition: transform 0.3s ease-out;
+}
+
+.app--menu-visible {
+  transform: translateX(10rem);
 }
 
 .app__main {
   display: flex;
   flex: 1;
   overflow: hidden;
+  transition: opacity 1s ease-in 0.1s;
+}
+
+.app--menu-visible .app__main {
+  opacity: 0.5;
 }
 
 .app__modal {
@@ -195,6 +206,8 @@ a {
   font-size: 1.5rem;
   padding-left: 1rem;
   font-weight: 300;
+  color: inherit;
+  text-decoration: inherit;
 }
 
 .header__menu {
@@ -230,6 +243,72 @@ a {
   .header__open-search-button {
     display: none;
   }
+}
+
+/***************************************
+****************************************
+**  Menu
+****************************************/
+
+.menu {
+  position: absolute;
+  top: 0;
+  left: -10rem;
+  width: 10rem;
+  height: 100%;
+  background-color: white;
+  z-index: 100;
+}
+
+.menu__title {
+  color: #2b55c6;
+  text-align: center;
+  font-weight: 400;
+}
+
+.menu__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.menu__item {
+  position: relative;
+  padding: 0;
+  flex: 1;
+  display: flex;
+}
+
+.menu__item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 3px;
+  transform: scaleY(0);
+  background-color: #2a56c6;
+  transition: transform 0.1s, width 0.2s cubic-bezier(1, 0, 0, 1) 0.1s;
+}
+
+.menu__item--active,
+.menu__item:hover::before {
+  transform: scaleY(1);
+  width: 100%;
+}
+
+.menu__link:link,
+.menu__link:visited {
+  color: inherit;
+  padding: 1rem 2rem;
+  z-index: 101;
+  transition: color 0.2s ease-in;
+}
+
+.menu__item--active > .menu__link,
+.menu__item:hover > .menu__link {
+  color: white;
 }
 
 /***************************************

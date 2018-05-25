@@ -56,7 +56,7 @@ function createShadowElement(textarea) {
   shadow.style['word-break'] = 'break-word';
   shadow.style['word-wrap'] = 'break-word';
   shadow.style['overflow-wrap'] = 'break-word';
-  shadow.style['zIndex'] = '-10';
+  shadow.style['transform'] = 'translateX(-9999rem)';
   return shadow;
 }
 

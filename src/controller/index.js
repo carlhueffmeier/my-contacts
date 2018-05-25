@@ -5,24 +5,26 @@ import { isDefined } from '../helper/utils';
 export default class Controller {
   constructor(store, view) {
     this.state = {
-      searchQuery: '',
+      query: '',
       selectedContact: undefined,
-      contactEditOpen: false,
-      contactDetailsOpen: false
+      editing: false
     };
     this.store = store;
     this.view = view;
   }
 
   init() {
-    var { view } = this;
-    this.showAllContacts();
+    this.render();
 
+    var { view } = this;
     // Search
     view.bindSearchOpen(this.handleSearchOpen.bind(this));
     view.bindSearchClose(this.handleSearchClose.bind(this));
     view.bindSearchClear(this.handleSearchClear.bind(this));
     view.bindSearchQueryChange(this.handleQueryChange.bind(this));
+
+    // Menu
+    view.bindMenuToggle(this.handleMenuToggle.bind(this));
 
     // Primary Actions
     view.bindContactAdd(this.handleContactAdd.bind(this));
@@ -47,48 +49,15 @@ export default class Controller {
   }
 
   /////////////////////////////
-  // Contact List
+  // Event handling
   /////////////////////////////
-  showAllContacts() {
-    var { store, view } = this;
-    store.getAll().then(contacts => view.renderContacts({ contacts }));
-  }
-
-  showContactsBy(query) {
-    var { store, view } = this;
-    store
-      .findByName(query)
-      .then(results => view.renderContacts({ contacts: results }));
-  }
-
-  updateContactList() {
-    var { searchQuery } = this.state;
-    if (searchQuery.length > 0) {
-      this.showContactsBy(searchQuery);
-    } else {
-      this.showAllContacts();
-    }
-  }
-
-  /////////////////////////////
-  // Primary Actions
-  /////////////////////////////
-  handleContactShowDetails(id) {
-    this.state.selectedContact = id;
-    this.showContactDetails();
-  }
-
-  handleContactAdd() {
-    this.showContactEditDialog({ title: 'Add Contact' });
-  }
 
   /////////////////////////////
   // Search
-  /////////////////////////////
+
   handleSearchOpen() {
-    var { view } = this;
-    view.toggleSearchVisible(true);
-    view.toggleSearchFocus(true);
+    this.view.toggleSearchVisible(true);
+    this.view.toggleSearchFocus(true);
   }
 
   handleSearchClose() {
@@ -97,96 +66,72 @@ export default class Controller {
 
   handleSearchClear() {
     this.view.toggleSearchFocus(true);
-    this.state.searchQuery = '';
-    this.showAllContacts();
+    this.changeQuery('');
   }
 
   handleQueryChange(query) {
-    this.state.searchQuery = query;
-    this.updateContactList();
+    this.changeQuery(query);
   }
 
   /////////////////////////////
-  // Modal Windows
+  // Menu
+
+  handleMenuToggle() {
+    this.view.toggleMenuVisible();
+  }
+
   /////////////////////////////
+  // Primary Actions
+
+  handleContactShowDetails(id) {
+    this.selectContact(id);
+  }
+
+  handleContactAdd() {
+    this.setEditing(true);
+  }
+
+  /////////////////////////////
+  // Modal
+
   handleModalClick() {
-    var { view } = this;
-    this.closeContactDetails();
-    this.closeContactEditDialog();
-    view.toggleModalVisible(false);
+    this.deselectContact(); // TODO: duplicate render
+    this.setEditing(false);
   }
 
   /////////////////////////////
-  // Contact Details Window
+  // Contact Details Screen
+
   handleContactDetailsClose() {
-    this.closeContactDetails();
+    this.deselectContact();
   }
 
   handleContactDetailsFavorite() {
-    var { state, store } = this;
-    store
-      .modifyContacts({ id: state.selectedContact }, contact => ({
-        ...contact,
-        favorite: !contact.favorite
-      }))
-      .then(this.updateAllViews.bind(this));
+    this.toggleFavorite();
   }
 
   handleContactDetailsEdit() {
-    var { state, store } = this;
-    store
-      .getById(state.selectedContact)
-      .then(contact => this.showContactEditDialog({ contact }));
+    this.setEditing(true);
   }
 
   handleContactDetailsDelete() {
-    var { state, store } = this;
-    store.removeContact(state.selectedContact).then(() => {
-      this.closeContactDetails();
-      this.showAllContacts();
-    });
-  }
-
-  showContactDetails() {
-    var { state, store, view } = this;
-    store.getById(state.selectedContact).then(contact => {
-      view.renderContactDetails({ contact });
-      view.toggleContactDetailsVisible(true);
-      view.toggleModalVisible(true);
-      state.contactDetailsOpen = true;
-    });
-  }
-
-  closeContactDetails() {
-    var { state, view } = this;
-    state.selectedContact = undefined;
-    state.contactDetailsOpen = false;
-    view.toggleContactDetailsVisible(false);
-    view.toggleModalVisible(false);
-  }
-
-  updateAllViews() {
-    this.updateContactList();
-    this.showContactDetails();
+    this.deleteContact();
   }
 
   /////////////////////////////
-  // Contact Edit Window
-  handleContactEditSave() {
-    var { state, view } = this;
-    var data = view.getFormData();
+  // Contact Edit Screen
 
-    if (!validateFormData(data)) {
-      view.toggleContactEditValidation(true);
-    } else if (isDefined(state.selectedContact)) {
-      this.modifySelectedContact(data);
+  handleContactEditSave() {
+    var data = this.view.getFormData();
+    if (validateFormData(data)) {
+      this.saveContactData(data).then(() => this.setEditing(false));
     } else {
-      this.createNewContact(data);
+      this.view.toggleContactEditValidation(true);
     }
   }
 
   handleContactEditCancel() {
-    this.closeContactEditDialog();
+    this.setEditing(false);
   }
 
   handleContactEditAddRow(event) {
@@ -201,40 +146,186 @@ export default class Controller {
     view.removeInputField(field);
   }
 
+  /////////////////////////////
+  // Rendering
+  /////////////////////////////
+  render() {
+    this.renderModal();
+    this.renderContactDetails();
+    this.renderContactEdit();
+    this.renderContactList();
+    this.renderTagList();
+  }
+
+  renderModal() {
+    var visible = this.isDetailsScreenShown() || this.isEditScreenShown();
+    this.view.toggleModalVisible(visible);
+  }
+
+  renderContactDetails() {
+    var visible = this.isDetailsScreenShown();
+    if (visible) {
+      this.renderContactDetailsContent();
+    }
+    this.view.toggleContactDetailsVisible(visible);
+  }
+
+  renderContactEdit() {
+    var visible = this.isEditScreenShown();
+    if (visible) {
+      this.renderContactEditContent();
+    }
+    this.view.toggleContactEditVisible(visible);
+  }
+
+  renderContactList() {
+    var { query } = this.state;
+    if (query.length > 0) {
+      this.showContactsBy(query);
+    } else {
+      this.showAllContacts();
+    }
+  }
+
+  renderTagList() {
+    this.view.renderTagList({ tags: ['Friends', 'Enemies', 'Weirdos'] });
+  }
+
+  /////////////////////////////
+  // Contact List Rendering
+  showAllContacts() {
+    var { store, view } = this;
+    store.getAll().then(contacts => view.renderContacts({ contacts }));
+  }
+
+  showContactsBy(query) {
+    var { store, view } = this;
+    store.findByName(query).then(contacts => view.renderContacts({ contacts }));
+  }
+
+  /////////////////////////////
+  // Contact Details Rendering
+  isDetailsScreenShown() {
+    return this.isContactSelected() && !this.isEditScreenShown();
+  }
+
+  renderContactDetailsContent() {
+    var {
+      state: { selectedContact },
+      store,
+      view
+    } = this;
+
+    return store
+      .getById(selectedContact)
+      .then(contact => view.renderContactDetails({ contact }));
+  }
+
+  /////////////////////////////
+  // Contact Edit Rendering
+  isEditScreenShown() {
+    return this.state.editing;
+  }
+
+  renderContactEditContent(props) {
+    var {
+      state: { selectedContact },
+      store,
+      view
+    } = this;
+
+    if (this.isContactSelected()) {
+      store
+        .getById(selectedContact)
+        .then(contact => view.renderContactEdit({ contact }));
+    } else {
+      view.renderContactEdit({ title: 'Add Contact' });
+    }
+  }
+
+  /////////////////////////////
+  // Helper
+  /////////////////////////////
+
+  isContactSelected() {
+    return isDefined(this.state.selectedContact);
+  }
+
+  /////////////////////////////
+  // Actions
+  /////////////////////////////
+
+  selectContact(id) {
+    this.state.selectedContact = id;
+    this.render();
+  }
+
+  deselectContact() {
+    this.state.selectedContact = undefined;
+    this.render();
+  }
+
+  setEditing(on) {
+    this.state.editing = Boolean(on);
+    this.render();
+  }
+
+  changeQuery(query) {
+    this.state.query = query.toString();
+    this.render();
+  }
+
+  toggleFavorite() {
+    var {
+      state: { selectedContact },
+      store
+    } = this;
+
+    return store
+      .modifyContacts({ id: selectedContact }, contact => ({
+        ...contact,
+        favorite: !contact.favorite
+      }))
+      .then(this.render.bind(this));
+  }
+
+  deleteContact() {
+    var {
+      state: { selectedContact },
+      store
+    } = this;
+
+    store
+      .removeContact(selectedContact)
+      .then(this.deselectContact.bind(this))
+      .then(this.render.bind(this));
+  }
+
+  saveContactData(data) {
+    return this.isContactSelected()
+      ? this.modifySelectedContact(data)
+      : this.createNewContact(data);
+  }
+
   modifySelectedContact(data) {
-    this.store
-      .modifyContacts(
-        { id: this.state.selectedContact },
-        ({ id, favorite }) => ({ id, favorite, ...data })
-      )
-      .then(this.updateAllViews.bind(this))
-      .then(this.closeContactEditDialog.bind(this));
+    var {
+      state: { selectedContact },
+      store
+    } = this;
+
+    return store
+      .modifyContacts({ id: selectedContact }, ({ id, favorite }) => ({
+        id,
+        favorite,
+        ...data
+      }))
+      .then(this.render.bind(this));
   }
 
   createNewContact(data) {
-    this.store
+    return this.store
       .addContact(data)
-      .then(({ id }) => {
-        this.state.selectedContact = id;
-      })
-      .then(this.updateAllViews.bind(this))
-      .then(this.closeContactEditDialog.bind(this));
-  }
-
-  showContactEditDialog(props) {
-    var { state, view } = this;
-    state.contactEditOpen = true;
-    view.renderContactEdit(props);
-    view.toggleContactEditVisible(true);
-    view.toggleModalVisible(true);
-  }
-
-  closeContactEditDialog() {
-    var { state, view } = this;
-    state.contactEditOpen = false;
-    view.toggleContactEditVisible(false);
-    if (!state.contactDetailsOpen) {
-      view.toggleModalVisible(false);
-    }
+      .then(({ id }) => this.selectContact(id))
+      .then(this.render.bind(this));
   }
 }
