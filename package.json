@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
+    "clean": "rm -r dist",
+    "upload": "scp -P18765 -r dist carlh602@carlh.de:public_html/contacts",
+    "deploy": "run-s build upload",
     "start": "webpack-dev-server",
     "test": "jest --watchAll",
-    "dev": "npm-run-all -p start test"
+    "dev": "run-p start test"
   },
   "repository": {
     "type": "git",
