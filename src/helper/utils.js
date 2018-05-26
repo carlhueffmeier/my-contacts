@@ -14,7 +14,7 @@ export function isDefined(...refs) {
   return refs.every(ref => typeof ref !== 'undefined');
 }
 
-export function omit(obj, idsToObmit) {
+export function omit(obj, ...idsToObmit) {
   return Object.keys(obj)
     .filter(key => !idsToObmit.includes(key))
     .reduce(

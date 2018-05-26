@@ -55,6 +55,15 @@ export default class View {
     this.$menuToggle.addEventListener('click', () => callback());
   }
 
+  bindMenuShowTag(callback) {
+    bindToParent({
+      parent: this.$menuList,
+      selector: '.menu__link--tag',
+      callback: ({ target: { dataset: { tagId } = {} } = {} } = {}) =>
+        callback(tagId)
+    });
+  }
+
   bindContactShowDetails(callback) {
     this.$contactList.addEventListener('click', event => {
       var closestContact = event.target.closest(
@@ -193,7 +202,7 @@ export default class View {
     this._activateTextareaAutoResize();
   }
 
-  renderTagList(props) {
+  renderMenu(props) {
     this.$menuList.innerHTML = this.template.tagList(props);
   }
 

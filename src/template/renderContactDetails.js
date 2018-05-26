@@ -55,7 +55,7 @@ function renderTags(tags) {
   return trim`
     <div class="contact-details__tag-container">
       ${tags
-        .map(tag => `<span class="contact-details__tag">${tag}</span>`)
+        .map(tag => `<span class="contact-details__tag">${tag.label}</span>`)
         .join(' ')}
     </div>`;
 }

@@ -5,7 +5,9 @@ export default function renderTagList({ tags, activeTag }) {
     .map(
       tag => trim`
       <li class="menu__item">
-        <a class="menu__link" href="#">${tag}</a>
+        <a class="menu__link--tag" href="#" data-tag-id="${tag.id}">${
+        tag.label
+      }</a>
       </li>`
     )
     .join('');

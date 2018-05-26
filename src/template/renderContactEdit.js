@@ -37,7 +37,7 @@ function renderField(contact, key) {
 
 var renderMethod = {
   name: createFieldRenderer('name', renderInputPerProperty),
-  tags: createFieldRenderer('tags', renderCommaSeparated),
+  tags: createFieldRenderer('tags', renderTags),
   email: createFieldRenderer('email', renderInputList),
   phone: createFieldRenderer('phone', renderInputList),
   web: createFieldRenderer('web', renderSimpleInput),
@@ -87,12 +87,12 @@ function renderTextarea({ key, value = '' }) {
     >${value}</textarea>`;
 }
 
-function renderCommaSeparated({ key, value = [] }) {
+function renderTags({ key, value: tags = [] }) {
   return renderInput({
     name: encodeInputName({ key, commaSeparated: true }),
     placeholder: getFieldDescription(key),
     props: getAdditionalProps(key),
-    value: value.join(', ')
+    value: tags.map(t => t.label).join(', ')
   });
 }
 

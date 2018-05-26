@@ -258,19 +258,27 @@ a {
   height: 100%;
   background-color: white;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
 }
 
 .menu__title {
   color: #2b55c6;
   text-align: center;
   font-weight: 400;
+  margin: 0;
+  flex: 0 0 3.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .menu__list {
   list-style: none;
-  display: flex;
   flex-direction: column;
   padding: 0;
+  overflow-x: auto;
+  margin: 0;
 }
 
 .menu__item {
@@ -299,15 +307,17 @@ a {
 }
 
 .menu__link:link,
-.menu__link:visited {
+.menu__link:visited,
+.menu__link--tag:link,
+.menu__link--tag:visited {
   color: inherit;
   padding: 1rem 2rem;
   z-index: 101;
   transition: color 0.2s ease-in;
 }
 
-.menu__item--active > .menu__link,
-.menu__item:hover > .menu__link {
+.menu__item--active > .menu__link--tag,
+.menu__item:hover > .menu__link--tag {
   color: white;
 }
 

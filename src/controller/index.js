@@ -7,7 +7,8 @@ export default class Controller {
     this.state = {
       query: '',
       selectedContact: undefined,
-      editing: false
+      editing: false,
+      menuOpen: false
     };
     this.store = store;
     this.view = view;
@@ -25,6 +26,7 @@ export default class Controller {
 
     // Menu
     view.bindMenuToggle(this.handleMenuToggle.bind(this));
+    view.bindMenuShowTag(this.handleMenuShowTag.bind(this));
 
     // Primary Actions
     view.bindContactAdd(this.handleContactAdd.bind(this));
@@ -77,7 +79,11 @@ export default class Controller {
   // Menu
 
   handleMenuToggle() {
-    this.view.toggleMenuVisible();
+    this.toggleMenu();
+  }
+
+  handleMenuShowTag(id) {
+    this.showContactsByTag(id);
   }
 
   /////////////////////////////
@@ -85,6 +91,7 @@ export default class Controller {
 
   handleContactShowDetails(id) {
     this.selectContact(id);
+    this.toggleMenu(false);
   }
 
   handleContactAdd() {
@@ -154,7 +161,7 @@ export default class Controller {
     this.renderContactDetails();
     this.renderContactEdit();
     this.renderContactList();
-    this.renderTagList();
+    this.renderMenu();
   }
 
   renderModal() {
@@ -187,20 +194,44 @@ export default class Controller {
     }
   }
 
-  renderTagList() {
-    this.view.renderTagList({ tags: ['Friends', 'Enemies', 'Weirdos'] });
+  renderMenu() {
+    var visible = this.isMenuVisible();
+    if (visible) {
+      this.renderMenuContent();
+    }
+    this.view.toggleMenuVisible(visible);
+  }
+
+  /////////////////////////////
+  // Menu Rendering
+  isMenuVisible() {
+    return this.state.menuOpen;
+  }
+
+  renderMenuContent() {
+    var { store, view } = this;
+    store.getAllTags().then(tags => view.renderMenu({ tags }));
   }
 
   /////////////////////////////
   // Contact List Rendering
   showAllContacts() {
     var { store, view } = this;
-    store.getAll().then(contacts => view.renderContacts({ contacts }));
+    store.getAllContacts().then(contacts => view.renderContacts({ contacts }));
   }
 
   showContactsBy(query) {
     var { store, view } = this;
-    store.findByName(query).then(contacts => view.renderContacts({ contacts }));
+    store
+      .findContactsByName(query)
+      .then(contacts => view.renderContacts({ contacts }));
+  }
+
+  showContactsByTag(id) {
+    var { store, view } = this;
+    store
+      .getContactsByTag(id)
+      .then(contacts => view.renderContacts({ contacts }));
   }
 
   /////////////////////////////
@@ -217,7 +248,7 @@ export default class Controller {
     } = this;
 
     return store
-      .getById(selectedContact)
+      .getContactById(selectedContact)
       .then(contact => view.renderContactDetails({ contact }));
   }
 
@@ -236,7 +267,7 @@ export default class Controller {
 
     if (this.isContactSelected()) {
       store
-        .getById(selectedContact)
+        .getContactById(selectedContact)
         .then(contact => view.renderContactEdit({ contact }));
     } else {
       view.renderContactEdit({ title: 'Add Contact' });
@@ -254,6 +285,11 @@ export default class Controller {
   /////////////////////////////
   // Actions
   /////////////////////////////
+
+  toggleMenu(on) {
+    this.state.menuOpen = isDefined(on) ? on : !this.state.menuOpen;
+    this.render();
+  }
 
   selectContact(id) {
     this.state.selectedContact = id;
@@ -282,7 +318,7 @@ export default class Controller {
     } = this;
 
     return store
-      .modifyContacts({ id: selectedContact }, contact => ({
+      .changeContactsByQuery({ id: selectedContact }, contact => ({
         ...contact,
         favorite: !contact.favorite
       }))
@@ -314,7 +350,7 @@ export default class Controller {
     } = this;
 
     return store
-      .modifyContacts({ id: selectedContact }, ({ id, favorite }) => ({
+      .changeContactsByQuery({ id: selectedContact }, ({ id, favorite }) => ({
         id,
         favorite,
         ...data

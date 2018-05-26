@@ -1,52 +1,57 @@
 import Store from './index';
 
-test('adding a contact adds it to the store', async () => {
+test('adding a contact automatically creates the new tags', async () => {
   var store = new Store();
 
-  var john = {
-    name: 'John',
-    email: 'john@yahulumail.com',
-    mobile: '999 - 33 22 11'
-  };
-  store.addContact(john);
-  var contents = await store.getAll();
-  expect(contents).toMatchObject([john]);
+  var leela = { name: 'Leela', tags: ['Work'] };
+  store.addContact(leela);
+
+  var allContacts = await store.getAllContacts();
+  var allTags = await store.getAllTags();
+  expect(allContacts).toContainEqual(
+    expect.objectContaining({ name: 'Leela' })
+  );
+  expect(allTags).toContainEqual(expect.objectContaining({ label: 'Work' }));
 });
 
-test('find() with regular expressions works', async () => {
+test('tags are retrievable by contact id', async () => {
   var store = new Store();
 
-  var john = {
-    name: 'John',
-    email: 'john@yahulumail.com',
-    mobile: '999 - 33 22 11'
-  };
-  store.addContact(john);
-  var searchResults = await store.find({ email: /huluMail/i });
-  expect(searchResults).toMatchObject(john);
-  var searchResults = await store.find({ email: /hulo/i });
-  expect(searchResults).toBeUndefined();
+  var leela = await store.addContact({
+    name: 'Leela',
+    tags: ['Work', 'Mutant']
+  });
+  var tags = await store.getTagsByContact(leela.id);
+
+  expect(tags).toContainEqual(expect.objectContaining({ label: 'Work' }));
+  expect(tags).toContainEqual(expect.objectContaining({ label: 'Mutant' }));
 });
 
-test('findAll() with regular expressions works', async () => {
+test('retrieving all contacts populates the entries with tags', async () => {
   var store = new Store();
 
-  var contacts = [
-    {
-      name: 'John',
-      email: 'john@yahulumail.com',
-      mobile: '999 - 33 22 11'
-    },
-    {
-      name: 'Marie',
-      email: 'marie@yahulumail.com'
-    }
-  ];
-  contacts.forEach(contact => store.addContact(contact));
+  var leela = await store.addContact({
+    name: 'Leela',
+    tags: ['Work']
+  });
+  var allContacts = await store.getAllContacts();
+  expect(allContacts[0]).toMatchObject({ name: 'Leela' });
+  expect(allContacts[0].tags).toContainEqual(
+    expect.objectContaining({ label: 'Work' })
+  );
+});
 
-  var searchResults = await store.findAll({ email: /yahulumail/ });
-  expect(searchResults).toContainEqual(expect.objectContaining(contacts[0]));
-  expect(searchResults).toContainEqual(expect.objectContaining(contacts[1]));
-  searchResults = await store.findAll({ name: /Bob/ });
-  expect(searchResults).toEqual([]);
+test('retrieving a contact by id populates it with tags', async () => {
+  var store = new Store();
+
+  var leela = await store.addContact({
+    name: 'Leela',
+    tags: ['Work', 'Mutant']
+  });
+
+  var result = await store.getContactById(leela.id);
+  expect(result).toMatchObject({ name: 'Leela' });
+  expect(result.tags).toContainEqual(
+    expect.objectContaining({ label: 'Work' })
+  );
 });
