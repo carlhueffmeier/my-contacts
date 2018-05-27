@@ -15,6 +15,7 @@ export default class Store {
   // Internal
   /////////////////////////////
 
+  // Populates contact with associated tags
   _populate(contact) {
     return this.getTagsByContact(contact.id).then(tags => ({
       ...contact,
@@ -26,9 +27,24 @@ export default class Store {
     return Promise.all(contacts.map(this._populate.bind(this)));
   }
 
+  // Returns neutral filter if tagId is undefined
+  _createTagFilter(tagId) {
+    var { contacts, contactTags } = this.storage;
+    if (!isDefined(tagId)) {
+      return Promise.resolve(() => true);
+    }
+    return contactTags
+      .findAll({ match: { tagId } })
+      .then(associations => associations.map(a => a.contactId))
+      .then(contactIds => new Set(contactIds))
+      .then(setOfIds => contact => setOfIds.has(contact.id));
+  }
+
   /////////////////////////////
-  // Queries
+  // Selectors
   /////////////////////////////
+
+  // All
 
   getAllContacts() {
     var { contacts } = this.storage;
@@ -40,10 +56,7 @@ export default class Store {
     return tags.getAll();
   }
 
-  getAllAssociations() {
-    var { contactTags } = this.storage;
-    return contactTags.getAll();
-  }
+  // By ID
 
   getContactById(id) {
     var { contacts } = this.storage;
@@ -55,10 +68,12 @@ export default class Store {
     return contacts.getById(id);
   }
 
+  // Associations
+
   getContactsByTag(tagId) {
     var { contacts, contactTags } = this.storage;
     return contactTags
-      .findAll({ tagId })
+      .findAll({ match: { tagId } })
       .then(associations => associations.map(a => a.contactId))
       .then(contactIds => contactIds.map(id => contacts.getById(id)))
       .then(p => Promise.all(p));
@@ -67,36 +82,43 @@ export default class Store {
   getTagsByContact(contactId) {
     var { contactTags, tags } = this.storage;
     return contactTags
-      .findAll({ contactId })
+      .findAll({ match: { contactId } })
       .then(associations => associations.map(a => a.tagId))
       .then(tagIds => tagIds.map(id => tags.getById(id)))
       .then(p => Promise.all(p));
   }
+
+  // Searching
 
   findContact(query) {
     var { contacts } = this.storage;
     return contacts.find(query);
   }
 
-  findAllContacts(query) {
+  findAllContacts({ tag, ...match }) {
     var { contacts } = this.storage;
-    return contacts.findAll(query);
+    return this._createTagFilter(tag).then(filter =>
+      contacts.findAll({ filter, match })
+    );
   }
 
   // Matches against the full name
-  findContactsByName(query) {
-    var re = new RegExp(query, 'i');
+  findContactsByName({ queryString, tag } = {}) {
+    var re = new RegExp(queryString, 'i');
     var { contacts } = this.storage;
-    return contacts
-      .getAll()
-      .then(allContacts =>
-        allContacts.filter(contact => re.test(getName(contact)))
-      );
+    console.log('finding by name');
+    return this._createTagFilter(tag)
+      .then(tagFilter => contact =>
+        tagFilter(contact) && re.test(getName(contact))
+      )
+      .then(filter => contacts.getAll({ filter }));
   }
 
   /////////////////////////////
   // Modification
   /////////////////////////////
+
+  // Add
 
   addContact(details) {
     var { contacts } = this.storage;
@@ -117,22 +139,28 @@ export default class Store {
       );
   }
 
+  // Remove
+
   removeContact(contactId) {
     var { contacts, contactTags } = this.storage;
     return contactTags
-      .findAndRemove({ contactId })
+      .findAndRemove({ match: { contactId } })
       .then(() => contacts.remove(contactId));
   }
 
   removeTag(tagId) {
     var { contactTags, tags } = this.storage;
-    return contactTags.findAndRemove({ tagId }).then(() => tags.remove(tagId));
+    return contactTags
+      .findAndRemove({ match: { tagId } })
+      .then(() => tags.remove(tagId));
   }
 
-  changeContactsByQuery(query, modifier) {
+  // Change
+
+  changeContactsByQuery(match, modifier) {
     var { contacts, contactTags, tags } = this.storage;
     return contacts
-      .findAll(query)
+      .findAll({ match })
       .then(matches =>
         matches.map(match => this.changeContact(match.id, modifier(match)))
       )
@@ -150,7 +178,7 @@ export default class Store {
   changeLabels(contactId, labels) {
     var { contactTags } = this.storage;
     return contactTags
-      .findAndRemove({ contactId })
+      .findAndRemove({ match: { contactId } })
       .then(() => this.addLabels(contactId, labels));
   }
 }

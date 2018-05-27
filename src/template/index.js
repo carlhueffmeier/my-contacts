@@ -19,7 +19,7 @@ export default class Template {
     });
   }
 
-  tagList({ tags, activeTag }) {
-    return renderTagList({ tags, activeTag });
+  tagList({ tags, selectedTag }) {
+    return renderTagList({ tags, selectedTag });
   }
 }

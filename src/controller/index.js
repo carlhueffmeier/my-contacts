@@ -7,6 +7,7 @@ export default class Controller {
     this.state = {
       query: '',
       selectedContact: undefined,
+      selectedTag: undefined,
       editing: false,
       menuOpen: false
     };
@@ -83,7 +84,11 @@ export default class Controller {
   }
 
   handleMenuShowTag(id) {
-    this.showContactsByTag(id);
+    if (id === this.state.selectedTag) {
+      this.deselectTag();
+    } else {
+      this.selectTag(id);
+    }
   }
 
   /////////////////////////////
@@ -102,7 +107,7 @@ export default class Controller {
   // Modal
 
   handleModalClick() {
-    this.deselectContact(); // TODO: duplicate render
+    this.deselectContact();
     this.setEditing(false);
   }
 
@@ -186,9 +191,9 @@ export default class Controller {
   }
 
   renderContactList() {
-    var { query } = this.state;
-    if (query.length > 0) {
-      this.showContactsBy(query);
+    var { selectedTag, query } = this.state;
+    if (isDefined(selectedTag) || query.length > 0) {
+      this.showContactsBy({ queryString: query, tag: selectedTag });
     } else {
       this.showAllContacts();
     }
@@ -210,7 +215,11 @@ export default class Controller {
 
   renderMenuContent() {
     var { store, view } = this;
-    store.getAllTags().then(tags => view.renderMenu({ tags }));
+    store
+      .getAllTags()
+      .then(tags =>
+        view.renderMenu({ tags, selectedTag: this.state.selectedTag })
+      );
   }
 
   /////////////////////////////
@@ -224,13 +233,6 @@ export default class Controller {
     var { store, view } = this;
     store
       .findContactsByName(query)
-      .then(contacts => view.renderContacts({ contacts }));
-  }
-
-  showContactsByTag(id) {
-    var { store, view } = this;
-    store
-      .getContactsByTag(id)
       .then(contacts => view.renderContacts({ contacts }));
   }
 
@@ -293,6 +295,16 @@ export default class Controller {
 
   selectContact(id) {
     this.state.selectedContact = id;
+    this.render();
+  }
+
+  selectTag(id) {
+    this.state.selectedTag = id;
+    this.render();
+  }
+
+  deselectTag() {
+    this.state.selectedTag = undefined;
     this.render();
   }
 

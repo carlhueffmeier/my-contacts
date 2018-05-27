@@ -41,10 +41,10 @@ test('searching multiple entries with regular expressions', async () => {
   var characters = [{ name: 'Leela' }, { name: 'Linda' }];
   characters.forEach(c => contacts.add(c));
 
-  var result = await contacts.findAll({ name: /^L\w{4}/ });
+  var result = await contacts.findAll({ match: { name: /^L\w{4}/ } });
   expect(result).toContainEqual(expect.objectContaining(characters[0]));
   expect(result).toContainEqual(expect.objectContaining(characters[1]));
-  result = await contacts.findAll({ name: /Zoidberg/ });
+  result = await contacts.findAll({ match: { name: /Zoidberg/ } });
   expect(result).toEqual([]);
 });
 

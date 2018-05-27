@@ -1,4 +1,4 @@
-import { isDefined, omit, createQueryMatcher } from '../helper/utils';
+import { isDefined, omit, createObjectMatcher } from '../helper/utils';
 import uuidv4 from 'uuid/v4';
 
 export default class Dataset {
@@ -56,19 +56,29 @@ export default class Dataset {
     return Promise.resolve(this.byId[id]);
   }
 
-  getAll() {
-    return new Promise(resolve =>
-      resolve(this.allIds.map(id => this.byId[id]))
-    );
+  getAll({ filter } = {}) {
+    return Promise.resolve(this.allIds)
+      .then(ids => ids.map(id => this.byId[id]))
+      .then(
+        allEntries =>
+          isDefined(filter) ? allEntries.filter(filter) : allEntries
+      );
   }
 
-  find(query) {
-    var matcher = createQueryMatcher(query);
+  find(match) {
+    var matcher = createObjectMatcher(match);
     return this.getAll().then(allEntries => allEntries.find(matcher));
   }
 
+  findAll({ match, filter } = {}) {
+    var matcher = createObjectMatcher(match);
+    return this.getAll({ filter }).then(allEntries =>
+      allEntries.filter(entry => matcher(entry))
+    );
+  }
+
   findOrCreate(details) {
-    var matcher = createQueryMatcher(details);
+    var matcher = createObjectMatcher(details);
     var allEntries = this.allIds.map(id => this.byId[id]);
     var searchResult = allEntries.find(matcher);
     if (isDefined(searchResult)) {
@@ -78,19 +88,9 @@ export default class Dataset {
     }
   }
 
-  findAndRemove(details) {
-    return this.findAll(details).then(results =>
+  findAndRemove(query) {
+    return this.findAll(query).then(results =>
       results.map(entry => this.remove(entry.id))
     );
-  }
-
-  findAll(query) {
-    var matcher = createQueryMatcher(query);
-    return this.getAll().then(allEntries => allEntries.filter(matcher));
-  }
-
-  exists(query) {
-    var matcher = createQueryMatcher(query);
-    return this.getAll().then(allEntries => allEntries.some(matcher));
   }
 }

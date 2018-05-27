@@ -17,9 +17,9 @@ export function renderIcon(type) {
 
 export function bindToParent({ parent, callback, selector, type = 'click' }) {
   parent.addEventListener(type, event => {
-    var searchResult = event.target.closest(selector);
-    if (searchResult) {
-      callback(event);
+    var targetElement = event.target.closest(selector);
+    if (targetElement) {
+      callback(event, targetElement);
       console.log(`[${type}] ${selector}`);
     }
   });
@@ -44,4 +44,18 @@ export function objectToHtmlAttributes(props) {
       return `${key}="${value}"`;
     })
     .join(' ');
+}
+
+export function createRenderBuffer(element) {
+  var currentHtml = element.innerHTML;
+  return {
+    update: html => {
+      if (html !== currentHtml) {
+        element.innerHTML = html;
+        currentHtml = html;
+        return true;
+      }
+      return false;
+    }
+  };
 }

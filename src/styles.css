@@ -54,7 +54,7 @@ a {
   display: flex;
   flex: 1;
   overflow: hidden;
-  transition: opacity 1s ease-in 0.1s;
+  transition: opacity 0.3s ease-in 0.1s;
 }
 
 .app--menu-visible .app__main {
@@ -154,6 +154,7 @@ a {
   overflow: hidden;
   font-size: 1.5rem;
   cursor: pointer;
+  z-index: 10;
 }
 
 .add-contact__button:focus,
@@ -286,6 +287,7 @@ a {
   padding: 0;
   flex: 1;
   display: flex;
+  cursor: pointer;
 }
 
 .menu__item::before {
@@ -300,7 +302,7 @@ a {
   transition: transform 0.1s, width 0.2s cubic-bezier(1, 0, 0, 1) 0.1s;
 }
 
-.menu__item--active,
+.menu__item--active::before,
 .menu__item:hover::before {
   transform: scaleY(1);
   width: 100%;

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "clean": "rm -r dist",
-    "upload": "scp -P18765 -r dist carlh602@carlh.de:public_html/contacts",
+    "upload": "scp -P18765 dist/* carlh602@carlh.de:public_html/contacts",
     "deploy": "run-s build upload",
     "start": "webpack-dev-server",
     "test": "jest --watchAll",

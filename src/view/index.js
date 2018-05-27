@@ -3,33 +3,51 @@ import {
   encodeInputName,
   decodeInputName
 } from '../helper/inputNames';
-import { toggleClass, bindToParent } from '../helper/dom';
+import { toggleClass, bindToParent, createRenderBuffer } from '../helper/dom';
 import textareaAutoResize from '../helper/textareaAutoResize';
 
 export default class View {
   constructor(template) {
     this.template = template;
 
+    // Container
     this.$app = document.querySelector('.app');
-    this.$contactList = document.querySelector('.contact-list');
-    this.$contactAdd = document.querySelector('.add-contact__button');
-    this.$menuToggle = document.querySelector('.header__menu-button');
-    this.$menuList = document.querySelector('.menu__list');
+    this.$modalBox = document.querySelector('.app__modal');
     this.$searchBox = document.querySelector('.search');
+
+    // Render
+    this.$menu = document.querySelector('.menu__list');
+    this.$contactList = document.querySelector('.contact-list');
+    this.$contactDetails = document.querySelector('.contact-details');
+    this.$contactEditDialog = document.querySelector('.contact-edit');
+
+    // Elements
+    this.$menuToggle = document.querySelector('.header__menu-button');
+    this.$contactAdd = document.querySelector('.add-contact__button');
     this.$searchOpenButton = document.querySelector(
       '.header__open-search-button'
     );
     this.$searchClose = document.querySelector('.search__close-button');
     this.$searchClear = document.querySelector('.search__clear-button');
     this.$searchInput = document.querySelector('.search__text-input');
-    this.$modalBox = document.querySelector('.app__modal');
-    this.$contactDetails = document.querySelector('.contact-details');
-    this.$contactEditDialog = document.querySelector('.contact-edit');
+
+    this._initializeRenderBuffer();
   }
 
   /////////////////////////////
   // Private methods
   /////////////////////////////
+
+  // Render buffers prevent redrawing when no changes occurred;
+  _initializeRenderBuffer() {
+    this.renderBuffer = {
+      contactList: createRenderBuffer(this.$contactList),
+      contactDetails: createRenderBuffer(this.$contactDetails),
+      editDialog: createRenderBuffer(this.$contactEditDialog),
+      menu: createRenderBuffer(this.$menu)
+    };
+  }
+
   _activateTextareaAutoResize() {
     var textareas = document.querySelectorAll('.textarea--auto-resize');
     textareaAutoResize(textareas);
@@ -41,6 +59,7 @@ export default class View {
 
   /////////////////////////////
   // Modal
+
   bindModalClick(callback) {
     this.$modalBox.addEventListener('click', event => {
       if (event.target === this.$modalBox) {
@@ -51,27 +70,30 @@ export default class View {
 
   /////////////////////////////
   // Primary Actions
+
   bindMenuToggle(callback) {
     this.$menuToggle.addEventListener('click', () => callback());
   }
 
   bindMenuShowTag(callback) {
     bindToParent({
-      parent: this.$menuList,
-      selector: '.menu__link--tag',
-      callback: ({ target: { dataset: { tagId } = {} } = {} } = {}) =>
-        callback(tagId)
+      parent: this.$menu,
+      selector: '.menu__item',
+      callback: (event, menuItem) => {
+        var tagLink = menuItem.querySelector('.menu__link--tag');
+        if (tagLink) {
+          callback(tagLink.dataset['tagId']);
+        }
+      }
     });
   }
 
   bindContactShowDetails(callback) {
-    this.$contactList.addEventListener('click', event => {
-      var closestContact = event.target.closest(
-        '.contact-list__contact-element'
-      );
-      if (closestContact) {
-        callback(closestContact.dataset['contactId']);
-      }
+    bindToParent({
+      parent: this.$contactList,
+      selector: '.contact-list__contact-element',
+      callback: (event, contactItem) =>
+        callback(contactItem.dataset['contactId'])
     });
   }
 
@@ -81,6 +103,7 @@ export default class View {
 
   /////////////////////////////
   // Search
+
   bindSearchOpen(callback) {
     this.$searchOpenButton.addEventListener('click', () => callback());
   }
@@ -101,6 +124,7 @@ export default class View {
 
   /////////////////////////////
   // Contact Details
+
   bindContactDetailsClose(callback) {
     bindToParent({
       parent: this.$contactDetails,
@@ -135,6 +159,7 @@ export default class View {
 
   /////////////////////////////
   // Contact Edit
+
   bindContactEditSave(callback) {
     bindToParent({
       parent: this.$contactEditDialog,
@@ -170,6 +195,7 @@ export default class View {
   /////////////////////////////
   // Retrieve DOM information
   /////////////////////////////
+
   getFormData() {
     var allInputs = this.$contactEditDialog.querySelectorAll(
       '.contact-edit__input'
@@ -189,26 +215,34 @@ export default class View {
   /////////////////////////////
   // Render methods
   /////////////////////////////
+
   renderContacts(props) {
-    this.$contactList.innerHTML = this.template.contactList(props);
+    var newHtml = this.template.contactList(props);
+    this.renderBuffer.contactList.update(newHtml);
   }
 
   renderContactDetails(props) {
-    this.$contactDetails.innerHTML = this.template.contactDetails(props);
+    var newHtml = this.template.contactDetails(props);
+    this.renderBuffer.contactDetails.update(newHtml);
   }
 
   renderContactEdit(props) {
-    this.$contactEditDialog.innerHTML = this.template.contactEdit(props);
-    this._activateTextareaAutoResize();
+    var newHtml = this.template.contactEdit(props);
+    var didRepaint = this.renderBuffer.editDialog.update(newHtml);
+    if (didRepaint) {
+      this._activateTextareaAutoResize();
+    }
   }
 
   renderMenu(props) {
-    this.$menuList.innerHTML = this.template.tagList(props);
+    var newHtml = this.template.tagList(props);
+    this.renderBuffer.menu.update(newHtml);
   }
 
   /////////////////////////////
   // DOM modification
   /////////////////////////////
+
   toggleMenuVisible(on) {
     toggleClass(this.$app, 'app--menu-visible', on);
   }

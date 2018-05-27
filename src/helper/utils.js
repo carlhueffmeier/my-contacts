@@ -53,12 +53,21 @@ export function debounce(f, wait) {
 }
 
 // For convenient use in Array.filter
-export function createQueryMatcher(query) {
+export function createObjectMatcher(query) {
   return obj =>
-    Object.keys(query).every(
-      key =>
-        isRegexp(query[key])
-          ? query[key].test(obj[key])
-          : query[key] === obj[key]
-    );
+    Object.keys(query).every(key => {
+      var criterium = query[key];
+      var subject = obj[key];
+
+      if (isRegexp(criterium)) {
+        return criterium.test(subject);
+      } else if (Array.isArray(criterium)) {
+        return isSubArray(criterium, subject);
+      }
+      return criterium === subject;
+    });
+}
+
+export function isSubArray(sub, main) {
+  return sub.every(item => main.includes(item));
 }
