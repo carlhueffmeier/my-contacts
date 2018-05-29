@@ -5,10 +5,12 @@ import Controller from './controller';
 import createSampleData from './data/createSampleData';
 import './styles.css';
 
+var publicFolder = process.env.NODE_ENV === 'production' ? '/contacts/' : '/';
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
-      .register('/contacts/service-worker.js')
+      .register(`${publicFolder}service-worker.js`)
       .then(registration => {
         console.log('Service worker registered: ', registration);
       })
