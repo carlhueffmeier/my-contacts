@@ -15,16 +15,30 @@ export default function contactDetails({ contact }) {
 function renderContactDetailsTopbar({ favorite } = {}) {
   return trim`
     <div class="contact-details__topbar">
-      <button class="contact-details__close-button button">
+      <button
+        class="contact-details__close-button button"
+        aria-label="Close contact details"
+      >
         ${renderIcon('icon-close')}   
       </button>
-      <button class="contact-details__favorite-button button">
+      <button
+        class="contact-details__favorite-button button"
+        aria-label="Contact currently marked as ${
+          favorite ? 'favorite' : 'not favorite'
+        }. Toggle it ${favorite ? 'off' : 'on'}"
+      >
         ${renderIcon(favorite ? 'icon-star' : 'icon-star_border')}
       </button>
-      <button class="contact-details__edit-button button">
+      <button
+        class="contact-details__edit-button button"
+        aria-label="Turn on edit mode"
+      >
         ${renderIcon('icon-mode_edit')}            
       </button>
-      <button class="contact-details__delete-button button">
+      <button
+        class="contact-details__delete-button button"
+        aria-label="Delete contact"
+      >
         ${renderIcon('icon-delete')}            
       </button>
     </div>`;

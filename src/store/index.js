@@ -106,7 +106,6 @@ export default class Store {
   findContactsByName({ queryString, tag } = {}) {
     var re = new RegExp(queryString, 'i');
     var { contacts } = this.storage;
-    console.log('finding by name');
     return this._createTagFilter(tag)
       .then(tagFilter => contact =>
         tagFilter(contact) && re.test(getName(contact))

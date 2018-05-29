@@ -24,8 +24,8 @@ export default function renderContactEdit({
       </ul>
     </form>
     <div class="contact-edit__controlbar">
-      <button class="contact-edit__cancel-button">Cancel</button>
-      <button class="contact-edit__save-button">Save</button>
+      <button class="contact-edit__cancel-button" aria-label="Cancel">Cancel</button>
+      <button class="contact-edit__save-button" aria-label="Save changes">Save</button>
     </div>`;
 }
 
@@ -84,6 +84,7 @@ function renderTextarea({ key, value = '' }) {
       name="${encodeInputName({ key })}"
       placeholder="${getFieldDescription(key)}"
       rows="1"
+      aria-label="${key}"
     >${value}</textarea>`;
 }
 
@@ -138,10 +139,10 @@ function renderInputListItem({ item = {}, index, key }) {
           })
         )
         .join('')}
-      <button type="button" class="contact-edit__delete-entry-button">
+      <button type="button" class="contact-edit__delete-entry-button" aria-label="Remove row">
         ${renderIcon('icon-cancel')}
       </button>
-      <button type="button" class="contact-edit__add-entry-button">
+      <button type="button" class="contact-edit__add-entry-button" aria-label="Add row">
         ${renderIcon('icon-add_circle')}
       </button>                 
     </li>`;
@@ -155,5 +156,6 @@ function renderInput({ name, placeholder, value, props = {} }) {
       placeholder="${placeholder}"
       ${value ? `value="${value}"` : ''}
       ${objectToHtmlAttributes(props)}
+      aria-label="${placeholder}"
     >`;
 }

@@ -4,6 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
+  <meta name="Description" content="Simple contact manager using HTML, CSS and vanilla JavaScript.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
   <title>Contacts</title>
 </head>
@@ -116,7 +119,7 @@
           <ul class="menu__list"></ul>
         </nav>
 
-        <button class="add-contact__button">
+        <button class="add-contact__button" aria-label="Add new contact">
           <div class="add-contact__icon icon-container">
             <svg class="icon">
               <use xlink:href="#icon-add"></use>
@@ -127,7 +130,7 @@
         <header class="header">
           <div class="header__left">
             <div class="header__menu">
-              <button class="header__menu-button button">
+              <button class="header__menu-button button" aria-label="Toggle menu">
                 <svg class="icon">
                   <use xlink:href="#icon-menu"></use>
                 </svg>
@@ -139,15 +142,15 @@
           </div>
           <div class="header__search">
             <form class="search">
-              <button type="button" class="search__close-button button">
+              <button type="button" class="search__close-button button" aria-label="Hide search field">
                 <div class="search__close-icon icon-container">
                   <svg class="icon">
                     <use xlink:href="#icon-arrow_back"></use>
                   </svg>
                 </div>
               </button>
-              <input class="search__text-input" placeholder="Search contacts">
-              <button type="reset" class="search__clear-button button">
+              <input class="search__text-input" placeholder="Search contacts" aria-label="Filter list of contacts">
+              <button type="reset" class="search__clear-button button" aria-label="Clear search field">
                 <div class="search__clear-icon icon-container">
                   <svg class="icon">
                     <use xlink:href="#icon-close"></use>
@@ -155,7 +158,7 @@
                 </div>
               </button>
             </form>
-            <button class="header__open-search-button button">
+            <button class="header__open-search-button button" aria-label="Reveal search field">
               <svg class="icon">
                 <use xlink:href="#icon-search"></use>
               </svg>

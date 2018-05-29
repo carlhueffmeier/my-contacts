@@ -5,6 +5,19 @@ import Controller from './controller';
 import createSampleData from './data/createSampleData';
 import './styles.css';
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/contacts/service-worker.js')
+      .then(registration => {
+        console.log('Service worker registered: ', registration);
+      })
+      .catch(registrationError => {
+        console.log('Service worker registration failed: ', registrationError);
+      });
+  });
+}
+
 var store = new Store();
 var template = new Template();
 var view = new View(template);

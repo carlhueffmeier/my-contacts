@@ -11,7 +11,8 @@ export default [
     voiceActor: 'Billy West',
     notes:
       'Father of Amy Wong, and husband of Inez Wong. Wealthy owner of Western Hemisphere of Mars. Main antagonist of Into the Wild Green Yonder',
-    firstEpisode: 'A Flight to Remember'
+    firstEpisode: 'A Flight to Remember',
+    label: ['Crew Relatives 👨‍👩‍👧‍👦']
   },
   {
     firstName: 'Inez',
@@ -19,7 +20,8 @@ export default [
     voiceActor: 'Lauren Tom',
     notes:
       'Mother of Amy Wong, and wife of Leo Wong. Wealthy owner of Western Hemisphere of Mars.',
-    firstEpisode: 'A Flight to Remember'
+    firstEpisode: 'A Flight to Remember',
+    label: ['Crew Relatives 👨‍👩‍👧‍👦']
   },
   {
     firstName: 'Dr. Ogden',
@@ -49,14 +51,16 @@ export default [
     lastName: 'Turanga',
     voiceActor: 'Tress MacNeille',
     notes: "Leela's mother. Lives in the sewers, due to being a mutant.",
-    firstEpisode: 'I Second That Emotion'
+    firstEpisode: 'I Second That Emotion',
+    label: ['Crew Relatives 👨‍👩‍👧‍👦']
   },
   {
     firstName: 'Morris',
     lastName: 'Turanga',
     voiceActor: 'David Herman',
     notes: "Leela's father. Lives in the sewers, due to being a mutant.",
-    firstEpisode: 'I Second That Emotion'
+    firstEpisode: 'I Second That Emotion',
+    label: ['Crew Relatives 👨‍👩‍👧‍👦']
   },
   {
     firstName: 'Leela',
@@ -64,7 +68,8 @@ export default [
     voiceActor: 'Katey Sagal',
     notes:
       'Mutant cyclops. Captain of the Planet Express Ship. Love interest of Fry.',
-    firstEpisode: 'Space Pilot 3000'
+    firstEpisode: 'Space Pilot 3000',
+    label: ['Planet Express 🚀']
   },
   {
     firstName: 'Tinny Tim',
@@ -101,7 +106,8 @@ export default [
     lastName: '',
     voiceActor: 'David Herman',
     notes: 'Janitor at Planet Express.',
-    firstEpisode: 'A Fishful of Dollars'
+    firstEpisode: 'A Fishful of Dollars',
+    label: ['Planet Express 🚀']
   },
   {
     firstName: 'Sal',
@@ -117,14 +123,16 @@ export default [
     voiceActor: 'John Goodman/John DiMaggio',
     notes:
       'Robotic personification of Santa Claus, designed to give out presents to those it deems "good". Invariably judges everyone except Zoidberg as "naughty" due to a programming error.',
-    firstEpisode: 'Xmas Story'
+    firstEpisode: 'Xmas Story',
+    label: ['Evil 😈']
   },
   {
     firstName: 'Robot Devil',
     lastName: '',
     voiceActor: 'Dan Castellaneta/Maurice LaMarche',
     notes: 'Robotic personification of the devil, and ruler of Robot Hell.',
-    firstEpisode: 'Hell Is Other Robots'
+    firstEpisode: 'Hell Is Other Robots',
+    label: ['Evil 😈']
   },
   {
     firstName: 'Roberto',
@@ -132,7 +140,8 @@ export default [
     voiceActor: 'David Herman',
     notes:
       'Criminally insane, psychotic robot. Obsessed with stabbing people in different places with different objects.',
-    firstEpisode: 'Insane in the Mainframe'
+    firstEpisode: 'Insane in the Mainframe',
+    label: ['Evil 😈']
   },
   {
     firstName: 'Professor Hubert J.',
@@ -140,7 +149,8 @@ export default [
     voiceActor: 'Billy West',
     notes:
       'Many times great-nephew of Fry. CEO and owner of Planet Express delivery company. Tenured professor of Mars University.',
-    firstEpisode: 'Space Pilot 3000'
+    firstEpisode: 'Space Pilot 3000',
+    label: ['Planet Express 🚀']
   },
   {
     firstName: 'Reverend Lionel Preacherbot',
@@ -155,7 +165,8 @@ export default [
     voiceActor: 'Billy West',
     notes:
       'Protagonist, from the 20th Century. Delivery boy. Many times great-uncle to Professor Hubert Farnsworth. Suitor of Leela.',
-    firstEpisode: 'Space Pilot 3000'
+    firstEpisode: 'Space Pilot 3000',
+    label: ['Planet Express 🚀', '20th century 🌎']
   },
   {
     firstName: 'Petunia',
@@ -178,7 +189,8 @@ export default [
     voiceActor: 'John DiMaggio',
     notes:
       'Owner of "Panucci\'s Pizza" and the former boss of Fry, in the 20th century.',
-    firstEpisode: 'Space Pilot 3000'
+    firstEpisode: 'Space Pilot 3000',
+    label: ['20th century 🌎']
   },
   {
     firstName: "Richard Nixon's Head",
@@ -186,14 +198,16 @@ export default [
     voiceActor: 'Billy West',
     notes:
       'The head of Richard Nixon. Former President of the United States. Now incumbent President of Earth.',
-    firstEpisode: 'Space Pilot 3000'
+    firstEpisode: 'Space Pilot 3000',
+    label: ['20th century 🌎']
   },
   {
     firstName: 'Lord Nibbler',
     lastName: '',
     voiceActor: 'Frank Welker',
     notes: "Nibblonian ambassador to Earth. Poses as Leela's pet.",
-    firstEpisode: "Love's Labours Lost in Space"
+    firstEpisode: "Love's Labours Lost in Space",
+    label: ['Planet Express 🚀']
   },
   {
     firstName: 'Randy',
@@ -208,7 +222,8 @@ export default [
     voiceActor: 'John DiMaggio',
     notes:
       'A member of the Robot Mafia, who wears a mouse and mousepad around his neck.',
-    firstEpisode: 'Bender Gets Made'
+    firstEpisode: 'Bender Gets Made',
+    label: ['Evil 😈']
   },
   {
     firstName: 'Morbo the Annihilator',
@@ -224,7 +239,8 @@ export default [
     voiceActor: 'Tress MacNeille',
     notes:
       "Antagonist. Owner of MomCorp, and Professor Farnsworth's former lover.",
-    firstEpisode: 'A Fishful of Dollars'
+    firstEpisode: 'A Fishful of Dollars',
+    label: ['Evil 😈']
   },
   {
     firstName: 'Michelle',
@@ -232,14 +248,16 @@ export default [
     voiceActor: 'Kath Soucie/Sarah Silverman',
     notes:
       'Former girlfriend of Fry, from 20th century. Later freezes herself until 30th century.',
-    firstEpisode: 'Space Pilot 3000'
+    firstEpisode: 'Space Pilot 3000',
+    label: ['20th century 🌎']
   },
   {
     firstName: 'Hattie',
     lastName: 'McDoogal',
     voiceActor: 'Tress MacNeille',
     notes: 'A twice-widowed landlady. Shareholder of Planet Express.',
-    firstEpisode: 'I, Roommate'
+    firstEpisode: 'I, Roommate',
+    label: ['Planet Express 🚀']
   },
   {
     firstName: 'Lrrr',
@@ -268,7 +286,8 @@ export default [
     voiceActor: 'Maurice LaMarche',
     notes:
       'Amphibiosion. Fourth Lieutenant of the Nimbus spaceship. Husband of Amy Wong.',
-    firstEpisode: "Love's Labours Lost in Space"
+    firstEpisode: "Love's Labours Lost in Space",
+    label: ['Crew Relatives 👨‍👩‍👧‍👦']
   },
   {
     firstName: 'Hypnotoad',
@@ -297,7 +316,8 @@ export default [
     lastName: 'Conrad',
     voiceActor: 'Phil LaMarr',
     notes: 'Bureaucrat and accountant of Planet Express.',
-    firstEpisode: 'The Series Has Landed'
+    firstEpisode: 'The Series Has Landed',
+    label: ['Planet Express 🚀']
   },
   {
     firstName: 'Hedonismbot',
@@ -312,7 +332,8 @@ export default [
     voiceActor: 'Stephen Hawking',
     notes:
       'Member of the "Vice Presidential Action Rangers", and celebrated scientist.',
-    firstEpisode: 'Anthology of Interest I'
+    firstEpisode: 'Anthology of Interest I',
+    label: ['20th century 🌎']
   },
   {
     firstName: 'Gypsy-bot',
@@ -327,7 +348,8 @@ export default [
     voiceActor: 'Al Gore',
     notes:
       'Former Vice President of the United States. Member of the "Vice Presidential Action Rangers", and First Emperor of the Moon.',
-    firstEpisode: 'Anthology of Interest I'
+    firstEpisode: 'Anthology of Interest I',
+    label: ['20th century 🌎']
   },
   {
     firstName: 'Flexo',
@@ -335,14 +357,16 @@ export default [
     voiceActor: 'John DiMaggio',
     notes:
       'A Bending Unit from the same assembly line as Bender. Almost identical in appearance, voice and personality.',
-    firstEpisode: 'The Lesser of Two Evils'
+    firstEpisode: 'The Lesser of Two Evils',
+    label: ['Crew Relatives 👨‍👩‍👧‍👦']
   },
   {
     firstName: 'Cubert',
     lastName: 'Farnsworth',
     voiceActor: 'Kath Soucie',
     notes: "Professor Farnsworth's clone.",
-    firstEpisode: 'A Clone of My Own'
+    firstEpisode: 'A Clone of My Own',
+    label: ['Crew Relatives 👨‍👩‍👧‍👦']
   },
   {
     firstName: 'Elzar',
@@ -356,7 +380,8 @@ export default [
     lastName: '',
     voiceActor: 'Maurice LaMarche',
     notes: 'Head of the Robot Mafia.',
-    firstEpisode: 'Bender Gets Made'
+    firstEpisode: 'Bender Gets Made',
+    label: ['Evil 😈']
   },
   {
     firstName: 'Doctor John',
@@ -364,7 +389,8 @@ export default [
     voiceActor: 'Billy West',
     notes:
       "Alien from Decapod 10. Planet Express' staff doctor and steward. Has a medical degree and Ph.D in art history.",
-    firstEpisode: 'The Series Has Landed'
+    firstEpisode: 'The Series Has Landed',
+    label: ['Planet Express 🚀']
   },
   {
     firstName: 'The Crushinator',
@@ -379,14 +405,16 @@ export default [
     voiceActor: 'Dawnn Lewis',
     notes:
       'Wife of Hermes Conrad, mother of Dwight Conrad. Former wife of Barbados Slim.',
-    firstEpisode: 'A Flight To Remember'
+    firstEpisode: 'A Flight To Remember',
+    label: ['Crew Relatives 👨‍👩‍👧‍👦']
   },
   {
     firstName: 'Dwight',
     lastName: 'Conrad',
     voiceActor: 'Bumper Robinson/Phil LaMarr',
     notes: 'Son of Hermes and LaBarbara Conrad.',
-    firstEpisode: 'The Route of All Evil'
+    firstEpisode: 'The Route of All Evil',
+    label: ['Crew Relatives 👨‍👩‍👧‍👦']
   },
   {
     firstName: 'Clamps',
@@ -394,7 +422,8 @@ export default [
     voiceActor: 'Maurice LaMarche',
     notes:
       'An unstable member of the Robot Mafia, obsessed with using the clamps that form his hands.',
-    firstEpisode: 'Bender Gets Made'
+    firstEpisode: 'Bender Gets Made',
+    label: ['Evil 😈']
   },
   {
     firstName: 'Chanukah Zombie',
@@ -432,7 +461,8 @@ export default [
     voiceActor: 'n/a',
     notes:
       'Small, parasitic aliens who attach themselves to the heads of intelligent beings and control them.',
-    firstEpisode: 'A Head in the Polls'
+    firstEpisode: 'A Head in the Polls',
+    label: ['Evil 😈']
   },
   {
     firstName: 'Boxy',
@@ -448,7 +478,8 @@ export default [
     voiceActor: 'John DiMaggio',
     notes:
       "A kleptomaniacal, lazy, cigar-smoking, heavy-drinking robot who is Fry's best friend. Built in Tijuana, Mexico, he is the Planet Express Ship's cook.",
-    firstEpisode: 'Space Pilot 3000'
+    firstEpisode: 'Space Pilot 3000',
+    label: ['Planet Express 🚀']
   },
   {
     firstName: 'Antonio',
@@ -462,7 +493,8 @@ export default [
     lastName: 'Wong',
     voiceActor: 'Lauren Tom',
     notes: 'Chinese-Martian intern at Planet Express. Fonfon Ru of Kif Kroker.',
-    firstEpisode: 'The Series Has Landed'
+    firstEpisode: 'The Series Has Landed',
+    label: ['Planet Express 🚀']
   },
   {
     firstName: 'Headless Body of Agnew',
@@ -470,7 +502,8 @@ export default [
     voiceActor: 'Maurice LaMarche',
     notes:
       "The headless body of Spiro Agnew, former Vice President of the United States. Incumbent Vice President of Earth and aide to Richard Nixon's Head.",
-    firstEpisode: 'Space Pilot 3000'
+    firstEpisode: 'Space Pilot 3000',
+    label: ['20th century 🌎']
   },
   {
     firstName: 'Abner',

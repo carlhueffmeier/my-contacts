@@ -47,7 +47,7 @@ a {
 }
 
 .app--menu-visible {
-  transform: translateX(10rem);
+  transform: translateX(15rem);
 }
 
 .app__main {
@@ -88,6 +88,10 @@ a {
 ****************************************/
 .visible.visible {
   visibility: visible;
+}
+
+.hidden {
+  display: none;
 }
 
 .textarea--auto-resize {
@@ -254,8 +258,8 @@ a {
 .menu {
   position: absolute;
   top: 0;
-  left: -10rem;
-  width: 10rem;
+  left: -15rem;
+  width: 15rem;
   height: 100%;
   background-color: white;
   z-index: 100;

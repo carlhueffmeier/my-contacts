@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "clean": "rm -r dist",
-    "upload": "scp -P18765 dist/* carlh602@carlh.de:public_html/contacts",
+    "upload": "scp -r -P18765 dist/* carlh602@carlh.de:public_html/contacts",
     "deploy": "run-s build upload",
     "start": "webpack-dev-server",
     "test": "jest --watchAll",
@@ -29,6 +29,7 @@
     "babel-preset-env": "^1.6.1",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.11",
+    "favicons-webpack-plugin": "0.0.9",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^22.4.3",
     "mini-css-extract-plugin": "^0.4.0",
@@ -36,7 +37,9 @@
     "style-loader": "^0.21.0",
     "webpack": "^4.8.1",
     "webpack-cli": "^2.1.3",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.4",
+    "webpack-pwa-manifest": "^3.6.2",
+    "workbox-webpack-plugin": "^3.2.0"
   },
   "dependencies": {
     "dompurify": "^1.0.4",
