@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "clean": "rm -r dist",
-    "upload": "scp -r -P18765 dist/* carlh602@carlh.de:public_html/contacts",
+    "upload": "scp -r dist/* carlh.de:public_html/contacts",
     "deploy": "run-s build upload",
     "start": "webpack-dev-server --config webpack.dev.js",
     "test": "jest --watchAll",
