@@ -1,9 +1,10 @@
+import { $, $$ } from '../helper/bling';
+import { toggleClass, bindToParent, createRenderBuffer } from '../helper/dom';
 import {
   serializeInputs,
   encodeInputName,
   decodeInputName
 } from '../helper/inputNames';
-import { toggleClass, bindToParent, createRenderBuffer } from '../helper/dom';
 import textareaAutoResize from '../helper/textareaAutoResize';
 
 export default class View {
@@ -11,25 +12,23 @@ export default class View {
     this.template = template;
 
     // Container
-    this.$app = document.querySelector('.app');
-    this.$modalBox = document.querySelector('.app__modal');
-    this.$searchBox = document.querySelector('.search');
+    this.$app = $('.app');
+    this.$modalBox = $('.app__modal');
+    this.$searchBox = $('.search');
 
     // Render
-    this.$menu = document.querySelector('.menu__list');
-    this.$contactList = document.querySelector('.contact-list');
-    this.$contactDetails = document.querySelector('.contact-details');
-    this.$contactEditDialog = document.querySelector('.contact-edit');
+    this.$menu = $('.menu__list');
+    this.$contactList = $('.contact-list');
+    this.$contactDetails = $('.contact-details');
+    this.$contactEditDialog = $('.contact-edit');
 
     // Elements
-    this.$menuToggle = document.querySelector('.header__menu-button');
-    this.$contactAdd = document.querySelector('.add-contact__button');
-    this.$searchOpenButton = document.querySelector(
-      '.header__open-search-button'
-    );
-    this.$searchClose = document.querySelector('.search__close-button');
-    this.$searchClear = document.querySelector('.search__clear-button');
-    this.$searchInput = document.querySelector('.search__text-input');
+    this.$menuToggle = $('.header__menu-button');
+    this.$contactAdd = $('.add-contact__button');
+    this.$searchOpenButton = $('.header__open-search-button');
+    this.$searchClose = $('.search__close-button');
+    this.$searchClear = $('.search__clear-button');
+    this.$searchInput = $('.search__text-input');
 
     this._initializeRenderBuffer();
   }
@@ -49,7 +48,7 @@ export default class View {
   }
 
   _activateTextareaAutoResize() {
-    var textareas = document.querySelectorAll('.textarea--auto-resize');
+    var textareas = $$('.textarea--auto-resize');
     textareaAutoResize(textareas);
   }
 
@@ -61,7 +60,7 @@ export default class View {
   // Modal
 
   bindModalClick(callback) {
-    this.$modalBox.addEventListener('click', event => {
+    this.$modalBox.on('click', event => {
       if (event.target === this.$modalBox) {
         callback();
       }
@@ -72,7 +71,7 @@ export default class View {
   // Primary Actions
 
   bindMenuToggle(callback) {
-    this.$menuToggle.addEventListener('click', () => callback());
+    this.$menuToggle.on('click', () => callback());
   }
 
   bindMenuShowTag(callback) {
@@ -98,28 +97,26 @@ export default class View {
   }
 
   bindContactAdd(callback) {
-    this.$contactAdd.addEventListener('click', () => callback());
+    this.$contactAdd.on('click', () => callback());
   }
 
   /////////////////////////////
   // Search
 
   bindSearchOpen(callback) {
-    this.$searchOpenButton.addEventListener('click', () => callback());
+    this.$searchOpenButton.on('click', () => callback());
   }
 
   bindSearchClose(callback) {
-    this.$searchClose.addEventListener('click', () => callback());
+    this.$searchClose.on('click', () => callback());
   }
 
   bindSearchClear(callback) {
-    this.$searchClear.addEventListener('click', () => callback());
+    this.$searchClear.on('click', () => callback());
   }
 
   bindSearchQueryChange(callback) {
-    this.$searchInput.addEventListener('input', event =>
-      callback(event.target.value)
-    );
+    this.$searchInput.on('input', event => callback(event.target.value));
   }
 
   /////////////////////////////
@@ -272,7 +269,7 @@ export default class View {
   }
 
   toggleContactEditValidation(on) {
-    var form = document.querySelector('.contact-edit__form');
+    var form = $('.contact-edit__form');
     toggleClass(form, 'form--show-validation-results', on);
   }
 

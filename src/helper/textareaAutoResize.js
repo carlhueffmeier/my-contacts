@@ -18,8 +18,13 @@ import { debounce } from '../helper/utils';
 // we update and resize.
 //
 
-export default function textareaAutoResize(nodes) {
-  nodes.forEach(activateAutoResize);
+export default function textareaAutoResize(nodeList) {
+  nodeList.forEach(textarea => {
+    if (textarea.classList.contains('textarea--auto-resize-active') === false) {
+      activateAutoResize(textarea);
+      textarea.classList.add('textarea--auto-resize-active');
+    }
+  });
 }
 
 function activateAutoResize(textarea) {
