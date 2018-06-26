@@ -9,6 +9,7 @@ const webpack = require('webpack');
 module.exports = {
   context: path.resolve('src'),
   entry: {
+    polyfill: 'babel-polyfill',
     app: './index.js'
   },
   output: {

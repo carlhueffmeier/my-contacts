@@ -5,10 +5,11 @@ import Dataset from '../helper/dataset';
 export default class Store {
   constructor() {
     this.storage = {
-      contacts: new Dataset(),
-      contactTags: new Dataset(),
-      tags: new Dataset()
+      contacts: Object.create(Dataset),
+      contactTags: Object.create(Dataset),
+      tags: Object.create(Dataset)
     };
+    Object.values(this.storage).forEach(dataset => dataset.init());
   }
 
   /////////////////////////////

@@ -26,6 +26,10 @@ export function omit(obj, ...idsToObmit) {
     );
 }
 
+export function without(array, ...itemsToOmit) {
+  return array.filter(item => itemsToOmit.includes(item) === false);
+}
+
 export function trim(strings, ...values) {
   var result = '';
   strings.forEach((string, i) => {
