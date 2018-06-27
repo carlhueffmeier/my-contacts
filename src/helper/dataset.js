@@ -58,17 +58,22 @@ var Dataset = {
     return (await this.getAll()).find(createObjectMatcher(match));
   },
 
-  async findAll({ match, filter } = {}) {
-    return (await this.getAll({ filter })).filter(createObjectMatcher(match));
-  },
-
   async findOrCreate(details) {
     var allEntries = this.allIds.map(id => this.byId[id]);
     var searchResult = allEntries.find(createObjectMatcher(details));
     return isDefined(searchResult) ? searchResult : this.add(details);
   },
 
-  async findAndRemove(query) {
+  async findAll({ match, filter } = {}) {
+    return (await this.getAll({ filter })).filter(createObjectMatcher(match));
+  },
+
+  async findAllAndSelect({ match, select }) {
+    var searchResult = await this.findAll({ match });
+    return searchResult.map(a => a[select]);
+  },
+
+  async findAllAndRemove(query) {
     var searchResult = await this.findAll(query);
     return Promise.all(searchResult.map(entry => this.remove(entry.id)));
   }

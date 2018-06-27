@@ -20,7 +20,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-var store = new Store();
+var store = Object.create(Store);
+store.init();
 var template = new Template();
 var view = new View(template);
 var controller = new Controller(store, view);

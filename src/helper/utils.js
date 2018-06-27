@@ -75,3 +75,7 @@ export function createObjectMatcher(query) {
 export function isSubArray(sub, main) {
   return sub.every(item => main.includes(item));
 }
+
+export function mapAndMergePromises(array, fn) {
+  return Promise.all(array.map(fn));
+}
