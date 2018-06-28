@@ -1,7 +1,8 @@
 import Dataset from './dataset';
 
 test('adding a contact automatically generates an id', async () => {
-  var contacts = new Dataset();
+  var contacts = Object.create(Dataset);
+  contacts.init();
 
   var leela = { name: 'Leela' };
   var result = await contacts.add(leela);
@@ -9,7 +10,8 @@ test('adding a contact automatically generates an id', async () => {
 });
 
 test('getAll() returns content of dataset', async () => {
-  var contacts = new Dataset();
+  var contacts = Object.create(Dataset);
+  contacts.init();
 
   var leela = { name: 'Leela' };
   var fry = { name: 'Fry' };
@@ -24,7 +26,8 @@ test('getAll() returns content of dataset', async () => {
 });
 
 test('searching single entry with regular expressions', async () => {
-  var contacts = new Dataset();
+  var contacts = Object.create(Dataset);
+  contacts.init();
 
   var leela = { name: 'Leela' };
   contacts.add(leela);
@@ -36,7 +39,8 @@ test('searching single entry with regular expressions', async () => {
 });
 
 test('searching multiple entries with regular expressions', async () => {
-  var contacts = new Dataset();
+  var contacts = Object.create(Dataset);
+  contacts.init();
 
   var characters = [{ name: 'Leela' }, { name: 'Linda' }];
   characters.forEach(c => contacts.add(c));
@@ -49,7 +53,8 @@ test('searching multiple entries with regular expressions', async () => {
 });
 
 test('findOrCreate() works as expected', async () => {
-  var contacts = new Dataset();
+  var contacts = Object.create(Dataset);
+  contacts.init();
 
   var leela = { name: 'Leela' };
   var fry = { name: 'Fry' };

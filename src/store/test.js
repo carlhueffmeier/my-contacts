@@ -1,7 +1,8 @@
 import Store from './index';
 
 test('adding a contact automatically creates the new tags', async () => {
-  var store = new Store();
+  var store = Object.create(Store);
+  store.init();
 
   var leela = { name: 'Leela', tags: ['Work'] };
   store.addContact(leela);
@@ -15,7 +16,8 @@ test('adding a contact automatically creates the new tags', async () => {
 });
 
 test('tags are retrievable by contact id', async () => {
-  var store = new Store();
+  var store = Object.create(Store);
+  store.init();
 
   var leela = await store.addContact({
     name: 'Leela',
@@ -28,7 +30,8 @@ test('tags are retrievable by contact id', async () => {
 });
 
 test('retrieving all contacts populates the entries with tags', async () => {
-  var store = new Store();
+  var store = Object.create(Store);
+  store.init();
 
   var leela = await store.addContact({
     name: 'Leela',
@@ -42,7 +45,8 @@ test('retrieving all contacts populates the entries with tags', async () => {
 });
 
 test('retrieving a contact by id populates it with tags', async () => {
-  var store = new Store();
+  var store = Object.create(Store);
+  store.init();
 
   var leela = await store.addContact({
     name: 'Leela',
