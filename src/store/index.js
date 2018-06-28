@@ -164,26 +164,22 @@ var Store = {
 
   // Change
 
-  async changeContactsByQuery(match, modifier) {
+  async changeContact(contactId, modifier) {
     var { contacts } = this.storage;
-    var matches = await contacts.findAll({ match });
-    return mapAndMergePromises(matches, match =>
-      this.changeContact(match.id, modifier(match))
-    );
+    var originalData = await contacts.getById(contactId);
+    return this.replaceContactData(contactId, modifier(originalData));
   },
 
-  changeContact(contactId, newData) {
+  replaceContactData(contactId, newData) {
     var { contacts } = this.storage;
-    var { tags: labels, ...modifiedContact } = newData;
-    return Promise.all(
-      [
-        labels && this.changeLabels(contactId, labels),
-        contacts.change(contactId, modifiedContact)
-      ].filter(p => p)
-    );
+    var { tags: labels = [], ...modifiedContactData } = newData;
+    return Promise.all([
+      this.changeLabelsForContact(contactId, labels),
+      contacts.change(contactId, modifiedContactData)
+    ]);
   },
 
-  async changeLabels(contactId, labels) {
+  async changeLabelsForContact(contactId, labels) {
     var { contactTags } = this.storage;
     await contactTags.findAllAndRemove({ match: { contactId } });
     return this.addLabels(contactId, labels);

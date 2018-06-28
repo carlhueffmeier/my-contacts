@@ -323,18 +323,17 @@ export default class Controller {
     this.render();
   }
 
-  toggleFavorite() {
+  async toggleFavorite() {
     var {
       state: { selectedContact },
       store
     } = this;
 
-    return store
-      .changeContactsByQuery({ id: selectedContact }, contact => ({
-        ...contact,
-        favorite: !contact.favorite
-      }))
-      .then(this.render.bind(this));
+    await store.changeContact(selectedContact, contact => ({
+      ...contact,
+      favorite: !contact.favorite
+    }));
+    this.render();
   }
 
   deleteContact() {
@@ -355,19 +354,17 @@ export default class Controller {
       : this.createNewContact(data);
   }
 
-  modifySelectedContact(data) {
+  async modifySelectedContact(data) {
     var {
       state: { selectedContact },
       store
     } = this;
 
-    return store
-      .changeContactsByQuery({ id: selectedContact }, ({ id, favorite }) => ({
-        id,
-        favorite,
-        ...data
-      }))
-      .then(this.render.bind(this));
+    await store.changeContact(selectedContact, ({ favorite }) => ({
+      favorite,
+      ...data
+    }));
+    this.render();
   }
 
   createNewContact(data) {
