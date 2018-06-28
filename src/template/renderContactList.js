@@ -1,4 +1,4 @@
-import { trim } from '../helper/utils';
+import { splitBy } from '../helper/utils';
 import { renderIcon } from '../helper/dom';
 import { getName } from '../helper/contacts';
 
@@ -8,7 +8,7 @@ export default function renderContactList({ contacts }) {
 
   return groups
     .map(
-      group => trim`
+      group => `
         <li class="contact-list__group">
           <div class="contact-list__group-index-wrapper">
             <span class="contact-list__group-index">${group.index}</span>
@@ -27,30 +27,17 @@ export default function renderContactList({ contacts }) {
 function renderList({ contacts, className }) {
   return contacts
     .map(
-      item => trim`
+      item => `
         <li
           ${className ? `class=${className}` : ''}
           data-contact-id="${item.id}"
           role="link"
+          tabindex="0"
         >
           <span class="contact-list__name">${getName(item)}</span>
         </li>`
     )
     .join('');
-}
-
-function splitBy(array, criterium) {
-  var red = [];
-  var black = [];
-
-  array.forEach(item => {
-    if (criterium(item)) {
-      red.push(item);
-    } else {
-      black.push(item);
-    }
-  });
-  return [red, black];
 }
 
 function groupByInitial(contacts) {
@@ -90,9 +77,7 @@ function groupFavorites(favorites) {
 }
 
 function sortByName(contacts) {
-  return contacts
-    .slice()
-    .sort((personA, personB) =>
-      getName(personA).localeCompare(getName(personB))
-    );
+  return [...contacts].sort((personA, personB) =>
+    getName(personA).localeCompare(getName(personB))
+  );
 }

@@ -1,4 +1,4 @@
-import { trim, isBoolean } from '../helper/utils';
+import { isBoolean } from '../helper/utils';
 
 export function sanitizeUrl(url) {
   return /:/g.test(url) === false ? `https://${url}` : url;
@@ -9,7 +9,7 @@ export function renderLink(url, text) {
 }
 
 export function renderIcon(type) {
-  return trim`
+  return `
     <svg class="icon">
       <use xlink:href="#${type}"></use>
     </svg>`;

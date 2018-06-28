@@ -30,26 +30,18 @@ export function without(array, ...itemsToOmit) {
   return array.filter(item => itemsToOmit.includes(item) === false);
 }
 
-export function trim(strings, ...values) {
-  var result = '';
-  strings.forEach((string, i) => {
-    result += string.replace(/\s+/g, ' ') + (values[i] || '');
-  });
-  return result;
-}
-
 export function removeEmptySlots(array) {
   return array.filter(() => true);
 }
 
-export function debounce(f, wait) {
+export function debounce(fn, wait) {
   var timeout;
   return function debouncer() {
     var context = this,
       args = arguments;
     var later = () => {
       timeout = null;
-      f.apply(context, args);
+      fn.apply(context, args);
     };
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
@@ -74,6 +66,20 @@ export function createObjectMatcher(query) {
 
 export function isSubArray(sub, main) {
   return sub.every(item => main.includes(item));
+}
+
+export function splitBy(array, criterium) {
+  var red = [];
+  var black = [];
+
+  array.forEach(item => {
+    if (criterium(item)) {
+      red.push(item);
+    } else {
+      black.push(item);
+    }
+  });
+  return [red, black];
 }
 
 export function mapAndMergePromises(array, fn) {

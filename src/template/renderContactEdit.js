@@ -4,15 +4,16 @@ import {
   getFieldDescription,
   getAdditionalProps
 } from '../helper/contacts';
-import { trim, isBoolean, isDefined } from '../helper/utils';
 import { renderIcon, objectToHtmlAttributes } from '../helper/dom';
 import { encodeInputName } from '../helper/inputNames';
 
 export default function renderContactEdit({
   contact = {},
+  // The title is configurable, because we re-use the same component
+  // for the `Add Entry` flow
   title = 'Edit Contact'
 }) {
-  return trim`
+  return `
     <div class="contact-edit__header">
       <h1 class="contact-edit__heading">${title}</h1>
     </div>
@@ -48,16 +49,7 @@ var renderMethod = {
 };
 
 function createFieldRenderer(key, render) {
-  return contact =>
-    renderFieldRow({
-      contact,
-      key,
-      render
-    });
-}
-
-function renderFieldRow({ contact, key, render }) {
-  return trim`
+  return contact => `
     <li class="contact-edit__row">
       <div class="contact-edit__row-icon">
         ${getFieldIcon(key)}
@@ -68,38 +60,11 @@ function renderFieldRow({ contact, key, render }) {
     </li>`;
 }
 
-function renderSimpleInput({ key, value = '' }) {
-  return renderInput({
-    name: encodeInputName({ key }),
-    placeholder: getFieldDescription(key),
-    props: getAdditionalProps(key),
-    value: value
-  });
-}
-
-function renderTextarea({ key, value = '' }) {
-  return trim`
-    <textarea
-      class="contact-edit__input textarea--auto-resize"
-      name="${encodeInputName({ key })}"
-      placeholder="${getFieldDescription(key)}"
-      rows="1"
-      aria-label="${key}"
-    >${value}</textarea>`;
-}
-
-function renderTags({ key, value: tags = [] }) {
-  return renderInput({
-    name: encodeInputName({ key, commaSeparated: true }),
-    placeholder: getFieldDescription(key),
-    props: getAdditionalProps(key),
-    value: tags.map(t => t.label).join(', ')
-  });
-}
-
+// Create text input per subkey
+// E.g. (1) name-firstName (2) name-lastName
 function renderInputPerProperty({ key, value = {} }) {
   var fieldDescription = getFieldDescription(key);
-  return trim`
+  return `
     <ul class="contact-edit__input-list">
       ${Object.keys(fieldDescription)
         .map(
@@ -117,8 +82,19 @@ function renderInputPerProperty({ key, value = {} }) {
     </ul>`;
 }
 
+// Renders single text input with comma-separated list of tags
+function renderTags({ key, value: tags = [] }) {
+  return renderInput({
+    name: encodeInputName({ key, commaSeparated: true }),
+    placeholder: getFieldDescription(key),
+    props: getAdditionalProps(key),
+    value: tags.map(t => t.label).join(', ')
+  });
+}
+
+// Renders one row per existing value
 function renderInputList({ key, value = [{}] }) {
-  return trim`
+  return `
     <ul class="contact-edit__input-list">
       ${value
         .map((item, index) => renderInputListItem({ item, index, key }))
@@ -126,8 +102,11 @@ function renderInputList({ key, value = [{}] }) {
     </ul>`;
 }
 
+// Each row consists of `value` and `label`
+// Looking somewhat like this
+// ___fry@planet-express.com___   ____Work_____   (x) (+)
 function renderInputListItem({ item = {}, index, key }) {
-  return trim`
+  return `
     <li class="contact-edit__input-item">
       ${['value', 'label']
         .map(subkey =>
@@ -148,8 +127,28 @@ function renderInputListItem({ item = {}, index, key }) {
     </li>`;
 }
 
+function renderSimpleInput({ key, value = '' }) {
+  return renderInput({
+    name: encodeInputName({ key }),
+    placeholder: getFieldDescription(key),
+    props: getAdditionalProps(key),
+    value: value
+  });
+}
+
+function renderTextarea({ key, value = '' }) {
+  return `
+    <textarea
+      class="contact-edit__input textarea--auto-resize"
+      name="${encodeInputName({ key })}"
+      placeholder="${getFieldDescription(key)}"
+      rows="1"
+      aria-label="${key}"
+    >${value}</textarea>`;
+}
+
 function renderInput({ name, placeholder, value, props = {} }) {
-  return trim`
+  return `
     <input
       class="contact-edit__input"
       name="${name}"

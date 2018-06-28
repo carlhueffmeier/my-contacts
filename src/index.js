@@ -22,7 +22,7 @@ if ('serviceWorker' in navigator) {
 
 var store = Object.create(Store);
 store.init();
-var template = new Template();
+var template = Object.create(Template);
 var view = new View(template);
 var controller = new Controller(store, view);
 

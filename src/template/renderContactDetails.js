@@ -4,16 +4,15 @@ import {
   getName,
   getFieldFormat
 } from '../helper/contacts';
-import { trim } from '../helper/utils';
-import { renderIcon, renderLink } from '../helper/dom';
+import { renderIcon } from '../helper/dom';
 
 export default function contactDetails({ contact }) {
-  return trim`${renderContactDetailsTopbar(contact)}
-              ${renderContactDetailsInfo(contact)}`;
+  return renderToolbar(contact) + renderMainContent(contact);
 }
 
-function renderContactDetailsTopbar({ favorite } = {}) {
-  return trim`
+// Renders the bar at the top with buttons for close, favorite, edit and delete
+function renderToolbar({ favorite } = {}) {
+  return `
     <div class="contact-details__topbar">
       <button
         class="contact-details__close-button button"
@@ -44,29 +43,34 @@ function renderContactDetailsTopbar({ favorite } = {}) {
     </div>`;
 }
 
-function renderContactDetailsInfo(contact) {
+// Renders the contact information with name, tags and a list of details
+function renderMainContent(contact) {
   var { name, tags, ...contactInfo } = contact;
-  return trim`
+  return `
     <div class="contact-details__info">
       <div class="contact-details__header">
         <h1 class="contact-details__name">${getName(contact)}</h1>
         ${tags && tags.length > 0 && renderTags(tags)}                    
       </div>
       <ul class="contact-details__list">
-        ${getAllKeys()
-          .map(
-            key =>
-              contactInfo.hasOwnProperty(key)
-                ? renderField(contactInfo, key)
-                : ''
-          )
-          .join('')}
+        ${
+          // Iterate over all keys in order and render the field only
+          // if the contact has that information
+          getAllKeys()
+            .map(
+              key =>
+                contactInfo.hasOwnProperty(key)
+                  ? renderField(contactInfo, key)
+                  : ''
+            )
+            .join('')
+        }
       </ul>
     </div>`;
 }
 
 function renderTags(tags) {
-  return trim`
+  return `
     <div class="contact-details__tag-container">
       ${tags
         .map(tag => `<span class="contact-details__tag">${tag.label}</span>`)
@@ -74,13 +78,17 @@ function renderTags(tags) {
     </div>`;
 }
 
+// Calls the appropriate render function for each field
 function renderField(contact, key) {
   return renderMethod.hasOwnProperty(key)
     ? renderMethod[key](contact)
     : `<li><em>No method to render ${key}</em></li>`;
 }
 
+// Registry of render functions
+// Each key in ../helper/contacts -> allKeys needs to be present
 var renderMethod = {
+  // `email` and `phone` present lists and not single entries
   email: createFieldRenderer('email', renderItemList),
   phone: createFieldRenderer('phone', renderItemList),
   web: createFieldRenderer('web', renderItem),
@@ -90,19 +98,22 @@ var renderMethod = {
   notes: renderNotes
 };
 
+// Create specialized render function for `key`
+// This abstraction prevents repetition of the structure we define in `renderFieldRow`
 function createFieldRenderer(key, render) {
-  var format = getFieldFormat(key);
   return contact =>
     renderFieldRow({
       field: contact[key],
       fieldIcon: getFieldIcon(key),
-      render,
-      format
+      // The `format` function adds field specific formating
+      // For example `mailto:`-links around email addresses
+      format: getFieldFormat(key),
+      render
     });
 }
 
-function renderFieldRow({ field, fieldIcon, render, format }) {
-  return trim`
+function renderFieldRow({ field, fieldIcon, format, render }) {
+  return `
     <li class="contact-details__row">
       <div class="contact-details__row-icon">
         ${fieldIcon}
@@ -114,14 +125,14 @@ function renderFieldRow({ field, fieldIcon, render, format }) {
 }
 
 function renderItem(item, format) {
-  return trim`
+  return `
     <span class="contact-details__detail-value">
       ${format(item)}
     </span>`;
 }
 
 function renderItemList(list, format) {
-  return trim`
+  return `
     <ul class="contact-details__row-list">
       ${list
         .map(
@@ -134,8 +145,11 @@ function renderItemList(list, format) {
     </ul>`;
 }
 
+// Renders an individual entry for `email` and `phone` fields
+// Those have a value and a label for each entry
+// E.g. `555 12 34 44 (Home)`
 function renderItemWithLabel({ value, label }) {
-  return trim`
+  return `
     <span class="contact-details__detail-value">${value}</span>
     ${label &&
       `<span class="contact-details__detail-label">
@@ -143,8 +157,9 @@ function renderItemWithLabel({ value, label }) {
       </span>`}`;
 }
 
+// Let's render the notes a little more verbosely
 function renderNotes({ notes }) {
-  return trim`
+  return `
     <li class="contact-details__notes">
       <h2 class="contact-details__notes-heading">Notes</h2>
       <p class="contact-details__notes-content">
