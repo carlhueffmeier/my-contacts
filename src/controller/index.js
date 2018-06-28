@@ -1,24 +1,26 @@
-import { encodeInputName, decodeInputName } from '../helper/inputNames';
 import { validateFormData } from '../helper/contacts';
 import { isDefined } from '../helper/utils';
 
-export default class Controller {
-  constructor(store, view) {
-    this.state = {
-      query: '',
-      selectedContact: undefined,
-      selectedTag: undefined,
-      editing: false,
-      menuOpen: false
-    };
+var Controller = {
+  init({ store, view }) {
     this.store = store;
     this.view = view;
-  }
+    this.state = {
+      editing: false,
+      menuOpen: false,
+      query: '',
+      // `undefined` signifies 'nothing selected'
+      selectedContact: undefined,
+      selectedTag: undefined
+    };
 
-  init() {
+    this.initBindings();
     this.render();
+  },
 
+  initBindings() {
     var { view } = this;
+
     // Search
     view.bindSearchOpen(this.handleSearchOpen.bind(this));
     view.bindSearchClose(this.handleSearchClose.bind(this));
@@ -49,7 +51,7 @@ export default class Controller {
     view.bindContactEditCancel(this.handleContactEditCancel.bind(this));
     view.bindContactEditAddRow(this.handleContactEditAddRow.bind(this));
     view.bindContactEditDeleteRow(this.handleContactEditDeleteRow.bind(this));
-  }
+  },
 
   /////////////////////////////
   // Event handling
@@ -61,27 +63,27 @@ export default class Controller {
   handleSearchOpen() {
     this.view.toggleSearchVisible(true);
     this.view.toggleSearchFocus(true);
-  }
+  },
 
   handleSearchClose() {
     this.view.toggleSearchVisible(false);
-  }
+  },
 
   handleSearchClear() {
     this.view.toggleSearchFocus(true);
     this.changeQuery('');
-  }
+  },
 
   handleQueryChange(query) {
     this.changeQuery(query);
-  }
+  },
 
   /////////////////////////////
   // Menu
 
   handleMenuToggle() {
     this.toggleMenu();
-  }
+  },
 
   handleMenuShowTag(id) {
     if (id === this.state.selectedTag) {
@@ -89,7 +91,7 @@ export default class Controller {
     } else {
       this.selectTag(id);
     }
-  }
+  },
 
   /////////////////////////////
   // Primary Actions
@@ -97,11 +99,11 @@ export default class Controller {
   handleContactShowDetails(id) {
     this.selectContact(id);
     this.toggleMenu(false);
-  }
+  },
 
   handleContactAdd() {
     this.setEditing(true);
-  }
+  },
 
   /////////////////////////////
   // Modal
@@ -109,54 +111,55 @@ export default class Controller {
   handleModalClick() {
     this.deselectContact();
     this.setEditing(false);
-  }
+  },
 
   /////////////////////////////
   // Contact Details Screen
 
   handleContactDetailsClose() {
     this.deselectContact();
-  }
+  },
 
   handleContactDetailsFavorite() {
     this.toggleFavorite();
-  }
+  },
 
   handleContactDetailsEdit() {
     this.setEditing(true);
-  }
+  },
 
   handleContactDetailsDelete() {
     this.deleteContact();
-  }
+  },
 
   /////////////////////////////
   // Contact Edit Screen
 
-  handleContactEditSave() {
+  async handleContactEditSave() {
     var data = this.view.getFormData();
     if (validateFormData(data)) {
-      this.saveContactData(data).then(() => this.setEditing(false));
+      await this.saveContactData(data);
+      this.setEditing(false);
     } else {
       this.view.toggleContactEditValidation(true);
     }
-  }
+  },
 
   handleContactEditCancel() {
     this.setEditing(false);
-  }
+  },
 
   handleContactEditAddRow(event) {
     var { view } = this;
     var row = view.getClosestRow(event.target);
     view.appendNewInputField(row);
-  }
+  },
 
   handleContactEditDeleteRow(event) {
     var { view } = this;
     var field = view.getClosestField(event.target);
     view.removeInputField(field);
-  }
+  },
 
   /////////////////////////////
   // Rendering
@@ -167,12 +170,12 @@ export default class Controller {
     this.renderContactEdit();
     this.renderContactList();
     this.renderMenu();
-  }
+  },
 
   renderModal() {
     var visible = this.isDetailsScreenShown() || this.isEditScreenShown();
     this.view.toggleModalVisible(visible);
-  }
+  },
 
   renderContactDetails() {
     var visible = this.isDetailsScreenShown();
@@ -180,7 +183,7 @@ export default class Controller {
       this.renderContactDetailsContent();
     }
     this.view.toggleContactDetailsVisible(visible);
-  }
+  },
 
   renderContactEdit() {
     var visible = this.isEditScreenShown();
@@ -188,7 +191,7 @@ export default class Controller {
       this.renderContactEditContent();
     }
     this.view.toggleContactEditVisible(visible);
-  }
+  },
 
   renderContactList() {
     var { selectedTag, query } = this.state;
@@ -197,7 +200,7 @@ export default class Controller {
     } else {
       this.showAllContacts();
     }
-  }
+  },
 
   renderMenu() {
     var visible = this.isMenuVisible();
@@ -205,62 +208,58 @@ export default class Controller {
       this.renderMenuContent();
     }
     this.view.toggleMenuVisible(visible);
-  }
+  },
 
   /////////////////////////////
   // Menu Rendering
   isMenuVisible() {
     return this.state.menuOpen;
-  }
+  },
 
-  renderMenuContent() {
+  async renderMenuContent() {
     var { store, view } = this;
-    store
-      .getAllTags()
-      .then(tags =>
-        view.renderMenu({ tags, selectedTag: this.state.selectedTag })
-      );
-  }
+    var tags = await store.getAllTags();
+    view.renderMenu({ tags, selectedTag: this.state.selectedTag });
+  },
 
   /////////////////////////////
   // Contact List Rendering
-  showAllContacts() {
+  async showAllContacts() {
     var { store, view } = this;
-    store.getAllContacts().then(contacts => view.renderContacts({ contacts }));
-  }
+    var contacts = await store.getAllContacts();
+    view.renderContacts({ contacts });
+  },
 
-  showContactsBy(query) {
+  async showContactsBy(query) {
     var { store, view } = this;
-    store
-      .findContactsByName(query)
-      .then(contacts => view.renderContacts({ contacts }));
-  }
+    var contacts = await store.findContactsByName(query);
+    view.renderContacts({ contacts });
+  },
 
   /////////////////////////////
   // Contact Details Rendering
   isDetailsScreenShown() {
     return this.isContactSelected() && !this.isEditScreenShown();
-  }
+  },
 
-  renderContactDetailsContent() {
+  async renderContactDetailsContent() {
     var {
       state: { selectedContact },
       store,
       view
     } = this;
 
-    return store
-      .getContactById(selectedContact)
-      .then(contact => view.renderContactDetails({ contact }));
-  }
+    var contact = await store.getContactById(selectedContact);
+    view.renderContactDetails({ contact });
+  },
 
   /////////////////////////////
   // Contact Edit Rendering
   isEditScreenShown() {
     return this.state.editing;
-  }
+  },
 
-  renderContactEditContent(props) {
+  async renderContactEditContent(props) {
     var {
       state: { selectedContact },
       store,
@@ -268,13 +267,12 @@ export default class Controller {
     } = this;
 
     if (this.isContactSelected()) {
-      store
-        .getContactById(selectedContact)
-        .then(contact => view.renderContactEdit({ contact }));
+      let contact = await store.getContactById(selectedContact);
+      view.renderContactEdit({ contact });
     } else {
       view.renderContactEdit({ title: 'Add Contact' });
     }
-  }
+  },
 
   /////////////////////////////
   // Helper
@@ -282,7 +280,7 @@ export default class Controller {
 
   isContactSelected() {
     return isDefined(this.state.selectedContact);
-  }
+  },
 
   /////////////////////////////
   // Actions
@@ -291,37 +289,37 @@ export default class Controller {
   toggleMenu(on) {
     this.state.menuOpen = isDefined(on) ? on : !this.state.menuOpen;
     this.render();
-  }
+  },
 
   selectContact(id) {
     this.state.selectedContact = id;
     this.render();
-  }
+  },
 
   selectTag(id) {
     this.state.selectedTag = id;
     this.render();
-  }
+  },
 
   deselectTag() {
     this.state.selectedTag = undefined;
     this.render();
-  }
+  },
 
   deselectContact() {
     this.state.selectedContact = undefined;
     this.render();
-  }
+  },
 
   setEditing(on) {
     this.state.editing = Boolean(on);
     this.render();
-  }
+  },
 
   changeQuery(query) {
     this.state.query = query.toString();
     this.render();
-  }
+  },
 
   async toggleFavorite() {
     var {
@@ -334,25 +332,24 @@ export default class Controller {
       favorite: !contact.favorite
     }));
     this.render();
-  }
+  },
 
-  deleteContact() {
+  async deleteContact() {
     var {
       state: { selectedContact },
       store
     } = this;
 
-    store
-      .removeContact(selectedContact)
-      .then(this.deselectContact.bind(this))
-      .then(this.render.bind(this));
-  }
+    await store.removeContact(selectedContact);
+    this.deselectContact();
+    this.render();
+  },
 
   saveContactData(data) {
     return this.isContactSelected()
       ? this.modifySelectedContact(data)
       : this.createNewContact(data);
-  }
+  },
 
   async modifySelectedContact(data) {
     var {
@@ -365,12 +362,13 @@ export default class Controller {
       ...data
     }));
     this.render();
-  }
+  },
 
-  createNewContact(data) {
-    return this.store
-      .addContact(data)
-      .then(({ id }) => this.selectContact(id))
-      .then(this.render.bind(this));
+  async createNewContact(data) {
+    var newContact = await this.store.addContact(data);
+    this.selectContact(newContact.id);
+    this.render();
   }
-}
+};
+
+export default Controller;

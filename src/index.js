@@ -5,9 +5,8 @@ import Controller from './controller';
 import createSampleData from './data/createSampleData';
 import './styles.css';
 
-var publicFolder = process.env.NODE_ENV === 'production' ? '/contacts/' : '/';
-
 if ('serviceWorker' in navigator) {
+  var publicFolder = process.env.NODE_ENV === 'production' ? '/contacts/' : '/';
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register(`${publicFolder}service-worker.js`)
@@ -20,17 +19,18 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Create application instances
 var store = Object.create(Store);
-store.init();
-
 var template = Object.create(Template);
-
 var view = Object.create(View);
-view.init({ template });
+var controller = Object.create(Controller);
 
-var controller = new Controller(store, view);
-
-// Prepopulate with some sample data
+// Initialize the store with some data
+store.init();
 createSampleData().forEach(entry => store.addContact(entry));
 
-window.addEventListener('load', () => controller.init());
+// When window finishes loading, initialize view and controller
+window.addEventListener('load', () => {
+  view.init({ template });
+  controller.init({ store, view });
+});
