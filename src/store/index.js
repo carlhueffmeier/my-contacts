@@ -165,8 +165,9 @@ var Store = {
   // Change
 
   async changeContact(contactId, modifier) {
-    var { contacts } = this.storage;
-    var originalData = await contacts.getById(contactId);
+    var originalData = await this.getContactById(contactId);
+    originalData.tags = originalData.tags.map(tag => tag.label);
+    console.log(originalData);
     return this.replaceContactData(contactId, modifier(originalData));
   },
 

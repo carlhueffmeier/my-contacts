@@ -358,8 +358,8 @@ var Controller = {
     } = this;
 
     await store.changeContact(selectedContact, ({ favorite }) => ({
-      favorite,
-      ...data
+      ...data,
+      favorite
     }));
     this.render();
   },
