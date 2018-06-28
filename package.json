@@ -45,6 +45,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "dompurify": "^1.0.4",
+    "lodash.escape": "^4.0.1",
     "node-uuid": "^1.4.8"
   }
 }
