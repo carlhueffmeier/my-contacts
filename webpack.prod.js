@@ -8,11 +8,7 @@ module.exports = merge(common, {
   output: {
     publicPath: '/contacts/'
   },
-  devtool: 'inline-source-map',
-  devServer: {
-    open: true
-  },
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   plugins: [
     new WebpackPwaManifest({
       name: 'Contacts',

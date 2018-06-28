@@ -5,11 +5,10 @@ const path = require('path');
 
 module.exports = merge(common, {
   mode: 'development',
-  devtool: 'inline-source-map',
+  devtool: 'eval-source-map',
   devServer: {
     open: true
   },
-  devtool: 'eval-source-map',
   plugins: [
     new WebpackPwaManifest({
       name: 'Contacts',
