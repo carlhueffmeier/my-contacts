@@ -50,7 +50,7 @@ function renderMainContent(contact) {
     <div class="contact-details__info">
       <div class="contact-details__header">
         <h1 class="contact-details__name">${getName(contact)}</h1>
-        ${tags && tags.length > 0 && renderTags(tags)}                    
+        ${tags && tags.length > 0 ? renderTags(tags) : ''}                    
       </div>
       <ul class="contact-details__list">
         ${
@@ -151,10 +151,13 @@ function renderItemList(list, format) {
 function renderItemWithLabel({ value, label }) {
   return `
     <span class="contact-details__detail-value">${value}</span>
-    ${label &&
-      `<span class="contact-details__detail-label">
-        ${label}
-      </span>`}`;
+    ${
+      label
+        ? `<span class="contact-details__detail-label">
+            ${label}
+          </span>`
+        : ''
+    }`;
 }
 
 // Let's render the notes a little more verbosely
