@@ -7,8 +7,8 @@ import {
 } from '../helper/inputNames';
 import textareaAutoResize from '../helper/textareaAutoResize';
 
-export default class View {
-  constructor(template) {
+var View = {
+  init({ template }) {
     this.template = template;
 
     // Container
@@ -31,7 +31,7 @@ export default class View {
     this.$searchInput = $('.search__text-input');
 
     this._initializeRenderBuffer();
-  }
+  },
 
   /////////////////////////////
   // Private methods
@@ -45,12 +45,12 @@ export default class View {
       editDialog: createRenderBuffer(this.$contactEditDialog),
       menu: createRenderBuffer(this.$menu)
     };
-  }
+  },
 
   _activateTextareaAutoResize() {
     var textareas = $$('.textarea--auto-resize');
     textareaAutoResize(textareas);
-  }
+  },
 
   /////////////////////////////
   // Event Handling
@@ -65,14 +65,14 @@ export default class View {
         callback();
       }
     });
-  }
+  },
 
   /////////////////////////////
   // Primary Actions
 
   bindMenuToggle(callback) {
     this.$menuToggle.on('click', () => callback());
-  }
+  },
 
   bindMenuShowTag(callback) {
     bindToParent({
@@ -85,7 +85,7 @@ export default class View {
         }
       }
     });
-  }
+  },
 
   bindContactShowDetails(callback) {
     bindToParent({
@@ -94,30 +94,30 @@ export default class View {
       callback: (event, contactItem) =>
         callback(contactItem.dataset['contactId'])
     });
-  }
+  },
 
   bindContactAdd(callback) {
     this.$contactAdd.on('click', () => callback());
-  }
+  },
 
   /////////////////////////////
   // Search
 
   bindSearchOpen(callback) {
     this.$searchOpenButton.on('click', () => callback());
-  }
+  },
 
   bindSearchClose(callback) {
     this.$searchClose.on('click', () => callback());
-  }
+  },
 
   bindSearchClear(callback) {
     this.$searchClear.on('click', () => callback());
-  }
+  },
 
   bindSearchQueryChange(callback) {
     this.$searchInput.on('input', event => callback(event.target.value));
-  }
+  },
 
   /////////////////////////////
   // Contact Details
@@ -128,7 +128,7 @@ export default class View {
       selector: '.contact-details__close-button',
       callback
     });
-  }
+  },
 
   bindContactDetailsFavorite(callback) {
     bindToParent({
@@ -136,7 +136,7 @@ export default class View {
       selector: '.contact-details__favorite-button',
       callback
     });
-  }
+  },
 
   bindContactDetailsEdit(callback) {
     bindToParent({
@@ -144,7 +144,7 @@ export default class View {
       selector: '.contact-details__edit-button',
       callback
     });
-  }
+  },
 
   bindContactDetailsDelete(callback) {
     bindToParent({
@@ -152,7 +152,7 @@ export default class View {
       selector: '.contact-details__delete-button',
       callback
     });
-  }
+  },
 
   /////////////////////////////
   // Contact Edit
@@ -163,7 +163,7 @@ export default class View {
       selector: '.contact-edit__save-button',
       callback
     });
-  }
+  },
 
   bindContactEditCancel(callback) {
     bindToParent({
@@ -171,7 +171,7 @@ export default class View {
       selector: '.contact-edit__cancel-button',
       callback
     });
-  }
+  },
 
   bindContactEditAddRow(callback) {
     bindToParent({
@@ -179,7 +179,7 @@ export default class View {
       selector: '.contact-edit__add-entry-button',
       callback
     });
-  }
+  },
 
   bindContactEditDeleteRow(callback) {
     bindToParent({
@@ -187,7 +187,7 @@ export default class View {
       selector: '.contact-edit__delete-entry-button',
       callback
     });
-  }
+  },
 
   /////////////////////////////
   // Retrieve DOM information
@@ -199,15 +199,15 @@ export default class View {
     );
     var data = serializeInputs(allInputs);
     return data;
-  }
+  },
 
   getClosestRow(element) {
     return event.target.closest('.contact-edit__row');
-  }
+  },
 
   getClosestField(element) {
     return event.target.closest('.contact-edit__input-item');
-  }
+  },
 
   /////////////////////////////
   // Render methods
@@ -216,12 +216,12 @@ export default class View {
   renderContacts(props) {
     var newHtml = this.template.contactList(props);
     this.renderBuffer.contactList.update(newHtml);
-  }
+  },
 
   renderContactDetails(props) {
     var newHtml = this.template.contactDetails(props);
     this.renderBuffer.contactDetails.update(newHtml);
-  }
+  },
 
   renderContactEdit(props) {
     var newHtml = this.template.contactEdit(props);
@@ -229,12 +229,12 @@ export default class View {
     if (didRepaint) {
       this._activateTextareaAutoResize();
     }
-  }
+  },
 
   renderMenu(props) {
     var newHtml = this.template.tagList(props);
     this.renderBuffer.menu.update(newHtml);
-  }
+  },
 
   /////////////////////////////
   // DOM modification
@@ -242,11 +242,11 @@ export default class View {
 
   toggleMenuVisible(on) {
     toggleClass(this.$app, 'app--menu-visible', on);
-  }
+  },
 
   toggleSearchVisible(on) {
     toggleClass(this.$searchBox, 'visible', on);
-  }
+  },
 
   toggleSearchFocus(on) {
     if (on) {
@@ -254,24 +254,24 @@ export default class View {
     } else {
       this.$searchInput.blur();
     }
-  }
+  },
 
   toggleContactDetailsVisible(on) {
     toggleClass(this.$contactDetails, 'visible', on);
-  }
+  },
 
   toggleContactEditVisible(on) {
     toggleClass(this.$contactEditDialog, 'visible', on);
-  }
+  },
 
   toggleModalVisible(on) {
     toggleClass(this.$modalBox, 'visible', on);
-  }
+  },
 
   toggleContactEditValidation(on) {
     var form = $('.contact-edit__form');
     toggleClass(form, 'form--show-validation-results', on);
-  }
+  },
 
   appendNewInputField(row) {
     // We are going to clone a whole field, which may contain multiple inputs
@@ -291,7 +291,7 @@ export default class View {
     // Append the new element to the end of the list
     var list = lastInputField.closest('.contact-edit__input-list');
     list.appendChild(newInputField);
-  }
+  },
 
   removeInputField(field) {
     var list = field.closest('.contact-edit__input-list');
@@ -306,4 +306,6 @@ export default class View {
       });
     }
   }
-}
+};
+
+export default View;

@@ -22,8 +22,12 @@ if ('serviceWorker' in navigator) {
 
 var store = Object.create(Store);
 store.init();
+
 var template = Object.create(Template);
-var view = new View(template);
+
+var view = Object.create(View);
+view.init({ template });
+
 var controller = new Controller(store, view);
 
 // Prepopulate with some sample data
