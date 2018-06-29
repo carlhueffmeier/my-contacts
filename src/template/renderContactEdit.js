@@ -88,7 +88,10 @@ function renderTags({ key, value: tags = [] }) {
     name: encodeInputName({ key, commaSeparated: true }),
     placeholder: getFieldDescription(key),
     props: getAdditionalProps(key),
-    value: tags.map(t => t.label).join(', ')
+    value: tags
+      .map(t => t.label)
+      .sort()
+      .join(', ')
   });
 }
 

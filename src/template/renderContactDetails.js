@@ -73,7 +73,9 @@ function renderTags(tags) {
   return `
     <div class="contact-details__tag-container">
       ${tags
-        .map(tag => `<span class="contact-details__tag">${tag.label}</span>`)
+        .map(tag => tag.label)
+        .sort()
+        .map(label => `<span class="contact-details__tag">${label}</span>`)
         .join(' ')}
     </div>`;
 }
