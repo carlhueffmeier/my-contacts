@@ -40,6 +40,12 @@ var Store = {
     return contact => associatedContactIds.has(contact.id);
   },
 
+  async _removeEmptyTagGroups() {
+    var { contactTags, tags } = this.storage;
+    var associatedTags = new Set(await contactTags.getAllAndSelect('tagId'));
+    return tags.removeIf(tag => !associatedTags.has(tag.id));
+  },
+
   /////////////////////////////
   // Selectors
   /////////////////////////////
@@ -146,12 +152,18 @@ var Store = {
   // Remove
 
   removeContact(contactId) {
-    var { contacts, contactTags } = this.storage;
+    var { contacts } = this.storage;
     // Removing associations and entry in parallel
     return Promise.all([
-      contactTags.findAllAndRemove({ match: { contactId } }),
+      this.removeAllTagsForContact(contactId),
       contacts.remove(contactId)
     ]);
+  },
+
+  async removeAllTagsForContact(contactId) {
+    var { contactTags } = this.storage;
+    await contactTags.findAllAndRemove({ match: { contactId } });
+    return this._removeEmptyTagGroups();
   },
 
   removeTag(tagId) {
@@ -167,7 +179,6 @@ var Store = {
   async changeContact(contactId, modifier) {
     var originalData = await this.getContactById(contactId);
     originalData.tags = originalData.tags.map(tag => tag.label);
-    console.log(originalData);
     return this.replaceContactData(contactId, modifier(originalData));
   },
 
@@ -181,8 +192,7 @@ var Store = {
   },
 
   async changeLabelsForContact(contactId, labels) {
-    var { contactTags } = this.storage;
-    await contactTags.findAllAndRemove({ match: { contactId } });
+    await this.removeAllTagsForContact(contactId);
     return this.addLabels(contactId, labels);
   }
 };

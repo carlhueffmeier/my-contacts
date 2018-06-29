@@ -30,6 +30,12 @@ var Dataset = {
     return entry;
   },
 
+  async removeIf(fn) {
+    for (let entry of await this.getAll()) {
+      if (fn(entry)) this.remove(entry.id);
+    }
+  },
+
   async add(entry) {
     var id = this._isIdAutomaticallyAssigned() ? uuidv4() : this._getId(entry);
     if (this.allIds.includes(id)) {
@@ -52,6 +58,10 @@ var Dataset = {
   async getAll({ filter } = {}) {
     var allEntries = this.allIds.map(id => this.byId[id]);
     return isDefined(filter) ? allEntries.filter(filter) : allEntries;
+  },
+
+  async getAllAndSelect(key) {
+    return this.allIds.map(id => this.byId[id][key]);
   },
 
   async find(match) {
