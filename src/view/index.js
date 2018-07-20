@@ -1,3 +1,4 @@
+import focusWithin from 'ally.js/src/style/focus-within';
 import { $, $$ } from '../helper/bling';
 import { toggleClass, bindToParent, createRenderBuffer } from '../helper/dom';
 import {
@@ -30,12 +31,17 @@ var View = {
     this.$searchClear = $('.search__clear-button');
     this.$searchInput = $('.search__text-input');
 
+    this._initializePolyfills();
     this._initializeRenderBuffer();
   },
 
   /////////////////////////////
   // Private methods
   /////////////////////////////
+
+  _initializePolyfills() {
+    focusWithin();
+  },
 
   // Render buffers prevent redrawing when no changes occurred;
   _initializeRenderBuffer() {

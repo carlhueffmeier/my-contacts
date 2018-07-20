@@ -447,7 +447,7 @@ a {
   cursor: pointer;
 }
 
-.contact-list__contact-element:focus-within,
+.contact-list__contact-element.ally-focus-within,
 .contact-list__contact-element:hover {
   background-color: #e3e3e3;
 }
