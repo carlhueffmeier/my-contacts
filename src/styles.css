@@ -447,9 +447,19 @@ a {
   cursor: pointer;
 }
 
-.contact-list__contact-element:focus,
+.contact-list__contact-element:focus-within,
 .contact-list__contact-element:hover {
   background-color: #e3e3e3;
+}
+
+.contact-list__link,
+.contact-list__link:link,
+.contact-list__link:visited,
+.contact-list__link:focus,
+.contact-list__link:active,
+.contact-list__link:hover {
+  color: inherit;
+  outline: none;
 }
 
 /***************************************

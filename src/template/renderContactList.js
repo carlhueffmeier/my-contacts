@@ -31,10 +31,8 @@ function renderList({ contacts, className }) {
         <li
           ${className ? `class=${className}` : ''}
           data-contact-id="${item.id}"
-          role="link"
-          tabindex="0"
         >
-          <span class="contact-list__name">${getName(item)}</span>
+          <a class="contact-list__link" href="#">${getName(item)}</a>
         </li>`
     )
     .join('');
