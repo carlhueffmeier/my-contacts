@@ -64,7 +64,7 @@ a {
 }
 
 .app__modal {
-  visibility: hidden;
+  display: none;
   position: fixed;
   top: 0;
   right: 0;
@@ -72,6 +72,10 @@ a {
   left: 0;
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 10;
+}
+
+.app__modal.visible {
+  display: initial;
 }
 
 @media only screen and (min-width: 768px) {
@@ -88,9 +92,6 @@ a {
 /***************************************
 ** Utility Classes
 ****************************************/
-.visible.visible {
-  visibility: visible;
-}
 
 .hidden {
   display: none;
@@ -127,6 +128,7 @@ a {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
 .button:focus,
@@ -134,6 +136,7 @@ a {
 .button:active {
   outline: transparent;
   color: #222222;
+  transform: scale(1.05, 1.05);
 }
 
 /***************************************
@@ -181,6 +184,7 @@ a {
 }
 
 .add-contact__button:active {
+  outline: transparent;
   transform: translateY(3px);
   box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12),
     0 3px 5px -1px rgba(0, 0, 0, 0.2);
@@ -344,6 +348,10 @@ a {
   display: flex;
 }
 
+.search.visible {
+  visibility: visible;
+}
+
 @media only screen and (min-width: 768px) {
   .search {
     position: unset;
@@ -468,16 +476,19 @@ a {
 ****************************************/
 
 .contact-details {
-  visibility: hidden;
+  display: none;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
   background-color: white;
-  display: flex;
   flex-direction: column;
   z-index: 100;
+}
+
+.contact-details.visible {
+  display: flex;
 }
 
 @media only screen and (min-width: 786px) {
@@ -515,7 +526,8 @@ a {
   display: flex;
 }
 
-.contact-details__delete-button:hover svg {
+.contact-details__delete-button:hover svg,
+.contact-details__delete-button:focus svg {
   fill: #e91e63;
 }
 
@@ -627,16 +639,19 @@ a {
 ****************************************/
 
 .contact-edit {
-  visibility: hidden;
+  display: none;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
   background-color: white;
-  display: flex;
   flex-direction: column;
   z-index: 100;
+}
+
+.contact-edit.visible {
+  display: flex;
 }
 
 @media only screen and (min-width: 786px) {
@@ -749,11 +764,6 @@ a {
   display: block;
 }
 
-.contact-edit__input-item:hover > .contact-edit__delete-entry-button,
-.contact-edit__input-item:hover > .contact-edit__add-entry-button {
-  opacity: 1;
-}
-
 .contact-edit__delete-entry-button,
 .contact-edit__add-entry-button {
   background: transparent;
@@ -771,12 +781,10 @@ a {
 }
 
 .contact-edit__delete-entry-button:focus,
-.contact-edit__add-entry-button:focus {
+.contact-edit__add-entry-button:focus,
+.contact-edit__delete-entry-button:hover,
+.contact-edit__add-entry-button:hover {
   opacity: 1;
-}
-
-.contact-edit__delete-entry-button:hover + .contact-edit__add-entry-button {
-  opacity: 0.4;
 }
 
 .contact-edit__input {
@@ -819,6 +827,7 @@ a {
   border: none;
   text-transform: uppercase;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
 .contact-edit__save-button:hover,
@@ -828,4 +837,6 @@ a {
 .contact-edit__cancel-button:focus,
 .contact-edit__cancel-button:active {
   outline: none;
+  background-color: #2a56c6;
+  color: white;
 }

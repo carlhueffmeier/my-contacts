@@ -119,14 +119,6 @@
           <ul class="menu__list"></ul>
         </nav>
 
-        <button class="add-contact__button" aria-label="Add new contact">
-          <div class="add-contact__icon icon-container">
-            <svg class="icon">
-              <use xlink:href="#icon-add"></use>
-            </svg>
-          </div>
-        </button>
-
         <header class="header">
           <div class="header__left">
             <div class="header__menu">
@@ -166,11 +158,19 @@
           </div>
         </header>
 
+        <button class="add-contact__button" aria-label="Add new contact">
+          <div class="add-contact__icon icon-container">
+            <svg class="icon">
+              <use xlink:href="#icon-add"></use>
+            </svg>
+          </div>
+        </button>
+
         <main class="app__main">
           <ul class="contact-list"></ul>
           <div class="app__modal">
-            <div class="contact-details"></div>
-            <div class="contact-edit"></div>
+            <div class="contact-details" aria-hidden="true"></div>
+            <div class="contact-edit" aria-hidden="true"></div>
           </div>
         </main>
 

@@ -7,6 +7,7 @@ import {
   decodeInputName
 } from '../helper/inputNames';
 import textareaAutoResize from '../helper/textareaAutoResize';
+import Modal from '../helper/modal';
 
 var View = {
   init({ template }) {
@@ -32,7 +33,8 @@ var View = {
     this.$searchInput = $('.search__text-input');
 
     this._initializePolyfills();
-    this._initializeRenderBuffer();
+    this._initializeModals();
+    this._initializeRenderBuffers();
   },
 
   /////////////////////////////
@@ -40,11 +42,25 @@ var View = {
   /////////////////////////////
 
   _initializePolyfills() {
+    // Polyfill for the :focus-within CSS Level 4 selector
     focusWithin();
   },
 
+  _initializeModals() {
+    this.contactDetailsModal = Object.create(Modal);
+    this.contactDetailsModal.init({
+      node: this.$contactDetails,
+      container: this.$modalBox
+    });
+    this.contactEditDialogModal = Object.create(Modal);
+    this.contactEditDialogModal.init({
+      node: this.$contactEditDialog,
+      container: this.$modalBox
+    });
+  },
+
   // Render buffers prevent redrawing when no changes occurred;
-  _initializeRenderBuffer() {
+  _initializeRenderBuffers() {
     this.renderBuffer = {
       contactList: createRenderBuffer(this.$contactList),
       contactDetails: createRenderBuffer(this.$contactDetails),
@@ -61,17 +77,6 @@ var View = {
   /////////////////////////////
   // Event Handling
   /////////////////////////////
-
-  /////////////////////////////
-  // Modal
-
-  bindModalClick(callback) {
-    this.$modalBox.on('click', event => {
-      if (event.target === this.$modalBox) {
-        callback();
-      }
-    });
-  },
 
   /////////////////////////////
   // Primary Actions
@@ -128,6 +133,10 @@ var View = {
   /////////////////////////////
   // Contact Details
 
+  bindContactDetailsModalClose(callback) {
+    this.contactDetailsModal.onClose = callback;
+  },
+
   bindContactDetailsClose(callback) {
     bindToParent({
       parent: this.$contactDetails,
@@ -162,6 +171,10 @@ var View = {
 
   /////////////////////////////
   // Contact Edit
+
+  bindContactEditDialogModalClose(callback) {
+    this.contactEditDialogModal.onClose = callback;
+  },
 
   bindContactEditSave(callback) {
     bindToParent({
@@ -208,11 +221,11 @@ var View = {
   },
 
   getClosestRow(element) {
-    return event.target.closest('.contact-edit__row');
+    return element.closest('.contact-edit__row');
   },
 
   getClosestField(element) {
-    return event.target.closest('.contact-edit__input-item');
+    return element.closest('.contact-edit__input-item');
   },
 
   /////////////////////////////
@@ -262,16 +275,20 @@ var View = {
     }
   },
 
-  toggleContactDetailsVisible(on) {
-    toggleClass(this.$contactDetails, 'visible', on);
+  openContactDetailsModal() {
+    this.contactDetailsModal.open();
   },
 
-  toggleContactEditVisible(on) {
-    toggleClass(this.$contactEditDialog, 'visible', on);
+  closeContactDetailsModal() {
+    this.contactDetailsModal.close();
   },
 
-  toggleModalVisible(on) {
-    toggleClass(this.$modalBox, 'visible', on);
+  openContactEditModal() {
+    this.contactEditDialogModal.open();
+  },
+
+  closeContactEditModal() {
+    this.contactEditDialogModal.close();
   },
 
   toggleContactEditValidation(on) {
@@ -284,7 +301,11 @@ var View = {
     var lastInputField = row.querySelector(
       '.contact-edit__input-item:last-of-type'
     );
+    var addEntryButton = lastInputField.querySelector(
+      '.contact-edit__add-entry-button'
+    );
     var newInputField = lastInputField.cloneNode(true);
+    addEntryButton.setAttribute('disabled', 'disabled');
 
     // After cloning, modify name and reset value of all containing inputs
     var inputElements = newInputField.querySelectorAll('.contact-edit__input');
@@ -304,8 +325,17 @@ var View = {
     var allFields = list.querySelectorAll('.contact-edit__input-item');
 
     if (allFields.length > 1) {
+      // If there are multiple fields, delete
+      let index = [...list].indexOf(field);
+      if (index === list.length - 1) {
+        let addEntryButton = list[index - 1].querySelector(
+          '.contact-edit__add-entry-button'
+        );
+        addEntryButton.removeAttribute('disabled');
+      }
       list.removeChild(field);
     } else {
+      // Otherwise just reset the values
       let inputElements = field.querySelectorAll('.contact-edit__input');
       inputElements.forEach(input => {
         input.value = '';

@@ -1,3 +1,13 @@
+export function noop() {}
+
+export function identity(arg) {
+  return arg;
+}
+
+export function isEmpty(list) {
+  return list.length === 0;
+}
+
 export function isRegexp(object) {
   return getPrototypeString(object) === getPrototypeString(/./);
 }
@@ -32,6 +42,10 @@ export function without(array, ...itemsToOmit) {
 
 export function removeEmptySlots(array) {
   return array.filter(() => true);
+}
+
+export function wrappingModulo(val, lim) {
+  return (val % lim + lim) % lim;
 }
 
 export function debounce(fn, wait) {
