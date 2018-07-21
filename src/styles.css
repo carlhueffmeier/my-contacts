@@ -40,6 +40,13 @@ a {
   text-decoration: none;
 }
 
+/* Deactivate tooltips on the svg icons inside buttons */
+button > svg,
+button > svg > path,
+button > svg > title {
+  pointer-events: none;
+}
+
 .app {
   display: flex;
   flex-direction: column;
@@ -128,15 +135,6 @@ a {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.button:focus,
-.button:hover,
-.button:active {
-  outline: transparent;
-  color: #222222;
-  transform: scale(1.05, 1.05);
 }
 
 /***************************************
@@ -179,8 +177,9 @@ a {
 }
 
 .add-contact__button:focus {
-  box-shadow: 0 6px 10px 3px rgba(0, 0, 0, 0.14),
-    1px 3px 18px 4px rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
+  outline: transparent;
+  box-shadow: 0 6px 10px 3px rgba(32, 226, 226, 0.431),
+    1px 3px 18px 4px rgba(3, 183, 255, 0.6), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
 }
 
 .add-contact__button:active {
@@ -245,6 +244,7 @@ a {
 .header__open-search-button:hover,
 .header__open-search-button:active,
 .header__open-search-button:focus {
+  outline: transparent;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.1);
   color: white;
@@ -308,12 +308,17 @@ a {
   height: 100%;
   width: 3px;
   transform: scaleY(0);
-  background-color: #2a56c6;
+  background-color: #2a56c644;
   transition: transform 0.1s, width 0.2s cubic-bezier(1, 0, 0, 1) 0.1s;
 }
 
+.menu__item--active::before {
+  background-color: #2a56c6;
+}
+
 .menu__item--active::before,
-.menu__item:hover::before {
+.menu__item:hover::before,
+.user-is-tabbing .menu__item.ally-focus-within::before {
   transform: scaleY(1);
   width: 100%;
 }
@@ -328,8 +333,12 @@ a {
   transition: color 0.2s ease-in;
 }
 
-.menu__item--active > .menu__link--tag,
-.menu__item:hover > .menu__link--tag {
+.menu__link:focus,
+.menu__link--tag:focus {
+  outline: transparent;
+}
+
+.menu__item--active > .menu__link--tag {
   color: white;
 }
 
@@ -393,6 +402,17 @@ a {
   color: #6e6e6e;
   width: 3rem;
   cursor: pointer;
+}
+
+.search__clear-button:focus,
+.search__clear-button:hover,
+.search__clear-button:active,
+.search__close-button:focus,
+.search__close-button:hover,
+.search__close-button:active {
+  outline: transparent;
+  color: #222;
+  transform: scale(1.05, 1.05);
 }
 
 .search__close-icon {
@@ -516,14 +536,20 @@ a {
   margin-right: auto;
 }
 
-.contact-details__close-button,
-.contact-details__favorite-button,
-.contact-details__edit-button,
-.contact-details__delete-button {
+.contact-details__topbar-button {
   font-size: 1.5rem;
   color: #6e6e6e;
   padding: 0.5rem;
   display: flex;
+  transition: all 0.2s;
+}
+
+.contact-details__topbar-button:focus,
+.contact-details__topbar-button:hover,
+.contact-details__topbar-button:active {
+  outline: transparent;
+  color: #222222;
+  transform: scale(1.05, 1.05);
 }
 
 .contact-details__delete-button:hover svg,

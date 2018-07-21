@@ -1,20 +1,6 @@
 import './bling';
-import { pipe, wrappingModulo, isEmpty, noop } from './utils';
-import { toggleClass } from './dom';
-
-const FOCUSABLE_ELEMENTS = [
-  'a[href]',
-  'area[href]',
-  'input:not([disabled]):not([type="hidden"]):not([aria-hidden])',
-  'select:not([disabled]):not([aria-hidden])',
-  'textarea:not([disabled]):not([aria-hidden])',
-  'button:not([disabled]):not([aria-hidden])',
-  'iframe',
-  'object',
-  'embed',
-  '[contenteditable]',
-  '[tabindex]:not([tabindex^="-"])'
-];
+import { isEmpty, noop, wrappingModulo } from './utils';
+import { toggleClass, getFocusableElements } from './dom';
 
 var Modal = {
   init({ node, container, onClose = noop }) {
@@ -51,7 +37,7 @@ var Modal = {
   },
 
   focusFirstElement() {
-    var focusableElements = this.getFocusableElements();
+    var focusableElements = getFocusableElements(this.$modal);
     if (!isEmpty(focusableElements)) {
       focusableElements[0].focus();
     }
@@ -80,17 +66,13 @@ var Modal = {
       this.close();
     }
     if (event.key === 'Tab') {
-      let focusableElements = this.getFocusableElements();
+      let focusableElements = getFocusableElements(this.$modal);
       let focusIndex = focusableElements.indexOf(event.target);
       focusIndex += event.shiftKey ? -1 : 1;
       focusIndex = wrappingModulo(focusIndex, focusableElements.length);
       focusableElements[focusIndex].focus();
       event.preventDefault();
     }
-  },
-
-  getFocusableElements() {
-    return this.$modal.querySelectorAll(FOCUSABLE_ELEMENTS);
   }
 };
 

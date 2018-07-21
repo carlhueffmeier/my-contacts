@@ -15,13 +15,15 @@ function renderToolbar({ favorite } = {}) {
   return `
     <div class="contact-details__topbar">
       <button
-        class="contact-details__close-button button"
+        class="contact-details__close-button contact-details__topbar-button button"
+        title="Close"
         aria-label="Close contact details"
       >
-        ${renderIcon('icon-close')}   
+        ${renderIcon('icon-close')}
       </button>
       <button
-        class="contact-details__favorite-button button"
+        class="contact-details__favorite-button contact-details__topbar-button button"
+        title="Favorite"
         aria-label="Contact currently marked as ${
           favorite ? 'favorite' : 'not favorite'
         }. Toggle it ${favorite ? 'off' : 'on'}"
@@ -29,13 +31,15 @@ function renderToolbar({ favorite } = {}) {
         ${renderIcon(favorite ? 'icon-star' : 'icon-star_border')}
       </button>
       <button
-        class="contact-details__edit-button button"
+        class="contact-details__edit-button contact-details__topbar-button button"
+        title="Edit"
         aria-label="Turn on edit mode"
       >
         ${renderIcon('icon-mode_edit')}            
       </button>
       <button
-        class="contact-details__delete-button button"
+        class="contact-details__delete-button contact-details__topbar-button button"
+        title="Delete"
         aria-label="Delete contact"
       >
         ${renderIcon('icon-delete')}            

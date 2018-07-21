@@ -1,6 +1,11 @@
 import focusWithin from 'ally.js/src/style/focus-within';
 import { $, $$ } from '../helper/bling';
-import { toggleClass, bindToParent, createRenderBuffer } from '../helper/dom';
+import {
+  toggleClass,
+  bindToParent,
+  createRenderBuffer,
+  getFocusableElements
+} from '../helper/dom';
 import {
   serializeInputs,
   encodeInputName,
@@ -32,6 +37,7 @@ var View = {
     this.$searchClear = $('.search__clear-button');
     this.$searchInput = $('.search__text-input');
 
+    this._addInternalEventListeners();
     this._initializePolyfills();
     this._initializeModals();
     this._initializeRenderBuffers();
@@ -40,6 +46,15 @@ var View = {
   /////////////////////////////
   // Private methods
   /////////////////////////////
+
+  _addInternalEventListeners() {
+    window.addEventListener('keydown', function handleFirstTab(event) {
+      if (event.key === 'Tab') {
+        toggleClass($('body'), 'user-is-tabbing');
+        window.removeEventListener('keydown', handleFirstTab);
+      }
+    });
+  },
 
   _initializePolyfills() {
     // Polyfill for the :focus-within CSS Level 4 selector
@@ -261,6 +276,12 @@ var View = {
 
   toggleMenuVisible(on) {
     toggleClass(this.$app, 'app--menu-visible', on);
+    if (on) {
+      var focusable = getFocusableElements(this.$menu);
+      if (focusable) {
+        focusable[0].focus();
+      }
+    }
   },
 
   toggleSearchVisible(on) {

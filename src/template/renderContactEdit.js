@@ -121,10 +121,20 @@ function renderInputListItem({ item = {}, index, key }) {
           })
         )
         .join('')}
-      <button type="button" class="contact-edit__delete-entry-button" aria-label="Remove row">
+      <button
+        type="button"
+        class="contact-edit__delete-entry-button"
+        title="Delete entry"
+        aria-label="Delete entry"
+      >
         ${renderIcon('icon-cancel')}
       </button>
-      <button type="button" class="contact-edit__add-entry-button" aria-label="Add row">
+      <button
+        type="button"
+        class="contact-edit__add-entry-button"
+        title="Add new entry"
+        aria-label="Add new entry"
+      >
         ${renderIcon('icon-add_circle')}
       </button>                 
     </li>`;
