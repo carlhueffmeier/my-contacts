@@ -7,7 +7,7 @@ module.exports = merge(common, {
   mode: 'development',
   devtool: 'eval-source-map',
   devServer: {
-    open: true
+    open: process.env.OPENBROWSER ? process.env.OPENBROWSER === 'true' : true
   },
   plugins: [
     new WebpackPwaManifest({
