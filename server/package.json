@@ -1,0 +1,28 @@
+{
+  "name": "my-contacts-server",
+  "version": "1.0.0",
+  "description": "Backend of the my-contacts app",
+  "main": "start.js",
+  "scripts": {
+    "prod": "node ./start.js",
+    "watch": "nodemon ./start.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carlhueffmeier/my-contacts.git"
+  },
+  "author": "Carl Hüffmeier",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/carlhueffmeier/my-contacts/issues"
+  },
+  "homepage": "https://github.com/carlhueffmeier/my-contacts#readme",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "mongoose": "^5.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
+  }
+}

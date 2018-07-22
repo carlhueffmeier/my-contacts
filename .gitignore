@@ -1,2 +1,8 @@
-node_modules
-dist
+node_modules/
+.DS_Store
+
+# Frontend specific files & folders
+dist/
+
+# Server specific files & folders
+variables.env
