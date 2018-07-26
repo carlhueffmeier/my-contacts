@@ -2,6 +2,7 @@ import View from './view';
 import Template from './template';
 import Store from './store';
 import Controller from './controller';
+import AsyncStore from './asyncStore';
 import createSampleData from './data/createSampleData';
 import './styles.css';
 
@@ -28,6 +29,9 @@ var controller = Object.create(Controller);
 // Initialize the store with some data
 store.init();
 createSampleData().forEach(entry => store.addContact(entry));
+
+var asyncStore = Object.create(AsyncStore);
+asyncStore.init().then(() => console.table(asyncStore.getContacts()));
 
 // When window finishes loading, initialize view and controller
 window.addEventListener('load', () => {

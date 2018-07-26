@@ -16,7 +16,6 @@ mongoose.connection.on('error', err => {
 // Import models
 require('./models/contact');
 require('./models/tag');
-require('./models/contactTag');
 
 // Start the app!
 var app = require('./app');

@@ -5,7 +5,9 @@
   "main": "start.js",
   "scripts": {
     "prod": "node ./start.js",
-    "watch": "nodemon ./start.js"
+    "watch": "nodemon ./start.js",
+    "sample": "node ./data/load-sample-data.js",
+    "cleardata": "node ./data/load-sample-data.js -- delete"
   },
   "repository": {
     "type": "git",
