@@ -38,8 +38,14 @@ function activateAutoResize(textarea) {
   applyTextareaStyles(textarea);
 
   var resize = () => syncWithShadow(textarea, shadow);
-  resize();
   registerCallback(textarea, resize);
+  (function doFirstResize() {
+    if (shadow.clientHeight === 0) {
+      window.requestAnimationFrame(doFirstResize);
+    } else {
+      resize();
+    }
+  })();
 }
 
 function createContainerElement() {
@@ -53,12 +59,16 @@ function createContainerElement() {
 function createShadowElement(textarea) {
   var originalStyles = window.getComputedStyle(textarea);
   var shadow = document.createElement('div');
+  copyText(textarea, shadow);
+
+  shadow.classList.add('textarea--auto-resize-shadow');
   // Let's make sure no screen reader catches our shadow element
   shadow.setAttribute('aria-hidden', 'true');
 
   // To accurately reflect our original textarea,
   // we need to copy all styles over
   shadow.style.cssText = originalStyles.cssText;
+  console.log(shadow);
 
   // Make sure that height changes automatically
   shadow.style.height = 'auto';
@@ -85,33 +95,39 @@ function applyTextareaStyles(textarea) {
   textarea.style.position = 'absolute';
   textarea.style.top = '0';
   textarea.style.left = '0';
-  textarea.style.width = '100%';
 }
 
 // When user input happens, we copy the content to
 // the shadow div and reflect height changes for the
 // <textarea> element.
 function syncWithShadow(textarea, shadow) {
+  console.log('resizing');
+  copyText(textarea, shadow);
+  setDimensions(textarea, shadow);
+}
+
+function copyText(textarea, shadow) {
   // First, escape special html characters like `<`
   var content = escape(textarea.value);
-
   // To accurately represent the textarea value inside the div,
   // we need to replace newlines with html <br> tags
   content = content.replace(/\n/g, '<br>');
-
   // Remember: A <br> at the end of line will be ignored
   var zeroWidthSpace = '&#8203;';
   shadow.innerHTML = content + zeroWidthSpace;
+}
 
+function setDimensions(textarea, shadow) {
   // 🏁 Finally, get our hard-earned dimensions
   textarea.style.height = `${shadow.clientHeight}px`;
   textarea.style.width = `${shadow.clientWidth}px`;
 }
 
 function registerCallback(textarea, callback) {
-  setTimeout(callback, 0);
+  // Change on text input
   textarea.addEventListener('input', callback);
-  // Remember I said, this was expensive..
+  // Aaand on window resize..
+  // Remember I said, this was expensive 💰
   // Let's debounce it to reduce redrawing
-  window.addEventListener('resize', debounce(callback, 100));
+  window.addEventListener('resize', debounce(callback, 20));
 }
