@@ -4,9 +4,9 @@ export default function renderTagList({ tags, selectedTag }) {
     .map(
       tag => `
         <li class="menu__item ${
-          tag.id === selectedTag ? 'menu__item--active' : ''
+          tag._id === selectedTag ? 'menu__item--active' : ''
         }">
-          <a class="menu__link--tag" href="#" data-tag-id="${tag.id}">
+          <a class="menu__link--tag" href="#" data-tag-id="${tag._id}">
             ${tag.label}
           </a>
         </li>`

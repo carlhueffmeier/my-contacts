@@ -13,6 +13,7 @@ var contactSchema = new mongoose.Schema({
       trim: true
     }
   },
+  favorite: Boolean,
   tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
   email: {
     value: {

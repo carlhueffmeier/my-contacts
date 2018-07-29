@@ -259,10 +259,8 @@ var View = {
 
   renderContactEdit(props) {
     var newHtml = this.template.contactEdit(props);
-    var didRepaint = this.renderBuffer.editDialog.update(newHtml);
-    if (didRepaint) {
-      this._activateTextareaAutoResize();
-    }
+    this.renderBuffer.editDialog.update(newHtml);
+    this._activateTextareaAutoResize();
   },
 
   renderMenu(props) {
@@ -278,7 +276,7 @@ var View = {
     toggleClass(this.$app, 'app--menu-visible', on);
     if (on) {
       var focusable = getFocusableElements(this.$menu);
-      if (focusable) {
+      if (focusable && focusable.length > 0) {
         focusable[0].focus();
       }
     }

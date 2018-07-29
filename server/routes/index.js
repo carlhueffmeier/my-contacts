@@ -7,6 +7,10 @@ var { catchErrors } = require('../handlers/errorHandlers');
 // Contacts
 router.get('/contacts', catchErrors(contactController.getContacts));
 router.get('/contacts/:id', catchErrors(contactController.getContactById));
+router.put(
+  '/contacts/:id/change',
+  catchErrors(contactController.changeContact)
+);
 router.delete(
   '/contacts/:id/remove',
   catchErrors(contactController.removeContact)

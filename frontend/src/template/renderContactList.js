@@ -30,7 +30,7 @@ function renderList({ contacts, className }) {
       item => `
         <li
           ${className ? `class=${className}` : ''}
-          data-contact-id="${item.id}"
+          data-contact-id="${item._id}"
         >
           <a class="contact-list__link" href="#">${getName(item)}</a>
         </li>`

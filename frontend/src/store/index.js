@@ -1,199 +1,127 @@
-import { mapAndMergePromises } from '../helper/utils';
-import { getName } from '../helper/contacts';
-import Dataset from '../helper/dataset';
+import { callAll, isIterable } from '../helper/utils';
+
+function pluck(arrayOfObjects, key) {
+  return arrayOfObjects.map(obj => obj[key]);
+}
+
+function getServerUrl(endpoint = '') {
+  var baseUrl = 'http://localhost:7777';
+  return `${baseUrl}/${endpoint}`;
+}
+
+async function serverRequest(endpoint = '', options = {}) {
+  var data = await (await fetch(getServerUrl(endpoint), {
+    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    ...options
+  })).json();
+  return data;
+}
+
+function normalize(data) {
+  var normalizedData = {
+    contacts: {},
+    tags: {}
+  };
+
+  var processData = callAll(storeTags, storeContacts);
+  if (isIterable(data)) {
+    data.forEach(processData);
+  } else {
+    processData(data);
+  }
+
+  return normalizedData;
+
+  function storeTags(contact) {
+    var { tags } = contact;
+    tags.forEach(tag => {
+      normalizedData.tags[tag._id] = tag;
+    });
+  }
+  function storeContacts(contact) {
+    normalizedData.contacts[contact._id] = {
+      ...contact,
+      tags: pluck(contact.tags, '_id')
+    };
+  }
+}
 
 var Store = {
   init() {
-    this.storage = {
-      contacts: Object.create(Dataset),
-      contactTags: Object.create(Dataset),
-      tags: Object.create(Dataset)
+    this.entities = {
+      contacts: {},
+      tags: {}
     };
-    Object.values(this.storage).forEach(dataset => dataset.init());
   },
 
-  /////////////////////////////
-  // Internal
-  /////////////////////////////
-
-  // Populates contact with associated tags
-  async _populate(contact) {
-    var tags = await this.getTagsByContact(contact.id);
+  _populate(contact) {
+    var { tags } = this.entities;
     return {
       ...contact,
-      tags
+      tags: contact.tags.map(tagId => tags[tagId])
     };
   },
 
-  _populateAll(contacts) {
-    return mapAndMergePromises(contacts, this._populate.bind(this));
+  _handleServerData(data, { update = false } = {}) {
+    var normalizedData = normalize(data);
+    if (update) {
+      Object.assign(this.entities.contacts, normalizedData.contacts);
+      Object.assign(this.entities.tags, normalizedData.tags);
+    } else {
+      this.entities.contacts = normalizedData.contacts;
+      this.entities.tags = normalizedData.tags;
+    }
   },
 
-  async _createTagFilter(tagId) {
-    var { contactTags } = this.storage;
-    var associatedContactIds = new Set(
-      await contactTags.findAllAndSelect({
-        match: { tagId },
-        select: 'contactId'
-      })
-    );
-    return contact => associatedContactIds.has(contact.id);
+  async fetchAll() {
+    this._handleServerData(await serverRequest('contacts'));
   },
 
-  async _removeEmptyTagGroups() {
-    var { contactTags, tags } = this.storage;
-    var associatedTags = new Set(await contactTags.getAllAndSelect('tagId'));
-    return tags.removeIf(tag => !associatedTags.has(tag.id));
+  async getContacts() {
+    await this.fetchAll();
+    var { contacts } = this.entities;
+    return Object.values(contacts).map(this._populate, this);
   },
-
-  /////////////////////////////
-  // Selectors
-  /////////////////////////////
-
-  // All
-
-  async getAllContacts() {
-    var { contacts } = this.storage;
-    return this._populateAll(await contacts.getAll());
-  },
-
-  getAllTags() {
-    var { tags } = this.storage;
-    return tags.getAll();
-  },
-
-  // By ID
 
   async getContactById(id) {
-    var { contacts } = this.storage;
-    var selectedContact = await contacts.getById(id);
-    return this._populate(selectedContact);
+    return this._populate(this.entities.contacts[id]);
   },
 
-  getTagById(id) {
-    var { contacts } = this.storage;
-    return contacts.getById(id);
+  async getTags() {
+    return Object.values(this.entities.tags);
   },
 
-  // Associations
-
-  async getContactsByTag(tagId) {
-    var { contacts, contactTags } = this.storage;
-    // Get all contactIds associated with tagId
-    var contactIds = await contactTags.findAllAndSelect({
-      match: { tagId },
-      select: 'contactId'
-    });
-    return Promise.all(contactIds.map(id => contacts.getById(id)));
-  },
-
-  async getTagsByContact(contactId) {
-    var { contactTags, tags } = this.storage;
-    var tagIds = await contactTags.findAllAndSelect({
-      match: { contactId },
-      select: 'tagId'
-    });
-    return Promise.all(tagIds.map(id => tags.getById(id)));
-  },
-
-  // Searching
-
-  findContact(query) {
-    var { contacts } = this.storage;
-    return contacts.find(query);
-  },
-
-  async findAllContacts({ tag, ...match }) {
-    var { contacts } = this.storage;
-    return contacts.findAll({
-      filter: tag ? await this._createTagFilter(tag) : undefined,
-      match
-    });
-  },
-
-  // Matches against the full name (which is a computed property)
-  // Accepts an optional tag
   async findContactsByName({ queryString, tag } = {}) {
-    var { contacts } = this.storage;
-    var re = new RegExp(queryString, 'i');
-    var tagFilter = tag ? await this._createTagFilter(tag) : () => true;
-    return contacts.getAll({
-      filter: contact => re.test(getName(contact)) && tagFilter(contact)
+    var contacts = Object.values(this.entities.contacts);
+    var nameRegex = new RegExp(queryString, 'i');
+    return contacts.filter(contactFilter);
+
+    function contactFilter({ name, tags }) {
+      var fullName = [name.firstName, name.lastName]
+        .filter(Boolean)
+        .join('')
+        .replace(/\s/g, '');
+      if (tag && !tags.includes(tag)) return false;
+      if (!nameRegex.test(fullName)) return false;
+      return true;
+    }
+  },
+
+  async changeContact(id, modifier) {
+    var newData =
+      typeof modifier === 'function'
+        ? modifier(this.entities.contacts[id])
+        : newData;
+    var update = await serverRequest(`contacts/${id}/change`, {
+      method: 'PUT',
+      body: JSON.stringify(newData)
     });
+    this._handleServerData(update, { update: true });
   },
 
-  /////////////////////////////
-  // Modification
-  /////////////////////////////
-
-  // Add
-
-  async addContact(details) {
-    var { contacts } = this.storage;
-    var { tags: labels = [], ...restProps } = details;
-    var newContact = await contacts.add(restProps);
-    await this.addLabels(newContact.id, labels);
-    return newContact;
-  },
-
-  async addLabels(contactId, labels = []) {
-    var { contactTags, tags } = this.storage;
-    // Fetch tags with the specified labels
-    var newTags = await mapAndMergePromises(labels, label =>
-      // If it doesn't exist, create a new tag with the label
-      tags.findOrCreate({ label })
-    );
-    // Finally add associations for all
-    return mapAndMergePromises(newTags, tag =>
-      contactTags.add({ contactId, tagId: tag.id })
-    );
-  },
-
-  // Remove
-
-  removeContact(contactId) {
-    var { contacts } = this.storage;
-    // Removing associations and entry in parallel
-    return Promise.all([
-      this.removeAllTagsForContact(contactId),
-      contacts.remove(contactId)
-    ]);
-  },
-
-  async removeAllTagsForContact(contactId) {
-    var { contactTags } = this.storage;
-    await contactTags.findAllAndRemove({ match: { contactId } });
-    return this._removeEmptyTagGroups();
-  },
-
-  removeTag(tagId) {
-    var { contactTags, tags } = this.storage;
-    return Promise.all([
-      contactTags.findAllAndRemove({ match: { tagId } }),
-      tags.remove(tagId)
-    ]);
-  },
-
-  // Change
-
-  async changeContact(contactId, modifier) {
-    var originalData = await this.getContactById(contactId);
-    originalData.tags = originalData.tags.map(tag => tag.label);
-    return this.replaceContactData(contactId, modifier(originalData));
-  },
-
-  replaceContactData(contactId, newData) {
-    var { contacts } = this.storage;
-    var { tags: labels = [], ...modifiedContactData } = newData;
-    return Promise.all([
-      this.changeLabelsForContact(contactId, labels),
-      contacts.change(contactId, modifiedContactData)
-    ]);
-  },
-
-  async changeLabelsForContact(contactId, labels) {
-    await this.removeAllTagsForContact(contactId);
-    return this.addLabels(contactId, labels);
+  async removeContact(id) {
+    await serverRequest(`contacts/${id}/remove`, { method: 'DELETE' });
+    delete this.entities.contacts[id];
   }
 };
 

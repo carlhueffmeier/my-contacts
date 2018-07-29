@@ -24,6 +24,10 @@ export function isDefined(...refs) {
   return refs.every(ref => typeof ref !== 'undefined');
 }
 
+export function isIterable(obj) {
+  return typeof obj[Symbol.iterator] === 'function';
+}
+
 export function omit(obj, ...keysToOmit) {
   return Object.keys(obj)
     .filter(key => !keysToOmit.includes(key))
@@ -38,6 +42,14 @@ export function omit(obj, ...keysToOmit) {
 
 export function without(array, ...itemsToOmit) {
   return array.filter(item => itemsToOmit.includes(item) === false);
+}
+
+export function pipe(firstFn = identity, ...fns) {
+  return (...args) => fns.reduce((acc, fn) => fn(acc), firstFn(...args));
+}
+
+export function callAll(...fns) {
+  return (...args) => fns.forEach(fn => fn(...args));
 }
 
 export function removeEmptySlots(array) {

@@ -220,7 +220,7 @@ var Controller = {
   // Menu Rendering
   async renderMenuContent() {
     var { store, view } = this;
-    var tags = await store.getAllTags();
+    var tags = await store.getTags();
     view.renderMenu({ tags, selectedTag: this.state.selectedTag });
   },
 
@@ -228,7 +228,7 @@ var Controller = {
   // Contact List Rendering
   async showAllContacts() {
     var { store, view } = this;
-    var contacts = await store.getAllContacts();
+    var contacts = await store.getContacts();
     view.renderContacts({ contacts });
   },
 
@@ -333,8 +333,8 @@ var Controller = {
       state: { selectedContact },
       store
     } = this;
+    // TODO:
     return store.changeContact(selectedContact, contact => ({
-      ...contact,
       favorite: !contact.favorite
     }));
   },
@@ -344,6 +344,7 @@ var Controller = {
       state: { selectedContact },
       store
     } = this;
+    // TODO:
     await store.removeContact(selectedContact);
     this.deselectContact();
   },
@@ -360,8 +361,7 @@ var Controller = {
       store
     } = this;
     return store.changeContact(selectedContact, ({ favorite }) => ({
-      ...data,
-      favorite
+      ...data
     }));
   },
 
