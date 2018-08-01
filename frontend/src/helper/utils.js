@@ -40,6 +40,10 @@ export function omit(obj, ...keysToOmit) {
     );
 }
 
+export function pluck(arrayOfObjects, key) {
+  return arrayOfObjects.map(obj => obj[key]);
+}
+
 export function without(array, ...itemsToOmit) {
   return array.filter(item => itemsToOmit.includes(item) === false);
 }
@@ -48,7 +52,7 @@ export function pipe(firstFn = identity, ...fns) {
   return (...args) => fns.reduce((acc, fn) => fn(acc), firstFn(...args));
 }
 
-export function callAll(...fns) {
+export function passAll(...fns) {
   return (...args) => fns.forEach(fn => fn(...args));
 }
 

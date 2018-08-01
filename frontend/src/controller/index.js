@@ -17,6 +17,7 @@ var Controller = {
 
     this.initBindings();
     this.render();
+    store.onChange = this.render.bind(this);
   },
 
   initBindings() {
@@ -333,7 +334,6 @@ var Controller = {
       state: { selectedContact },
       store
     } = this;
-    // TODO:
     return store.changeContact(selectedContact, contact => ({
       favorite: !contact.favorite
     }));
@@ -344,7 +344,6 @@ var Controller = {
       state: { selectedContact },
       store
     } = this;
-    // TODO:
     await store.removeContact(selectedContact);
     this.deselectContact();
   },
