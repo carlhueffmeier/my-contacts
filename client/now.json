@@ -1,0 +1,7 @@
+{
+  "name": "my-contacts-client",
+  "alias": "my-contacts-client",
+  "env": {
+    "SERVER_URL": "https://my-contacts-api.now.sh"
+  }
+}

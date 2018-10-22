@@ -1,14 +1,14 @@
 {
-  "name": "my-contacts-frontend",
-  "version": "1.0.0",
-  "description": "Frontend of the my-contacts app",
+  "name": "my-contacts-client",
+  "version": "0.1.0",
+  "description": "Web client of the my-contacts app",
   "main": "index.js",
   "scripts": {
+    "now-start": "cd dist && serve -s ./",
+    "start": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "clean": "rm -r dist",
-    "upload": "scp -r dist/* carlh.de:public_html/contacts",
-    "deploy": "run-s build upload",
-    "start": "webpack-dev-server --config webpack.dev.js"
+    "deploy": "now && now alias"
   },
   "repository": {
     "type": "git",
@@ -44,7 +44,9 @@
     "ally.js": "^1.4.1",
     "babel-polyfill": "^6.26.0",
     "dompurify": "^1.0.4",
+    "idb": "^2.1.3",
     "lodash.escape": "^4.0.1",
-    "node-uuid": "^1.4.8"
+    "node-uuid": "^1.4.8",
+    "serve": "^10.0.2"
   }
 }

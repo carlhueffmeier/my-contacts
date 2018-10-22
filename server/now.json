@@ -1,0 +1,9 @@
+{
+  "name": "my-contacts-api",
+  "alias": "my-contacts-api",
+  "env": {
+    "MONGO_URL": "@my-contacts-mongo-url",
+    "CLIENT_URL": "https://my-contacts-client.now.sh",
+    "PORT": "443"
+  }
+}

@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 
-// Import configuration options from 'variables.env'
-require('dotenv').config({ path: 'variables.env' });
+// Import configuration options from '.env'
+require('dotenv').config();
 
 // Connect to database and handle connection issues
 mongoose.connect(
-  process.env.DATABASE,
+  process.env.MONGO_URL,
   { useNewUrlParser: true }
 );
 mongoose.Promise = global.Promise; // use ES6 promises
@@ -19,7 +19,7 @@ require('./models/tag');
 
 // Start the app!
 var app = require('./app');
-app.set('port', process.env.PORT || 7777);
+app.set('port', process.env.PORT);
 var server = app.listen(app.get('port'), () => {
   console.log(`Express running → PORT ${server.address().port}`);
 });

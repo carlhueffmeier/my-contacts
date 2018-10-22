@@ -1,12 +1,10 @@
-require('dotenv').config({ path: __dirname + '/../variables.env' });
+require('dotenv').config();
 var fs = require('fs');
-var contactData = JSON.parse(
-  fs.readFileSync(__dirname + '/contactData.json', 'utf-8')
-);
+var contactData = JSON.parse(fs.readFileSync(__dirname + '/contactData.json', 'utf-8'));
 
 var mongoose = require('mongoose');
 mongoose.connect(
-  process.env.DATABASE,
+  process.env.MONGO_URL,
   { useNewUrlParser: true }
 );
 mongoose.Promise = global.Promise;
@@ -23,9 +21,7 @@ async function addContact(data) {
   // Check which labels have to be added and insert them into the database
   var existingLabels = existingTags.map(t => t.label);
   var labelsToAdd = labels.filter(l => !existingLabels.includes(l));
-  var insertedTags = await Tag.insertMany(
-    labelsToAdd.map(label => ({ label }))
-  );
+  var insertedTags = await Tag.insertMany(labelsToAdd.map(label => ({ label })));
 
   // Create a new contact with the aggregated tags
   return new Contact({

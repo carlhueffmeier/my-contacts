@@ -38,7 +38,6 @@ export function bindToParent({ parent, callback, selector, type = 'click' }) {
     var targetElement = event.target.closest(selector);
     if (targetElement) {
       callback(event, targetElement);
-      console.log(`[${type}] ${selector}`);
     }
   });
 }

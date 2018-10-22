@@ -1,20 +1,25 @@
 {
   "name": "my-contacts",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Simple contacts manager application",
   "main": "index.js",
   "scripts": {
-    "postinstall": "run-p -l install:server install:frontend",
+    "postinstall": "run-p install:client install:server",
+    "install:client": "cd client && npm install",
     "install:server": "cd server && npm install",
-    "install:frontend": "cd frontend && npm install",
-    "start": "run-p -l start:server start:frontend",
+    "start": "run-p start:server start:client",
     "start:server": "cd server && npm run watch",
-    "start:frontend": "cd frontend && npm run start",
+    "start:client": "cd client && npm start",
+    "deploy": "run-p deploy:server deploy:client",
+    "deploy:server": "cd server && npm run deploy",
+    "deploy:client": "cd client && npm run deploy",
     "test": "jest --watchAll",
     "test:e2e": "OPENBROWSER=\"false\" start-server-and-test start http://localhost:8080 cy:open",
     "test:e2e:run": "OPENBROWSER=\"false\" start-server-and-test start http://localhost:8080 cy:run",
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "sampledata": "cd server && npm run sampledata",
+    "cleardata": "cd server && npm run cleardata"
   },
   "repository": {
     "type": "git",

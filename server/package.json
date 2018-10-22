@@ -1,13 +1,14 @@
 {
   "name": "my-contacts-server",
-  "version": "1.0.0",
-  "description": "Backend of the my-contacts app",
+  "version": "0.1.0",
+  "description": "Server of the my-contacts app",
   "main": "start.js",
   "scripts": {
-    "prod": "node ./start.js",
+    "start": "node ./start.js",
     "watch": "nodemon ./start.js",
-    "sample": "node ./data/load-sample-data.js",
-    "cleardata": "node ./data/load-sample-data.js --delete"
+    "sampledata": "node ./data/load-sample-data.js",
+    "cleardata": "node ./data/load-sample-data.js --delete",
+    "deploy": "now --docker -e NODE_ENV=production && now alias"
   },
   "repository": {
     "type": "git",

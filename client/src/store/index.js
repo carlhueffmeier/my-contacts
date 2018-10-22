@@ -21,7 +21,7 @@ function createAction(type, payload) {
 }
 
 function getServerUrl(endpoint = '') {
-  var baseUrl = 'http://localhost:7777';
+  var baseUrl = process.env.SERVER_URL;
   return `${baseUrl}/${endpoint}`;
 }
 
@@ -82,34 +82,17 @@ var Store = {
     this.onChange = onChange;
 
     // Connect to IndexedDB
-    this.localDB = await idb.open(
-      DATABASE_NAME,
-      DATABASE_VERSION,
-      upgradeDB => {
-        upgradeDB.createObjectStore('contacts', { keyPath: '_id' });
-        upgradeDB.createObjectStore('tags', { keyPath: '_id' });
-        upgradeDB.createObjectStore('changes', { keyPath: '_id' });
-      }
-    );
+    this.localDB = await idb.open(DATABASE_NAME, DATABASE_VERSION, upgradeDB => {
+      upgradeDB.createObjectStore('contacts', { keyPath: '_id' });
+      upgradeDB.createObjectStore('tags', { keyPath: '_id' });
+      upgradeDB.createObjectStore('changes', { keyPath: '_id' });
+    });
 
     // Try to get data from IndexedDB
-    var tx = this.localDB.transaction(
-      ['contacts', 'tags', 'changes'],
-      'readwrite'
-    );
-    this.storage.entities.contacts = arrayToHash(
-      await tx.objectStore('contacts').getAll(),
-      '_id'
-    );
-    this.storage.entities.tags = arrayToHash(
-      await tx.objectStore('tags').getAll(),
-      '_id'
-    );
-    this.storage.changes = arrayToHash(
-      await tx.objectStore('changes').getAll(),
-      '_id'
-    );
-    console.log('load from idb', this.storage);
+    var tx = this.localDB.transaction(['contacts', 'tags', 'changes'], 'readwrite');
+    this.storage.entities.contacts = arrayToHash(await tx.objectStore('contacts').getAll(), '_id');
+    this.storage.entities.tags = arrayToHash(await tx.objectStore('tags').getAll(), '_id');
+    this.storage.changes = arrayToHash(await tx.objectStore('changes').getAll(), '_id');
     this.onChange();
 
     // Look for changes and keep trying
@@ -150,10 +133,7 @@ var Store = {
 
   fulfillTransaction(key) {
     delete this.storage.changes[key];
-    var tx = this.localDB.transaction(
-      ['contacts', 'tags', 'changes'],
-      'readwrite'
-    );
+    var tx = this.localDB.transaction(['contacts', 'tags', 'changes'], 'readwrite');
     this.fetchServerData();
     return tx.complete;
   },
@@ -165,7 +145,6 @@ var Store = {
     this.storage.entities.contacts = normalizedData.contacts;
     this.storage.entities.tags = normalizedData.tags;
     this.onChange();
-    console.log('fetch server data', this.storage);
     return this.saveToLocal();
   },
 
@@ -174,30 +153,20 @@ var Store = {
       changes,
       entities: { contacts, tags }
     } = this.storage;
-    var tx = this.localDB.transaction(
-      ['contacts', 'tags', 'changes'],
-      'readwrite'
-    );
+    var tx = this.localDB.transaction(['contacts', 'tags', 'changes'], 'readwrite');
     tx.objectStore('contacts').clear();
     tx.objectStore('tags').clear();
     tx.objectStore('changes').clear();
-    Object.values(contacts).forEach(contact =>
-      tx.objectStore('contacts').put(contact)
-    );
+    Object.values(contacts).forEach(contact => tx.objectStore('contacts').put(contact));
     Object.values(tags).forEach(tag => tx.objectStore('tags').put(tag));
-    Object.values(changes).forEach(change =>
-      tx.objectStore('changes').put(change)
-    );
+    Object.values(changes).forEach(change => tx.objectStore('changes').put(change));
     return tx.complete;
   },
 
   ////////////////////////////
   // Queries
   async getContacts() {
-    return Object.values(this.storage.entities.contacts).map(
-      this.populate,
-      this
-    );
+    return Object.values(this.storage.entities.contacts).map(this.populate, this);
   },
 
   async getContactById(id) {
@@ -234,9 +203,7 @@ var Store = {
 
   async changeContact(id, changes) {
     var newData =
-      typeof changes === 'function'
-        ? changes(this.storage.entities.contacts[id])
-        : changes;
+      typeof changes === 'function' ? changes(this.storage.entities.contacts[id]) : changes;
     var action = createAction(transactionTypes.CHANGE_CONTACT, {
       _id: id,
       ...newData
@@ -260,7 +227,6 @@ var Store = {
   ////////////////////////////
   // Action handling
   async dispatch(action) {
-    console.log('dispatching', action);
     return this.actionHandler[action.type].call(this, action);
   },
 
