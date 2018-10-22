@@ -10,23 +10,23 @@ My main goal developing this application was to gain a deeper understanding of h
 
 In addition, it served as a sandbox to learn more about these topics:
 
-## Accessibility
+**Accessibility**
 
 - Focus handling
 - Aria attributes
 
-## Progressive Web Applications
+**Progressive Web Applications**
 
 - Service workers
 - IndexedDB
 - Queuing & storing server mutations
 
-## Design Patterns
+**Design Patterns**
 
 - MVC separation of concerns
 - OLOO style delegation
 
-## Advanced UI
+**Advanced UI**
 
 - Autoresizing textareas (surprisingly nontrivial)
 - State management
